@@ -1,7 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Home, Film, Map, Compass, Book } from 'lucide-react';
-import { Analytics } from '@vercel/analytics/react';
-import AuroraBackground from './AuroraBackground';
 import GlobalSearch from './GlobalSearch';
 
 const navItems = [
@@ -18,9 +16,31 @@ export default function Layout() {
 
   return (
     <div className="relative min-h-screen bg-aurora-black text-white overflow-x-hidden">
-      {/* Analytics de Vercel */}
-      <Analytics />
+      {!isMapPage && <div className="starfield" aria-hidden="true" />}
 
-      {!isMapPage && <AuroraBackground />}
-
-      {/* ... resto del código del Layout ... */}
+      <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 py-4 bg-aurora-black/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-aurora-cyan to-blue-600 flex items-center justify-center">
+              <span className="text-xs font-bold">PA</span>
+            </div>
+            <span className="font-display font-bold text-lg hidden sm:inline">Project Aurora</span>
+          </Link>
+          <div className="flex items-center gap-1">
+            {navItems.map(({ to, label, icon: Icon }) => (
+              <Link key={to} to={to} className={`px-3 py-2 rounded-lg text-sm font-medium ${location.pathname === to ? 'bg-white/10 text-aurora-cyan' : 'text-gray-400 hover:text-white'}`}>
+                <Icon className="w-4 h-4 sm:hidden" />
+                <span className="hidden sm:inline">{label}</span>
+              </Link>
+            ))}
+          </div>
+          <GlobalSearch />
+        </div>
+      </nav>
+      <main className="pt-16 relative z-10"><Outlet /></main>
+      <footer className="relative z-10 border-t border-white/5 mt-20 py-8 px-4 text-center text-sm text-gray-500">
+        © 2026 <span className="text-aurora-cyan">Project Aurora</span> — Archivo Desclasificado
+      </footer>
+    </div>
+  );
+}
