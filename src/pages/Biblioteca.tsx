@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Book, Headphones, Search, Star } from 'lucide-react';
 import { books } from '../data/books';
 import { podcasts } from '../data/podcasts';
-import { Link } from 'react-router-dom';
 
 type Tab = 'todos' | 'libros' | 'podcasts' | 'esenciales';
 

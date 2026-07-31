@@ -1,5 +1,5 @@
 import { DivIcon } from 'leaflet';
-import type { UFOCase } from '../data/cases';;
+import type { UFOCase } from '../../data/cases';
 
 const colors: any = { A: '#06b6d4', B: '#3b82f6', C: '#a855f7' };
 

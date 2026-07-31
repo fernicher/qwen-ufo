@@ -1,4 +1,4 @@
-import { UFOCase } from '../data/cases';
+import type { UFOCase } from '../data/cases';
 
 export interface Witness {
   name: string;

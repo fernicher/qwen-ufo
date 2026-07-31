@@ -1,0 +1,17 @@
+export const searchQueries = [
+  'UFO',
+  'OVNI',
+  'alien',
+  'extraterrestrial',
+  'close encounters',
+  'abduction',
+  'Area 51',
+  'Roswell',
+  'UAP',
+  'unidentified flying object',
+  'alien invasion',
+  'sci-fi classic',
+  'space mystery',
+  'government conspiracy',
+  'documentary UFO',
+];
