@@ -13,7 +13,8 @@ const navItems = [
 export default function Layout() {
   const location = useLocation();
   return (
-    <div className="min-h-screen bg-aurora-black text-white">
+    <div className="min-h-screen bg-aurora-black text-white relative">
+      <div className="starfield" aria-hidden="true" />
       <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 py-4 bg-aurora-black/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2">
@@ -36,8 +37,8 @@ export default function Layout() {
           <GlobalSearch />
         </div>
       </nav>
-      <main className="pt-16"><Outlet /></main>
-      <footer className="border-t border-white/5 mt-20 py-8 px-4 text-center text-sm text-gray-500">
+      <main className="pt-16 relative z-10"><Outlet /></main>
+      <footer className="relative z-10 border-t border-white/5 mt-20 py-8 px-4 text-center text-sm text-gray-500">
         © 2026 <span className="text-aurora-cyan">Project Aurora</span> — Archivo Desclasificado
       </footer>
     </div>

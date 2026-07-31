@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download } from 'lucide-react';
 import { getExpediente } from '../data/expedientes';
 import { investigators } from '../data/investigators';
+import CaseTypeIcon from '../components/CaseTypeIcon';
 
 const credColors: Record<string, string> = {
   A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
@@ -21,6 +22,16 @@ const probColors: Record<string, string> = {
   media: 'text-amber-400 border-amber-400/30 bg-amber-400/10',
   baja: 'text-orange-400 border-orange-400/30 bg-orange-400/10',
   descartada: 'text-gray-500 border-gray-500/30 bg-gray-500/10',
+};
+
+const credHex: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
+
+const typeLabels: Record<string, string> = {
+  avistamiento: 'Avistamiento',
+  aterrizaje: 'Aterrizaje',
+  contacto: 'Contacto',
+  radar: 'Detección por radar',
+  fotografico: 'Registro fotográfico',
 };
 
 export default function ExpedienteDetail() {
@@ -53,8 +64,17 @@ export default function ExpedienteDetail() {
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <span className={`text-xs font-bold px-3 py-1.5 rounded border ${credColors[exp.credibility]}`}><Shield className="w-3 h-3 inline mr-1" /> Evidencia {exp.credibility}</span>
             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{statusLabels[exp.investigationStatus]}</span>
+            <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{typeLabels[exp.type]}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
+          <div className="flex items-start gap-5">
+            <div
+              className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl items-center justify-center border"
+              style={{ borderColor: `${credHex[exp.credibility]}40`, background: `radial-gradient(circle, ${credHex[exp.credibility]}1a 0%, transparent 70%)` }}
+            >
+              <CaseTypeIcon type={exp.type} color={credHex[exp.credibility]} size={44} />
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
+          </div>
           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
             <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-aurora-cyan" />{new Date(exp.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
             <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" />{exp.location}, {exp.country}</span>
