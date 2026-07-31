@@ -365,6 +365,178 @@ export const expedientes: Record<string, Expediente> = {
     ],
     investigationStatus: 'sin resolver',
   }),
+
+  'trelew-1962': buildExpediente('trelew-1962', {
+    fullDescription: 'En septiembre de 1962, personal de la Base Aeronaval Almirante Zar, en Trelew, reportó de forma independiente en distintos turnos de guardia un objeto luminoso no identificado sobre la ciudad. Es considerado el caso fundacional de la ufología argentina por tratarse de testigos uniformados, con instrumentación naval disponible y un expediente militar formal.',
+    witnesses: [
+      { name: 'Personal de guardia de la Base Aeronaval Almirante Zar', role: 'Testigos militares en distintos turnos', credibility: 'alta', testimony: 'Reportaron de forma independiente, en turnos de guardia separados, un objeto luminoso estacionario que luego se desplazó a gran velocidad sobre la base.' },
+    ],
+    documents: [
+      { id: 'trelew-doc-1', title: 'Expediente naval de la Base Almirante Zar', date: '1962-09-15', classification: 'Desclasificado', agency: 'Armada Argentina', pages: 8, summary: 'Registro formal generado por el mando naval a partir de los partes de guardia, incorporado después a la bibliografía histórica de la ufología argentina.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'trelew-hyp-1', title: 'Globo sonda de gran altitud', description: 'La zona patagónica registraba lanzamientos ocasionales de globos meteorológicos de gran altitud que podrían explicar un objeto luminoso estacionario visto desde tierra.', evidence: ['Actividad de globos sonda documentada en la región en esa época'], counterEvidence: ['Los partes de guardia describen un desplazamiento final a alta velocidad, incompatible con un globo'], probability: 'media', source: 'Análisis histórico posterior' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['banchs', 'zerpa'],
+    timeline: [
+      { date: '1962-09-01', event: 'Primer reporte de un objeto luminoso durante un turno de guardia nocturno.' },
+      { date: '1962-09-01', event: 'Un segundo turno confirma de forma independiente el mismo fenómeno.' },
+      { date: '1962-09-15', event: 'El mando naval formaliza el expediente con los partes de guardia recopilados.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Referencia fundacional de la ufología argentina, citado por investigadores como Roberto Banchs y Fabio Zerpa en la bibliografía histórica del país.',
+  }),
+
+  'bariloche-1995': buildExpediente('bariloche-1995', {
+    fullDescription: 'El 31 de julio de 1995, el comandante Jorge Polanco, al mando del vuelo 674 de Aerolíneas Argentinas, reportó una serie de luces que siguieron a su Boeing 727 durante 17 minutos mientras se aproximaba al aeropuerto de Bariloche. El aeropuerto sufrió un corte de energía y fallas de instrumentos durante el episodio. El caso fue incluido en el informe COMETA francés de 1999 y reapareció en mayo de 2026 dentro de una nueva tanda de archivos desclasificados por el gobierno de Estados Unidos.',
+    witnesses: [
+      { name: 'Cmdte. Jorge Polanco', role: 'Piloto al mando del vuelo AA 674', credibility: 'alta', testimony: 'Describió luces que maniobraron junto al avión durante 17 minutos y coincidieron con un corte de energía en el aeropuerto que lo obligó a abortar el aterrizaje.' },
+      { name: 'Personal de la torre de control de Bariloche', role: 'Controladores aéreos en servicio', credibility: 'alta', testimony: 'Confirmaron fallas simultáneas en los instrumentos magnéticos de la torre durante el episodio.' },
+    ],
+    documents: [
+      { id: 'bariloche-doc-1', title: 'Informe COMETA (capítulo Argentina)', date: '1999-01-01', classification: 'Público', agency: 'Institut des Hautes Études de Défense Nationale (Francia)', pages: 4, summary: 'El informe francés sobre OVNIs y defensa incorpora el "Caso Bariloche" como ejemplo de investigación internacional del fenómeno.' },
+      { id: 'bariloche-doc-2', title: 'Archivo desclasificado del Pentágono', date: '2026-05-08', classification: 'Desclasificado', agency: 'Departamento de Defensa de EE.UU.', pages: 3, summary: 'El caso reaparece en una nueva tanda de más de 160 documentos sobre UAP publicados por el gobierno estadounidense.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'bariloche-hyp-1', title: 'Fenómeno eléctrico atmosférico', description: 'Se propuso que una anomalía eléctrica atmosférica pudo afectar simultáneamente los instrumentos del avión y de la torre, generando además el efecto visual reportado.', evidence: ['Corte de energía real y documentado en el aeropuerto'], counterEvidence: ['No explica la persistencia y el comportamiento direccional de las luces durante 17 minutos'], probability: 'media', source: 'Informe COMETA 1999' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1995-07-31', event: 'El vuelo AA 674 reporta luces mientras se aproxima a Bariloche.' },
+      { date: '1995-07-31', event: 'Corte de energía y fallas de instrumentos obligan a un "go-around".' },
+      { date: '1999-01-01', event: 'El caso se incorpora al informe COMETA en Francia.' },
+      { date: '2026-05-08', event: 'Reaparece en la nueva desclasificación de archivos UAP de EE.UU.' },
+    ],
+    investigationStatus: 'sin resolver',
+    officialResponse: 'Nunca hubo una explicación oficial del gobierno argentino; el caso ganó respaldo internacional al ser incorporado a estudios de Francia y, más recientemente, de Estados Unidos.',
+    culturalImpact: 'Es el caso UAP argentino con mayor repercusión internacional, por involucrar a un piloto comercial identificado y documentación de dos países distintos.',
+  }),
+
+  'la-aurora-1977': buildExpediente('la-aurora-1977', {
+    fullDescription: 'En la madrugada del 17 de febrero de 1977, en la Estancia La Aurora, sobre el límite entre Salto y Paysandú, el propietario Ángel María "Toto" Tonna reportó el descenso de un objeto luminoso que provocó daños en alambrados, la muerte de animales y un corte de energía que dejó a oscuras a la ciudad de Salto durante horas. Es el caso de referencia de la ufología uruguaya.',
+    witnesses: [
+      { name: 'Ángel María "Toto" Tonna', role: 'Propietario de la estancia', credibility: 'media', testimony: 'Relató haber visto un objeto luminoso descender sobre el corral, sufrir una quemadura en el brazo y encontrar después animales muertos junto a un ombú partido a la mitad.' },
+    ],
+    documents: [
+      { id: 'aurora-doc-1', title: 'Relevamiento de campo de la Fuerza Aérea Uruguaya', date: '1977-03-01', classification: 'Público', agency: 'Fuerza Aérea Uruguaya', pages: 5, summary: 'Personal de la fuerza aérea relevó el terreno y documentó liebres muertas sin signos de putrefacción junto al hueco dejado por el ombú calcinado.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'aurora-hyp-1', title: 'Descarga eléctrica atmosférica sobre el ombú', description: 'Un rayo pudo partir el ombú y provocar el corte de energía, con el resto de los efectos sumándose después por el impacto mediático del caso.', evidence: ['Los ombúes son frecuentemente alcanzados por rayos en la región pampeana'], counterEvidence: ['No explica la ausencia de olor a putrefacción en los animales hallados ni la quemadura reportada por el propio testigo'], probability: 'media', source: 'Análisis escéptico posterior' },
+      { id: 'aurora-hyp-2', title: 'Aterrizaje de un objeto no identificado', description: 'La combinación de daños materiales, el testimonio sostenido del dueño del campo y el relevamiento oficial de la Fuerza Aérea alimentan la hipótesis de un evento físico real y no identificado.', evidence: ['Investigación de campo formal de la Fuerza Aérea Uruguaya', 'Corte de energía documentado en la ciudad de Salto'], counterEvidence: ['El principal relato proviene de un único testigo directo'], probability: 'media', source: 'Testimonios recopilados por la prensa uruguaya' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['zerpa'],
+    timeline: [
+      { date: '1976-01-01', event: 'Primeros reportes de luces en la estancia, según el propietario.' },
+      { date: '1977-02-17', event: 'Episodio principal: descenso del objeto, daños materiales y corte de energía en Salto.' },
+      { date: '1977-03-01', event: 'La Fuerza Aérea Uruguaya releva el terreno.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Convirtió a la estancia en un punto de peregrinación de ufólogos, periodistas y turistas durante más de una década, y sigue siendo la referencia obligada de la ufología uruguaya.',
+  }),
+
+  'operacao-prato-1977': buildExpediente('operacao-prato-1977', {
+    fullDescription: 'Entre 1977 y 1978, la Fuerza Aérea Brasileña desplegó una operación militar secreta, conocida como Operação Prato, para investigar una ola de avistamientos y presuntos ataques luminosos —el fenómeno "chupa-chupa"— sobre la localidad de Colares, en el estado de Pará.',
+    witnesses: [
+      { name: 'Cap. Uyrangê Hollanda', role: 'Oficial al mando de la Operação Prato', credibility: 'alta', testimony: 'Documentó decenas de avistamientos y, tras retirarse del servicio, declaró públicamente que los objetos no tenían origen convencional; fue hallado muerto poco después, lo que alimentó teorías de encubrimiento nunca confirmadas.' },
+      { name: 'Pobladores de Colares', role: 'Pescadores y agricultores locales', credibility: 'media', testimony: 'Reportaron luces que descendían de noche y provocaban quemaduras en la piel, un fenómeno que la prensa local bautizó "chupa-chupa".' },
+    ],
+    documents: [
+      { id: 'prato-doc-1', title: 'Archivo fotográfico y fílmico de la Operação Prato', date: '1977-10-01', classification: 'Parcialmente desclasificado', agency: 'Força Aérea Brasileira', pages: 40, summary: 'Fotografías y filmaciones en Super-8 tomadas por los militares y la prensa paraense durante la operación, liberadas de forma parcial y gradual desde 2008.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'prato-hyp-1', title: 'Fenómeno bioluminiscente amazónico y pánico colectivo', description: 'Parte de la comunidad científica propone insectos o gases de descomposición de la selva como origen de las luces, amplificado por el miedo colectivo en una zona aislada.', evidence: ['La región amazónica registra fenómenos bioluminiscentes documentados'], counterEvidence: ['No explica las quemaduras reportadas por decenas de testigos ni la escala de la respuesta militar'], probability: 'media', source: 'Análisis científico posterior' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1977-08-01', event: 'Comienzan los reportes masivos de luces y ataques en Colares.' },
+      { date: '1977-10-01', event: 'La Fuerza Aérea Brasileña despliega la Operação Prato bajo el mando de Hollanda.' },
+      { date: '1978-01-01', event: 'Se realizan misiones adicionales de seguimiento durante todo el año.' },
+      { date: '2008-01-01', event: 'Comienza la liberación gradual de parte de la documentación al público.' },
+    ],
+    investigationStatus: 'clasificado',
+    officialResponse: 'La Fuerza Aérea Brasileña nunca publicó conclusiones oficiales completas; buena parte del archivo permanece bajo reserva en el Arquivo Nacional de Brasil.',
+    culturalImpact: 'Es el mayor operativo militar de investigación OVNI de la historia de Sudamérica y fue retratado en documentales y podcasts recientes sobre el fenómeno.',
+  }),
+
+  'cabo-valdes-1977': buildExpediente('cabo-valdes-1977', {
+    fullDescription: 'En la madrugada del 25 de abril de 1977, el cabo del Ejército de Chile Armando Valdés Garrido desapareció durante una patrulla nocturna en Pampa Lluscuma, cerca de Putre, y reapareció horas después a varios kilómetros de distancia sin recordar lo sucedido. Es el caso de presunta abducción más conocido de Chile.',
+    witnesses: [
+      { name: 'Armando Valdés Garrido', role: 'Cabo del Ejército de Chile', credibility: 'media', testimony: 'Relató haber visto una luz intensa acercarse durante la guardia nocturna, y no recordar nada más hasta despertar desorientado, lejos de su posición original.' },
+      { name: 'Compañeros de patrulla', role: 'Personal militar presente esa noche', credibility: 'alta', testimony: 'Confirmaron la desaparición repentina del cabo y la posterior búsqueda organizada por el Ejército hasta su reaparición.' },
+    ],
+    documents: [
+      { id: 'valdes-doc-1', title: 'Parte militar del Ejército de Chile', date: '1977-04-25', classification: 'Desclasificado', agency: 'Ejército de Chile', pages: 6, summary: 'Registro oficial de la desaparición y posterior hallazgo del cabo Valdés, incluyendo el operativo de búsqueda desplegado esa noche.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'valdes-hyp-1', title: 'Desorientación por hipotermia o fatiga', description: 'La altura y las bajas temperaturas de la zona altiplánica podrían haber provocado un cuadro de confusión y desorientación que explicaría el alejamiento y la amnesia posterior.', evidence: ['Condiciones extremas de altura documentadas en la zona esa noche'], counterEvidence: ['La distancia recorrida en el tiempo reportado es difícil de explicar por una caminata desorientada'], probability: 'media', source: 'Análisis médico posterior' },
+      { id: 'valdes-hyp-2', title: 'Abducción', description: 'La combinación de amnesia, la distancia recorrida y el parte militar oficial alimentó la interpretación ufológica de una abducción, la más citada de la historia chilena.', evidence: ['Parte oficial del Ejército confirmando la desaparición', 'Testimonios coincidentes de la patrulla'], counterEvidence: ['No hay evidencia física verificable del encuentro en sí'], probability: 'baja', source: 'Literatura ufológica chilena' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1977-04-25', event: 'El cabo Valdés desaparece durante la guardia nocturna en Pampa Lluscuma.' },
+      { date: '1977-04-25', event: 'El Ejército organiza una búsqueda inmediata en la zona.' },
+      { date: '1977-04-25', event: 'Valdés reaparece desorientado, a varios kilómetros de su posición original.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es el caso de abducción más citado de la ufología chilena y referencia obligada en cualquier repaso del fenómeno en el país.',
+  }),
+
+  'anolaima-1969': buildExpediente('anolaima-1969', {
+    fullDescription: 'En 1969, en una finca de Anolaima, Cundinamarca, el agricultor Arcesio Bermúdez reportó un encuentro cercano con un objeto no identificado; murió poco después en circunstancias que su familia y algunos investigadores asociaron al episodio, aunque nunca se estableció una causa médica concluyente.',
+    witnesses: [
+      { name: 'Arcesio Bermúdez', role: 'Propietario de la finca donde ocurrió el encuentro', credibility: 'media', testimony: 'Según el relato familiar, describió haber tenido un encuentro cercano con un objeto luminoso poco antes de su muerte repentina.' },
+      { name: 'Familiares presentes en la finca', role: 'Testigos indirectos del episodio y su desenlace', credibility: 'baja', testimony: 'Sostuvieron que la salud de Bermúdez, hasta entonces vigorosa, se deterioró de forma abrupta e inexplicable tras el encuentro relatado.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'anolaima-hyp-1', title: 'Causa médica no diagnosticada', description: 'Los propios médicos que atendieron a Bermúdez sugirieron en su momento que una picadura de insecto o una condición preexistente no diagnosticada pudo causar su muerte, sin relación con el encuentro relatado.', evidence: ['Ausencia de una autopsia detallada que confirme una causa distinta'], counterEvidence: ['La familia insiste en la salud vigorosa de Bermúdez previa al episodio'], probability: 'media', source: 'Relato familiar recogido por la prensa colombiana' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1969-01-01', event: 'Arcesio Bermúdez relata el encuentro cercano en su finca.' },
+      { date: '1969-01-15', event: 'Muere días después en circunstancias no esclarecidas.' },
+      { date: '2019-05-27', event: 'El caso se documenta en profundidad en una investigación periodística especial sobre ufología colombiana.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es uno de los casos fundacionales de la ufología colombiana y motivó el estudio de astrónomos locales sobre el fenómeno en el país.',
+  }),
+
+  'campeche-2004': buildExpediente('campeche-2004', {
+    fullDescription: 'El 5 de marzo de 2004, un avión C-26A de la Fuerza Aérea Mexicana, al mando del mayor Magdaleno Castañón Muñoz, detectó once objetos luminosos durante un patrullaje de rutina frente a las costas de Campeche. El radar de a bordo registró varios ecos y la cámara infrarroja FLIR Star Safire II confirmó los blancos térmicos en vuelo paralelo a la aeronave.',
+    witnesses: [
+      { name: 'Mayor Magdaleno Castañón Muñoz', role: 'Piloto al mando del C-26A', credibility: 'alta', testimony: 'Encabezó el patrullaje de rutina durante el cual la tripulación detectó y registró los objetos, con comentarios de sorpresa capturados en el propio video de la cámara infrarroja.' },
+    ],
+    documents: [
+      { id: 'campeche-doc-1', title: 'Video FLIR de la Fuerza Aérea Mexicana', date: '2004-03-05', classification: 'Confirmado oficialmente', agency: 'Secretaría de la Defensa Nacional (SEDENA)', pages: 1, summary: 'Grabación infrarroja del avistamiento, cuya autenticidad fue confirmada por la SEDENA en respuestas a solicitudes de información pública en 2016 y 2021.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'campeche-hyp-1', title: 'Centellas o fenómeno meteorológico', description: 'La SEDENA sugirió en su momento que los objetos podrían corresponder a centellas, un fenómeno atmosférico de burbujas de gas ionizado.', evidence: ['Las centellas son un fenómeno atmosférico reconocido científicamente'], counterEvidence: ['El patrón de vuelo paralelo y sostenido detectado por radar e infrarrojo no es típico de una centella'], probability: 'media', source: 'Declaraciones de la SEDENA (2004)' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['maussan'],
+    timeline: [
+      { date: '2004-03-05', event: 'El C-26A detecta los objetos en radar y cámara infrarroja frente a Campeche.' },
+      { date: '2004-05-11', event: 'El video se presenta públicamente a través del periodista Jaime Maussan.' },
+      { date: '2016-08-08', event: 'La SEDENA confirma la autenticidad del caso ante una solicitud de información pública.' },
+      { date: '2025-07-09', event: 'La presidencia de México reconoce el caso como el único avistamiento oficialmente admitido por las autoridades del país.' },
+    ],
+    investigationStatus: 'abierto',
+    officialResponse: 'Es, hasta la fecha, el único avistamiento que las autoridades mexicanas han reconocido oficialmente, aunque el material original nunca fue entregado a la comunidad científica sino al periodista Jaime Maussan.',
+    culturalImpact: 'Es el caso UAP más citado de México y un antecedente directo del debate sobre transparencia gubernamental en torno al fenómeno OVNI en el país.',
+  }),
 };
 
 export const getExpediente = (id: string): Expediente | undefined => expedientes[id];
