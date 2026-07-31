@@ -1,0 +1,7 @@
+export const books = [
+  { id: 'ufo-experience', title: 'The UFO Experience', authors: ['J. Allen Hynek'], year: 1972, language: 'en', description: 'La obra fundamental que cambió la ufología.', category: 'clásico', rating: 9.5, essential: true, relatedCases: ['roswell-1947'] },
+  { id: 'passport-magonia', title: 'Passport to Magonia', authors: ['Jacques Vallée'], year: 1969, language: 'en', description: 'Conecta OVNIs con leyendas folklóricas.', category: 'investigacion', rating: 9.0, essential: true, relatedCases: [] },
+  { id: 'dimensions', title: 'Dimensions', authors: ['Jacques Vallée'], year: 1988, language: 'en', description: 'Casos documentados de contacto.', category: 'investigacion', rating: 8.5, essential: true, relatedCases: [] },
+  { id: 'ufo-generals', title: 'UFOs: Generals, Pilots...', authors: ['Leslie Kean'], year: 2010, language: 'en', description: 'Testimonios de militares y funcionarios.', category: 'investigacion', rating: 9.0, essential: true, relatedCases: ['tic-tac-2004'] },
+  { id: 'ovni-peligro', title: 'OVNI: El peligro nuclear', authors: ['Antonio Ribas'], year: 1979, language: 'es', description: 'OVNIs en instalaciones nucleares.', category: 'investigacion', rating: 8.5, essential: true, relatedCases: [] },
+];

@@ -1,0 +1,6 @@
+export const podcasts = [
+  { id: 'phenomena', title: 'Phenomena with Annie Jacobsen', host: 'Annie Jacobsen', description: 'Explora los límites de la ciencia.', language: 'en', frequency: 'semanal', episodes: 150, essential: true, rating: 9.0, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com' }] },
+  { id: 'ufology', title: 'Ufology', host: 'Aaron Gilmour', description: 'Casos históricos con rigor periodístico.', language: 'en', frequency: 'semanal', episodes: 300, essential: true, rating: 9.0, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com' }] },
+  { id: 'ovni-24h', title: 'OVNI 24h', host: 'Carlos Jiménez', description: 'El podcast de referencia en español.', language: 'es', frequency: 'semanal', episodes: 450, essential: true, rating: 8.5, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com' }, { name: 'iVoox', url: 'https://www.ivoox.com' }] },
+  { id: 'mysterium', title: 'Mysterium', host: 'Miguel Blanco', description: 'Misterio y fenómeno OVNI.', language: 'es', frequency: 'semanal', episodes: 380, essential: true, rating: 8.0, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com' }] },
+];

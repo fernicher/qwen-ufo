@@ -1,0 +1,7 @@
+export const investigators = [
+  { id: 'hynek', name: 'J. Allen Hynek', country: 'Estados Unidos', specialty: 'Clasificación de encuentros', bio: 'Astrónomo y consultor del Proyecto Blue Book. Creó la escala de Encuentros Cercanos.', works: ['The UFO Experience (1972)'], credibility: 'histórico' },
+  { id: 'vallee', name: 'Jacques Vallée', country: 'Francia / EE.UU.', specialty: 'Teoría interdimensional', bio: 'Informático y astrofísico. Inspiración para Lacombe en "Encuentros Cercanos".', works: ['Passport to Magonia (1969)'], credibility: 'referente' },
+  { id: 'ribas', name: 'Antonio Ribas', country: 'España', specialty: 'Ufología española', bio: 'Pionero de la ufología en España.', works: ['OVNI: El peligro nuclear (1979)'], credibility: 'histórico' },
+  { id: 'kean', name: 'Leslie Kean', country: 'Estados Unidos', specialty: 'Periodismo UAP', bio: 'Destapó el programa AATIP del Pentágono en The New York Times.', works: ['UFOs: Generals, Pilots... (2010)'], credibility: 'activo' },
+  { id: 'clemente', name: 'Carlos Clemente', country: 'España', specialty: 'Archivo histórico', bio: 'Especializado en expedientes del Ejército del Aire español.', works: ['Expedientes OVNI del Ejército del Aire'], credibility: 'activo' },
+];
