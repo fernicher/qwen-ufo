@@ -5,6 +5,7 @@ const cred: any = {
   referente: { label: 'Referente Mundial', color: 'text-cyan-400 border-cyan-400/40' },
   activo: { label: 'Investigador Activo', color: 'text-green-400 border-green-400/40' },
   histórico: { label: 'Figura Histórica', color: 'text-amber-400 border-amber-400/40' },
+  controvertido: { label: 'Controvertido', color: 'text-orange-400 border-orange-400/40' },
 };
 
 export default function InvestigatorsPreview() {
@@ -17,7 +18,7 @@ export default function InvestigatorsPreview() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {investigators.map((inv) => {
-            const c = cred[inv.credibility];
+            const c = cred[inv.credibility] || { label: inv.credibility, color: 'text-gray-400 border-gray-400/40' };
             return (
               <div key={inv.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-aurora-cyan/30 transition-all">
                 <div className="flex items-start gap-4 mb-4">

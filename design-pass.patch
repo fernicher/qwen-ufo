@@ -1,0 +1,427 @@
+diff --git a/src/components/CaseTypeIcon.tsx b/src/components/CaseTypeIcon.tsx
+new file mode 100644
+index 0000000..8540851
+--- /dev/null
++++ b/src/components/CaseTypeIcon.tsx
+@@ -0,0 +1,78 @@
++import type { CaseType } from '../data/cases';
++
++interface CaseTypeIconProps {
++  type: CaseType;
++  color: string;
++  size?: number;
++  className?: string;
++}
++
++/**
++ * Ilustración vectorial original por tipo de caso. No son fotos (evitamos usar
++ * imágenes reales de los incidentes, que suelen ser de dudosa procedencia o
++ * directamente de archivo periodístico con derechos), pero le dan a cada
++ * expediente una identidad visual reconocible de un vistazo.
++ */
++export default function CaseTypeIcon({ type, color, size = 64, className = '' }: CaseTypeIconProps) {
++  const common = { width: size, height: size, viewBox: '0 0 64 64', className, xmlns: 'http://www.w3.org/2000/svg' };
++
++  switch (type) {
++    case 'avistamiento':
++      return (
++        <svg {...common}>
++          <ellipse cx="32" cy="34" rx="22" ry="7" fill="none" stroke={color} strokeWidth="2" />
++          <path d="M18 34 Q32 16 46 34" fill="none" stroke={color} strokeWidth="2" />
++          <circle cx="20" cy="41" r="1.6" fill={color} />
++          <circle cx="32" cy="43" r="1.6" fill={color} />
++          <circle cx="44" cy="41" r="1.6" fill={color} />
++          <circle cx="32" cy="24" r="2" fill={color} opacity="0.6" />
++        </svg>
++      );
++    case 'aterrizaje':
++      return (
++        <svg {...common}>
++          <line x1="8" y1="48" x2="56" y2="48" stroke={color} strokeWidth="1.5" opacity="0.4" />
++          <ellipse cx="32" cy="30" rx="18" ry="6" fill="none" stroke={color} strokeWidth="2" />
++          <path d="M20 30 Q32 15 44 30" fill="none" stroke={color} strokeWidth="2" />
++          <line x1="20" y1="34" x2="14" y2="46" stroke={color} strokeWidth="1.5" />
++          <line x1="44" y1="34" x2="50" y2="46" stroke={color} strokeWidth="1.5" />
++          <ellipse cx="32" cy="48" rx="14" ry="2.5" fill="none" stroke={color} strokeWidth="1.2" opacity="0.5" />
++          <ellipse cx="32" cy="48" rx="20" ry="3.5" fill="none" stroke={color} strokeWidth="1" opacity="0.25" />
++        </svg>
++      );
++    case 'contacto':
++      return (
++        <svg {...common}>
++          <path d="M24 14 L40 14 L48 40 L16 40 Z" fill={color} opacity="0.12" />
++          <path d="M24 14 L40 14 L48 40 L16 40 Z" fill="none" stroke={color} strokeWidth="1.5" opacity="0.6" />
++          <circle cx="32" cy="46" r="5" fill="none" stroke={color} strokeWidth="2" />
++          <path d="M32 51 L32 58 M27 56 L37 56" stroke={color} strokeWidth="2" strokeLinecap="round" />
++          <path d="M23 44 L41 44" stroke={color} strokeWidth="1.5" opacity="0.5" />
++        </svg>
++      );
++    case 'radar':
++      return (
++        <svg {...common}>
++          <circle cx="32" cy="32" r="20" fill="none" stroke={color} strokeWidth="1.2" opacity="0.35" />
++          <circle cx="32" cy="32" r="13" fill="none" stroke={color} strokeWidth="1.2" opacity="0.5" />
++          <circle cx="32" cy="32" r="6" fill="none" stroke={color} strokeWidth="1.2" opacity="0.7" />
++          <line x1="32" y1="12" x2="32" y2="52" stroke={color} strokeWidth="1" opacity="0.25" />
++          <line x1="12" y1="32" x2="52" y2="32" stroke={color} strokeWidth="1" opacity="0.25" />
++          <path d="M32 32 L32 12 A20 20 0 0 1 48 20 Z" fill={color} opacity="0.18" />
++          <circle cx="41" cy="19" r="2.2" fill={color} />
++        </svg>
++      );
++    case 'fotografico':
++      return (
++        <svg {...common}>
++          <rect x="12" y="22" width="40" height="26" rx="3" fill="none" stroke={color} strokeWidth="2" />
++          <rect x="24" y="16" width="16" height="7" rx="2" fill="none" stroke={color} strokeWidth="2" />
++          <circle cx="32" cy="35" r="9" fill="none" stroke={color} strokeWidth="2" />
++          <circle cx="32" cy="35" r="4" fill={color} opacity="0.5" />
++          <circle cx="45" cy="27" r="1.4" fill={color} />
++        </svg>
++      );
++    default:
++      return null;
++  }
++}
+diff --git a/src/components/Layout.tsx b/src/components/Layout.tsx
+index f43cad3..f5f888f 100644
+--- a/src/components/Layout.tsx
++++ b/src/components/Layout.tsx
+@@ -13,7 +13,8 @@ const navItems = [
+ export default function Layout() {
+   const location = useLocation();
+   return (
+-    <div className="min-h-screen bg-aurora-black text-white">
++    <div className="min-h-screen bg-aurora-black text-white relative">
++      <div className="starfield" aria-hidden="true" />
+       <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 py-4 bg-aurora-black/80 backdrop-blur-xl border-b border-white/5">
+         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+           <Link to="/" className="flex items-center gap-2">
+@@ -36,8 +37,8 @@ export default function Layout() {
+           <GlobalSearch />
+         </div>
+       </nav>
+-      <main className="pt-16"><Outlet /></main>
+-      <footer className="border-t border-white/5 mt-20 py-8 px-4 text-center text-sm text-gray-500">
++      <main className="pt-16 relative z-10"><Outlet /></main>
++      <footer className="relative z-10 border-t border-white/5 mt-20 py-8 px-4 text-center text-sm text-gray-500">
+         © 2026 <span className="text-aurora-cyan">Project Aurora</span> — Archivo Desclasificado
+       </footer>
+     </div>
+diff --git a/src/data/books.ts b/src/data/books.ts
+index 248b7b8..1f79ec4 100644
+--- a/src/data/books.ts
++++ b/src/data/books.ts
+@@ -1,7 +1,7 @@
+ export const books = [
+-  { id: 'ufo-experience', title: 'The UFO Experience', authors: ['J. Allen Hynek'], year: 1972, language: 'en', description: 'La obra fundamental que cambió la ufología.', category: 'clásico', rating: 9.5, essential: true, relatedCases: ['roswell-1947'] },
+-  { id: 'passport-magonia', title: 'Passport to Magonia', authors: ['Jacques Vallée'], year: 1969, language: 'en', description: 'Conecta OVNIs con leyendas folklóricas.', category: 'investigacion', rating: 9.0, essential: true, relatedCases: [] },
+-  { id: 'dimensions', title: 'Dimensions', authors: ['Jacques Vallée'], year: 1988, language: 'en', description: 'Casos documentados de contacto.', category: 'investigacion', rating: 8.5, essential: true, relatedCases: [] },
+-  { id: 'ufo-generals', title: 'UFOs: Generals, Pilots...', authors: ['Leslie Kean'], year: 2010, language: 'en', description: 'Testimonios de militares y funcionarios.', category: 'investigacion', rating: 9.0, essential: true, relatedCases: ['tic-tac-2004'] },
+-  { id: 'ovni-peligro', title: 'OVNI: El peligro nuclear', authors: ['Antonio Ribas'], year: 1979, language: 'es', description: 'OVNIs en instalaciones nucleares.', category: 'investigacion', rating: 8.5, essential: true, relatedCases: [] },
+-];
+\ No newline at end of file
++  { id: 'ufo-experience', title: 'The UFO Experience', authors: ['J. Allen Hynek'], year: 1972, language: 'en', description: 'La obra fundamental que cambió la ufología.', category: 'clásico', rating: 9.5, essential: true, relatedCases: ['roswell-1947'], url: 'https://www.google.com/search?tbm=bks&q=The%20UFO%20Experience%20J.%20Allen%20Hynek' },
++  { id: 'passport-magonia', title: 'Passport to Magonia', authors: ['Jacques Vallée'], year: 1969, language: 'en', description: 'Conecta OVNIs con leyendas folklóricas.', category: 'investigacion', rating: 9.0, essential: true, relatedCases: [], url: 'https://www.google.com/search?tbm=bks&q=Passport%20to%20Magonia%20Jacques%20Vallee' },
++  { id: 'dimensions', title: 'Dimensions', authors: ['Jacques Vallée'], year: 1988, language: 'en', description: 'Casos documentados de contacto.', category: 'investigacion', rating: 8.5, essential: true, relatedCases: [], url: 'https://www.google.com/search?tbm=bks&q=Dimensions%20Jacques%20Vallee' },
++  { id: 'ufo-generals', title: 'UFOs: Generals, Pilots...', authors: ['Leslie Kean'], year: 2010, language: 'en', description: 'Testimonios de militares y funcionarios.', category: 'investigacion', rating: 9.0, essential: true, relatedCases: ['tic-tac-2004'], url: 'https://www.google.com/search?tbm=bks&q=UFOs%20Generals%20Pilots%20and%20Government%20Officials%20Go%20on%20the%20Record%20Leslie%20Kean' },
++  { id: 'ovni-peligro', title: 'OVNI: El peligro nuclear', authors: ['Antonio Ribas'], year: 1979, language: 'es', description: 'OVNIs en instalaciones nucleares.', category: 'investigacion', rating: 8.5, essential: true, relatedCases: [], url: 'https://www.google.com/search?tbm=bks&q=OVNI%20El%20peligro%20nuclear%20Antonio%20Ribas' },
++];
+diff --git a/src/data/podcasts.ts b/src/data/podcasts.ts
+index d93c134..fe9c642 100644
+--- a/src/data/podcasts.ts
++++ b/src/data/podcasts.ts
+@@ -1,6 +1,6 @@
+ export const podcasts = [
+-  { id: 'phenomena', title: 'Phenomena with Annie Jacobsen', host: 'Annie Jacobsen', description: 'Explora los límites de la ciencia.', language: 'en', frequency: 'semanal', episodes: 150, essential: true, rating: 9.0, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com' }] },
+-  { id: 'ufology', title: 'Ufology', host: 'Aaron Gilmour', description: 'Casos históricos con rigor periodístico.', language: 'en', frequency: 'semanal', episodes: 300, essential: true, rating: 9.0, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com' }] },
+-  { id: 'ovni-24h', title: 'OVNI 24h', host: 'Carlos Jiménez', description: 'El podcast de referencia en español.', language: 'es', frequency: 'semanal', episodes: 450, essential: true, rating: 8.5, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com' }, { name: 'iVoox', url: 'https://www.ivoox.com' }] },
+-  { id: 'mysterium', title: 'Mysterium', host: 'Miguel Blanco', description: 'Misterio y fenómeno OVNI.', language: 'es', frequency: 'semanal', episodes: 380, essential: true, rating: 8.0, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com' }] },
+-];
+\ No newline at end of file
++  { id: 'somewhere-skies', title: 'Somewhere in the Skies', host: 'Ryan Sprague', description: 'Podcast semanal de referencia en inglés sobre UFOs y fenómenos anómalos.', language: 'en', frequency: 'semanal', episodes: 690, essential: true, rating: 9.0, platforms: [{ name: 'Apple Podcasts', url: 'https://podcasts.apple.com/us/podcast/somewhere-in-the-skies/id1227858637' }, { name: 'Sitio oficial', url: 'https://www.somewhereintheskies.com' }] },
++  { id: 'podcast-ufo', title: 'Podcast UFO', host: 'Martin Willis', description: 'Programa semanal en vivo con testigos, investigadores y periodistas del fenómeno UAP.', language: 'en', frequency: 'semanal', episodes: 700, essential: true, rating: 8.5, platforms: [{ name: 'Sitio oficial', url: 'https://podcastufo.com' }] },
++  { id: 'espacio-en-blanco', title: 'Espacio en Blanco', host: 'Miguel Blanco', description: 'El programa de misterio más longevo de la radio española, en Radio Nacional de España desde 1983.', language: 'es', frequency: 'semanal', episodes: 1900, essential: true, rating: 9.0, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com/show/0PJhqSiBSAql7DWXlyROgW' }, { name: 'Apple Podcasts', url: 'https://podcasts.apple.com/es/podcast/espacio-en-blanco/id292411579' }] },
++  { id: 'tercer-milenio', title: 'Tercer Milenio 360 Internacional', host: 'Jaime Maussan', description: 'Canal oficial de Jaime Maussan con casos y noticias diarias del fenómeno OVNI.', language: 'es', frequency: 'diaria', episodes: 900, essential: false, rating: 7.5, platforms: [{ name: 'Spotify', url: 'https://open.spotify.com/show/2ahaTXt7RQrcVlNzRoUkc2' }] },
++];
+diff --git a/src/index.css b/src/index.css
+index 1662687..d034df6 100644
+--- a/src/index.css
++++ b/src/index.css
+@@ -3,6 +3,26 @@
+ @tailwind utilities;
+ 
+ body { background: #0a0a0c; color: white; font-family: 'Inter', sans-serif; }
++.starfield {
++  position: fixed;
++  inset: 0;
++  z-index: 0;
++  pointer-events: none;
++  background-image:
++    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.55), transparent),
++    radial-gradient(1px 1px at 35% 65%, rgba(255,255,255,0.4), transparent),
++    radial-gradient(1.5px 1.5px at 55% 20%, rgba(34,211,238,0.55), transparent),
++    radial-gradient(1px 1px at 75% 75%, rgba(255,255,255,0.35), transparent),
++    radial-gradient(1.5px 1.5px at 90% 40%, rgba(34,211,238,0.4), transparent),
++    radial-gradient(1px 1px at 20% 90%, rgba(255,255,255,0.3), transparent),
++    radial-gradient(1.5px 1.5px at 45% 45%, rgba(255,255,255,0.4), transparent),
++    radial-gradient(1px 1px at 65% 10%, rgba(255,255,255,0.3), transparent),
++    radial-gradient(1.5px 1.5px at 5% 55%, rgba(34,211,238,0.35), transparent),
++    radial-gradient(1px 1px at 95% 85%, rgba(255,255,255,0.35), transparent);
++  background-repeat: repeat;
++  background-size: 480px 480px;
++  opacity: 0.7;
++}
+ .leaflet-container { background: #0a0a0c !important; }
+ .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+ .leaflet-popup-content { margin: 0 !important; width: auto !important; }
+diff --git a/src/pages/Biblioteca.tsx b/src/pages/Biblioteca.tsx
+index b43e362..c7c9ce2 100644
+--- a/src/pages/Biblioteca.tsx
++++ b/src/pages/Biblioteca.tsx
+@@ -1,5 +1,5 @@
+ import { useState } from 'react';
+-import { Book, Headphones, Search, Star } from 'lucide-react';
++import { Book, Headphones, Search, Star, ExternalLink } from 'lucide-react';
+ import { books } from '../data/books';
+ import { podcasts } from '../data/podcasts';
+ 
+@@ -16,8 +16,8 @@ export default function Biblioteca() {
+     <div className="min-h-screen px-4 py-12">
+       <div className="max-w-7xl mx-auto">
+         <div className="text-center mb-12">
+-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Biblioteca de Conocimiento</span>
+-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Libros y <span className="text-aurora-cyan">Podcasts</span></h1>
++          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-amber-400 uppercase border border-amber-400/30 rounded-full bg-amber-400/5">Biblioteca de Conocimiento</span>
++          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Libros y <span className="text-amber-400">Podcasts</span></h1>
+           <p className="text-gray-400">La colección curada sobre el fenómeno OVNI/UAP</p>
+         </div>
+         <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+@@ -29,7 +29,7 @@ export default function Biblioteca() {
+           ] as const).map((t) => {
+             const Icon = t.icon;
+             return (
+-              <button key={t.id} onClick={() => setTab(t.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${tab === t.id ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}>
++              <button key={t.id} onClick={() => setTab(t.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${tab === t.id ? 'bg-amber-400 text-aurora-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}>
+                 <Icon className="w-4 h-4" /> {t.label}
+               </button>
+             );
+@@ -37,23 +37,30 @@ export default function Biblioteca() {
+         </div>
+         <div className="relative max-w-2xl mx-auto mb-10">
+           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+-          <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-aurora-cyan/50" />
++          <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-amber-400/50" />
+         </div>
+         <div className="space-y-12">
+           {filteredBooks.length > 0 && (
+             <section>
+-              <h2 className="text-2xl font-display font-bold mb-6 flex items-center gap-2"><Book className="w-6 h-6 text-aurora-cyan" /> Libros</h2>
++              <h2 className="text-2xl font-display font-bold mb-6 flex items-center gap-2"><Book className="w-6 h-6 text-amber-400" /> Libros</h2>
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 {filteredBooks.map((book) => (
+-                  <div key={book.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-aurora-cyan/30 transition-all">
++                  <div key={book.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all flex flex-col">
+                     <div className="flex items-start justify-between gap-2 mb-2">
+-                      <h3 className="font-display font-bold text-white group-hover:text-aurora-cyan">{book.title}</h3>
++                      <h3 className="font-display font-bold text-white group-hover:text-amber-400">{book.title}</h3>
+                       {book.essential && <Star className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />}
+                     </div>
+                     <p className="text-xs text-gray-500 mb-2">{book.authors.join(', ')} • {book.year}</p>
+-                    {book.rating && <div className="flex items-center gap-1 mb-3"><Star className="w-3 h-3 text-aurora-cyan fill-aurora-cyan" /><span className="text-xs font-semibold">{book.rating}/10</span></div>}
+-                    <p className="text-sm text-gray-300 line-clamp-3">{book.description}</p>
+-                    <span className="text-[10px] px-2 py-1 rounded bg-white/5 text-gray-400 uppercase mt-3 inline-block">{book.category}</span>
++                    {book.rating && <div className="flex items-center gap-1 mb-3"><Star className="w-3 h-3 text-amber-400 fill-amber-400" /><span className="text-xs font-semibold">{book.rating}/10</span></div>}
++                    <p className="text-sm text-gray-300 line-clamp-3 flex-1">{book.description}</p>
++                    <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between gap-2">
++                      <span className="text-[10px] px-2 py-1 rounded bg-white/5 text-gray-400 uppercase">{book.category}</span>
++                      {book.url && (
++                        <a href={book.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium text-amber-400 hover:text-amber-300">
++                          Buscar libro <ExternalLink className="w-3 h-3" />
++                        </a>
++                      )}
++                    </div>
+                   </div>
+                 ))}
+               </div>
+@@ -61,21 +68,30 @@ export default function Biblioteca() {
+           )}
+           {filteredPodcasts.length > 0 && (
+             <section>
+-              <h2 className="text-2xl font-display font-bold mb-6 flex items-center gap-2"><Headphones className="w-6 h-6 text-aurora-cyan" /> Podcasts</h2>
++              <h2 className="text-2xl font-display font-bold mb-6 flex items-center gap-2"><Headphones className="w-6 h-6 text-amber-400" /> Podcasts</h2>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 {filteredPodcasts.map((p) => (
+-                  <div key={p.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-aurora-cyan/30 transition-all">
++                  <div key={p.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all">
+                     <div className="flex items-start justify-between gap-2 mb-2">
+-                      <h3 className="font-display font-bold text-white group-hover:text-aurora-cyan">{p.title}</h3>
++                      <h3 className="font-display font-bold text-white group-hover:text-amber-400">{p.title}</h3>
+                       {p.essential && <Star className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />}
+                     </div>
+                     <p className="text-xs text-gray-500 mb-2">{p.host}</p>
+-                    {p.rating && <div className="flex items-center gap-1 mb-3"><Star className="w-3 h-3 text-aurora-cyan fill-aurora-cyan" /><span className="text-xs font-semibold">{p.rating}/10</span></div>}
++                    {p.rating && <div className="flex items-center gap-1 mb-3"><Star className="w-3 h-3 text-amber-400 fill-amber-400" /><span className="text-xs font-semibold">{p.rating}/10</span></div>}
+                     <p className="text-sm text-gray-300 line-clamp-3 mb-3">{p.description}</p>
+-                    <div className="flex items-center gap-2 text-xs text-gray-400">
++                    <div className="flex items-center gap-2 text-xs text-gray-400 mb-4">
+                       <span>{p.frequency}</span>
+                       {p.episodes && <span>• {p.episodes} episodios</span>}
+                     </div>
++                    {p.platforms && p.platforms.length > 0 && (
++                      <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
++                        {p.platforms.map((pl) => (
++                          <a key={pl.name} href={pl.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 hover:bg-amber-400/20">
++                            {pl.name} <ExternalLink className="w-3 h-3" />
++                          </a>
++                        ))}
++                      </div>
++                    )}
+                   </div>
+                 ))}
+               </div>
+@@ -85,4 +101,4 @@ export default function Biblioteca() {
+       </div>
+     </div>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/pages/ExpedienteDetail.tsx b/src/pages/ExpedienteDetail.tsx
+index 506f930..87ba370 100644
+--- a/src/pages/ExpedienteDetail.tsx
++++ b/src/pages/ExpedienteDetail.tsx
+@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
+ import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download } from 'lucide-react';
+ import { getExpediente } from '../data/expedientes';
+ import { investigators } from '../data/investigators';
++import CaseTypeIcon from '../components/CaseTypeIcon';
+ 
+ const credColors: Record<string, string> = {
+   A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
+@@ -23,6 +24,16 @@ const probColors: Record<string, string> = {
+   descartada: 'text-gray-500 border-gray-500/30 bg-gray-500/10',
+ };
+ 
++const credHex: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
++
++const typeLabels: Record<string, string> = {
++  avistamiento: 'Avistamiento',
++  aterrizaje: 'Aterrizaje',
++  contacto: 'Contacto',
++  radar: 'Detección por radar',
++  fotografico: 'Registro fotográfico',
++};
++
+ export default function ExpedienteDetail() {
+   const { id } = useParams<{ id: string }>();
+   const exp = id ? getExpediente(id) : undefined;
+@@ -53,8 +64,17 @@ export default function ExpedienteDetail() {
+           <div className="flex flex-wrap items-center gap-3 mb-6">
+             <span className={`text-xs font-bold px-3 py-1.5 rounded border ${credColors[exp.credibility]}`}><Shield className="w-3 h-3 inline mr-1" /> Evidencia {exp.credibility}</span>
+             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{statusLabels[exp.investigationStatus]}</span>
++            <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{typeLabels[exp.type]}</span>
++          </div>
++          <div className="flex items-start gap-5">
++            <div
++              className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl items-center justify-center border"
++              style={{ borderColor: `${credHex[exp.credibility]}40`, background: `radial-gradient(circle, ${credHex[exp.credibility]}1a 0%, transparent 70%)` }}
++            >
++              <CaseTypeIcon type={exp.type} color={credHex[exp.credibility]} size={44} />
++            </div>
++            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
+           </div>
+-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
+           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
+             <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-aurora-cyan" />{new Date(exp.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+             <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" />{exp.location}, {exp.country}</span>
+diff --git a/src/pages/Expedientes.tsx b/src/pages/Expedientes.tsx
+index 88b5ca0..f275e2f 100644
+--- a/src/pages/Expedientes.tsx
++++ b/src/pages/Expedientes.tsx
+@@ -1,12 +1,22 @@
+ import { useState } from 'react';
+ import { Link } from 'react-router-dom';
+-import { FileText, MapPin, Calendar, Shield, Search } from 'lucide-react';
++import { MapPin, Calendar, Shield, Search } from 'lucide-react';
+ import { ufoCases } from '../data/cases';
++import CaseTypeIcon from '../components/CaseTypeIcon';
++
++const typeLabels: Record<string, string> = {
++  avistamiento: 'Avistamiento',
++  aterrizaje: 'Aterrizaje',
++  contacto: 'Contacto',
++  radar: 'Detección por radar',
++  fotografico: 'Registro fotográfico',
++};
+ 
+ export default function Expedientes() {
+   const [query, setQuery] = useState('');
+   const filtered = ufoCases.filter(c => c.title.toLowerCase().includes(query.toLowerCase()) || c.country.toLowerCase().includes(query.toLowerCase()));
+   const credColors: any = { A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10', B: 'text-blue-400 border-blue-400/40 bg-blue-400/10', C: 'text-purple-400 border-purple-400/40 bg-purple-400/10' };
++  const credHex: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
+ 
+   return (
+     <div className="min-h-screen px-4 py-12">
+@@ -21,29 +31,41 @@ export default function Expedientes() {
+           <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-aurora-cyan/50" />
+         </div>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+-          {filtered.map((c) => (
+-            <Link key={c.id} to={`/expedientes/${c.id}`} className="group block bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-aurora-cyan/30 transition-all">
+-              <div className="relative h-40 bg-gradient-to-br from-aurora-deepBlue/40 to-aurora-charcoal">
+-                <div className="absolute top-4 right-4">
+-                  <span className={`text-xs font-bold px-2 py-1 rounded border ${credColors[c.credibility]}`}><Shield className="w-3 h-3 inline mr-1" />{c.credibility}</span>
+-                </div>
+-                <div className="absolute bottom-4 left-4">
+-                  <div className="w-12 h-12 rounded-xl bg-aurora-cyan/10 border border-aurora-cyan/20 flex items-center justify-center"><FileText className="w-6 h-6 text-aurora-cyan" /></div>
+-                </div>
+-              </div>
+-              <div className="p-6">
+-                <h3 className="font-display font-bold text-xl text-white mb-2 group-hover:text-aurora-cyan">{c.title}</h3>
+-                <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+-                  <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{c.date.split('-')[0]}</span>
+-                  <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{c.country}</span>
++          {filtered.map((c) => {
++            const hex = credHex[c.credibility];
++            return (
++              <Link key={c.id} to={`/expedientes/${c.id}`} className="group block bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-aurora-cyan/30 transition-all">
++                <div
++                  className="relative h-40 flex items-center justify-center overflow-hidden"
++                  style={{
++                    background: `radial-gradient(circle at 50% 40%, ${hex}22 0%, transparent 60%), linear-gradient(135deg, rgba(15,23,42,0.6), rgba(18,18,22,0.9))`,
++                  }}
++                >
++                  <svg className="absolute inset-0 w-full h-full opacity-25" aria-hidden="true">
++                    <circle cx="50%" cy="50%" r="30" fill="none" stroke={hex} strokeWidth="1" opacity="0.4" />
++                    <circle cx="50%" cy="50%" r="55" fill="none" stroke={hex} strokeWidth="1" opacity="0.25" />
++                    <circle cx="50%" cy="50%" r="80" fill="none" stroke={hex} strokeWidth="1" opacity="0.12" />
++                  </svg>
++                  <div className="absolute top-4 right-4">
++                    <span className={`text-xs font-bold px-2 py-1 rounded border ${credColors[c.credibility]}`}><Shield className="w-3 h-3 inline mr-1" />{c.credibility}</span>
++                  </div>
++                  <CaseTypeIcon type={c.type} color={hex} size={72} className="relative drop-shadow-[0_0_12px_rgba(34,211,238,0.25)] group-hover:scale-110 transition-transform duration-300" />
++                  <span className="absolute bottom-3 left-4 text-[10px] uppercase tracking-wider text-gray-400">{typeLabels[c.type]}</span>
+                 </div>
+-                <p className="text-sm text-gray-300 line-clamp-3">{c.description}</p>
+-                <div className="mt-4 pt-4 border-t border-white/5 flex flex-wrap gap-1.5">
+-                  {c.tags.slice(0, 3).map(t => <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-gray-400">{t}</span>)}
++                <div className="p-6">
++                  <h3 className="font-display font-bold text-xl text-white mb-2 group-hover:text-aurora-cyan">{c.title}</h3>
++                  <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
++                    <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{c.date.split('-')[0]}</span>
++                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{c.country}</span>
++                  </div>
++                  <p className="text-sm text-gray-300 line-clamp-3">{c.description}</p>
++                  <div className="mt-4 pt-4 border-t border-white/5 flex flex-wrap gap-1.5">
++                    {c.tags.slice(0, 3).map(t => <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-gray-400">{t}</span>)}
++                  </div>
+                 </div>
+-              </div>
+-            </Link>
+-          ))}
++              </Link>
++            );
++          })}
+         </div>
+       </div>
+     </div>
