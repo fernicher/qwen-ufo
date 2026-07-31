@@ -1,13 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Book, Headphones, Search, Star, ExternalLink } from 'lucide-react';
 import { books } from '../data/books';
 import { podcasts } from '../data/podcasts';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 type Tab = 'todos' | 'libros' | 'podcasts' | 'esenciales';
 
 export default function Biblioteca() {
+  useDocumentTitle('Biblioteca');
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState<Tab>('todos');
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(searchParams.get('q') || '');
+
+  useEffect(() => {
+    setQuery(searchParams.get('q') || '');
+  }, [searchParams]);
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+    if (value) setSearchParams({ q: value }); else setSearchParams({});
+  };
 
   const filteredBooks = books.filter(b => b.title.toLowerCase().includes(query.toLowerCase()) && (tab === 'podcasts' ? false : tab === 'esenciales' ? b.essential : true));
   const filteredPodcasts = podcasts.filter(p => p.title.toLowerCase().includes(query.toLowerCase()) && (tab === 'libros' ? false : tab === 'esenciales' ? p.essential : true));
@@ -37,7 +50,7 @@ export default function Biblioteca() {
         </div>
         <div className="relative max-w-2xl mx-auto mb-10">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-          <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-amber-400/50" />
+          <input type="text" value={query} onChange={(e) => handleQueryChange(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-amber-400/50" />
         </div>
         <div className="space-y-12">
           {filteredBooks.length > 0 && (

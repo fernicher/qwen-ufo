@@ -2,7 +2,9 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download } from 'lucide-react';
 import { getExpediente } from '../data/expedientes';
 import { investigators } from '../data/investigators';
+import { ufoCases } from '../data/cases';
 import CaseTypeIcon from '../components/CaseTypeIcon';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const credColors: Record<string, string> = {
   A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
@@ -37,6 +39,7 @@ const typeLabels: Record<string, string> = {
 export default function ExpedienteDetail() {
   const { id } = useParams<{ id: string }>();
   const exp = id ? getExpediente(id) : undefined;
+  useDocumentTitle(exp?.title);
 
   if (!exp) {
     return (
@@ -50,6 +53,11 @@ export default function ExpedienteDetail() {
   }
 
   const relatedInvestigators = investigators.filter((inv) => exp.relatedInvestigators.includes(inv.id));
+
+  const relatedCases = ufoCases
+    .filter((c) => c.id !== exp.id && (c.type === exp.type || c.country === exp.country))
+    .sort((a, b) => (a.type === exp.type && b.type !== exp.type ? -1 : a.country === exp.country && b.country !== exp.country ? -1 : 0))
+    .slice(0, 3);
 
   return (
     <div className="min-h-screen">
@@ -194,10 +202,10 @@ export default function ExpedienteDetail() {
                 <h3 className="text-lg font-display font-bold mb-4">Investigadores relacionados</h3>
                 <div className="space-y-3">
                   {relatedInvestigators.map((inv) => (
-                    <div key={inv.id}>
+                    <Link key={inv.id} to={`/investigadores?highlight=${inv.id}`} className="block hover:opacity-80">
                       <p className="text-sm font-medium text-white">{inv.name}</p>
                       <p className="text-xs text-gray-500">{inv.specialty}</p>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -209,6 +217,23 @@ export default function ExpedienteDetail() {
             </Link>
           </div>
         </div>
+
+        {relatedCases.length > 0 && (
+          <div className="mt-16 pt-10 border-t border-white/5">
+            <h2 className="text-xl font-display font-bold mb-6">Casos relacionados</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {relatedCases.map((c) => (
+                <Link key={c.id} to={`/expedientes/${c.id}`} className="flex items-center gap-3 bg-aurora-charcoal/60 border border-white/5 rounded-xl p-4 hover:border-aurora-cyan/30 transition-all">
+                  <CaseTypeIcon type={c.type} color={credHex[c.credibility]} size={36} />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-white truncate">{c.title}</p>
+                    <p className="text-xs text-gray-500">{c.date.split('-')[0]} • {c.country}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

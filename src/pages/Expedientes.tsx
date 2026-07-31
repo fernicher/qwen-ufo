@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Calendar, Shield, Search } from 'lucide-react';
 import { ufoCases } from '../data/cases';
 import CaseTypeIcon from '../components/CaseTypeIcon';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const typeLabels: Record<string, string> = {
   avistamiento: 'Avistamiento',
@@ -13,6 +14,7 @@ const typeLabels: Record<string, string> = {
 };
 
 export default function Expedientes() {
+  useDocumentTitle('Expedientes');
   const [query, setQuery] = useState('');
   const filtered = ufoCases.filter(c => c.title.toLowerCase().includes(query.toLowerCase()) || c.country.toLowerCase().includes(query.toLowerCase()));
   const credColors: any = { A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10', B: 'text-blue-400 border-blue-400/40 bg-blue-400/10', C: 'text-purple-400 border-purple-400/40 bg-purple-400/10' };

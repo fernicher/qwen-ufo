@@ -6,6 +6,9 @@ import Mapa from './pages/Mapa';
 import Expedientes from './pages/Expedientes';
 import ExpedienteDetail from './pages/ExpedienteDetail';
 import Biblioteca from './pages/Biblioteca';
+import Investigadores from './pages/Investigadores';
+import Timeline from './pages/Timeline';
+import Favoritos from './pages/Favoritos';
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
           <Route path="/expedientes" element={<Expedientes />} />
           <Route path="/expedientes/:id" element={<ExpedienteDetail />} />
           <Route path="/biblioteca" element={<Biblioteca />} />
+          <Route path="/investigadores" element={<Investigadores />} />
+          <Route path="/timeline" element={<Timeline />} />
+          <Route path="/favoritos" element={<Favoritos />} />
         </Route>
       </Routes>
     </BrowserRouter>

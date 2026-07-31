@@ -1,0 +1,896 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 34fc8cc..e1fab19 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -6,6 +6,9 @@ import Mapa from './pages/Mapa';
+ import Expedientes from './pages/Expedientes';
+ import ExpedienteDetail from './pages/ExpedienteDetail';
+ import Biblioteca from './pages/Biblioteca';
++import Investigadores from './pages/Investigadores';
++import Timeline from './pages/Timeline';
++import Favoritos from './pages/Favoritos';
+ 
+ function App() {
+   return (
+@@ -18,6 +21,9 @@ function App() {
+           <Route path="/expedientes" element={<Expedientes />} />
+           <Route path="/expedientes/:id" element={<ExpedienteDetail />} />
+           <Route path="/biblioteca" element={<Biblioteca />} />
++          <Route path="/investigadores" element={<Investigadores />} />
++          <Route path="/timeline" element={<Timeline />} />
++          <Route path="/favoritos" element={<Favoritos />} />
+         </Route>
+       </Routes>
+     </BrowserRouter>
+diff --git a/src/components/GlobalSearch.tsx b/src/components/GlobalSearch.tsx
+index b554b37..8d43955 100644
+--- a/src/components/GlobalSearch.tsx
++++ b/src/components/GlobalSearch.tsx
+@@ -1,9 +1,12 @@
+ import { useState, useEffect, useRef } from 'react';
+ import { motion, AnimatePresence } from 'framer-motion';
+-import { Search, X, Film, MapPin, Command, ArrowRight } from 'lucide-react';
++import { Search, X, Film, MapPin, Command, ArrowRight, Book, Headphones, Users } from 'lucide-react';
+ import { useNavigate } from 'react-router-dom';
+ import { useSearchMedia } from '../hooks/useTMDB';
+ import { ufoCases } from '../data/cases';
++import { books } from '../data/books';
++import { podcasts } from '../data/podcasts';
++import { investigators } from '../data/investigators';
+ 
+ export default function GlobalSearch() {
+   const [isOpen, setIsOpen] = useState(false);
+@@ -36,6 +39,15 @@ export default function GlobalSearch() {
+     ufoCases.filter(c => c.title.toLowerCase().includes(q) || c.country.toLowerCase().includes(q)).slice(0, 5).forEach(c => {
+       results.push({ type: 'case', id: `case-${c.id}`, title: c.title, subtitle: `${c.date.split('-')[0]} • ${c.country}`, caseId: c.id });
+     });
++    investigators.filter(i => i.name.toLowerCase().includes(q) || i.country.toLowerCase().includes(q) || i.specialty.toLowerCase().includes(q)).slice(0, 3).forEach(i => {
++      results.push({ type: 'investigator', id: `inv-${i.id}`, title: i.name, subtitle: i.specialty, investigatorId: i.id });
++    });
++    books.filter(b => b.title.toLowerCase().includes(q) || b.authors.some(a => a.toLowerCase().includes(q))).slice(0, 3).forEach(b => {
++      results.push({ type: 'book', id: `book-${b.id}`, title: b.title, subtitle: b.authors.join(', '), libraryQuery: b.title });
++    });
++    podcasts.filter(p => p.title.toLowerCase().includes(q) || p.host.toLowerCase().includes(q)).slice(0, 3).forEach(p => {
++      results.push({ type: 'podcast', id: `podcast-${p.id}`, title: p.title, subtitle: p.host, libraryQuery: p.title });
++    });
+   }
+   if (tmdbData?.results) {
+     tmdbData.results.filter(r => r.media_type === 'movie' || r.media_type === 'tv').slice(0, 5).forEach(m => {
+@@ -43,6 +55,22 @@ export default function GlobalSearch() {
+     });
+   }
+ 
++  const resultIcon = (r: any) => {
++    if (r.type === 'case') return <MapPin className="w-4 h-4 text-aurora-cyan" />;
++    if (r.type === 'investigator') return <Users className="w-4 h-4 text-aurora-cyan" />;
++    if (r.type === 'book') return <Book className="w-4 h-4 text-aurora-cyan" />;
++    if (r.type === 'podcast') return <Headphones className="w-4 h-4 text-aurora-cyan" />;
++    return <Film className="w-4 h-4 text-aurora-cyan" />;
++  };
++
++  const goToResult = (r: any) => {
++    setIsOpen(false);
++    if (r.caseId) return navigate(`/mapa?case=${r.caseId}`);
++    if (r.investigatorId) return navigate(`/investigadores?highlight=${r.investigatorId}`);
++    if (r.libraryQuery) return navigate(`/biblioteca?q=${encodeURIComponent(r.libraryQuery)}`);
++    return navigate(`/catalogo?q=${encodeURIComponent(query)}`);
++  };
++
+   // Al presionar Enter, ir al catálogo con la búsqueda
+   const handleSearch = () => {
+     if (query.length >= 2) {
+@@ -74,7 +102,7 @@ export default function GlobalSearch() {
+                   value={query} 
+                   onChange={(e) => setQuery(e.target.value)}
+                   onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+-                  placeholder="Buscar películas, casos..." 
++                  placeholder="Buscar en todo el archivo..." 
+                   className="flex-1 bg-transparent text-white placeholder-gray-500 focus:outline-none" 
+                 />
+                 {query.length >= 2 && (
+@@ -95,9 +123,9 @@ export default function GlobalSearch() {
+                 ) : (
+                   <div className="p-2">
+                     {results.map((r) => (
+-                      <button key={r.id} onClick={() => { setIsOpen(false); navigate(r.caseId ? `/mapa?case=${r.caseId}` : `/catalogo?q=${encodeURIComponent(query)}`); }} className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/5 text-left">
++                      <button key={r.id} onClick={() => goToResult(r)} className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/5 text-left">
+                         <div className="w-9 h-9 rounded-lg bg-aurora-cyan/10 flex items-center justify-center">
+-                          {r.caseId ? <MapPin className="w-4 h-4 text-aurora-cyan" /> : <Film className="w-4 h-4 text-aurora-cyan" />}
++                          {resultIcon(r)}
+                         </div>
+                         <div className="flex-1 min-w-0">
+                           <p className="text-sm font-medium text-white truncate">{r.title}</p>
+diff --git a/src/components/InvestigatorsPreview.tsx b/src/components/InvestigatorsPreview.tsx
+index c1d7379..57a7419 100644
+--- a/src/components/InvestigatorsPreview.tsx
++++ b/src/components/InvestigatorsPreview.tsx
+@@ -1,4 +1,5 @@
+-import { Globe, BookOpen, Award } from 'lucide-react';
++import { Link } from 'react-router-dom';
++import { Globe, BookOpen, Award, ArrowRight } from 'lucide-react';
+ import { investigators } from '../data/investigators';
+ 
+ const cred: any = {
+@@ -9,18 +10,22 @@ const cred: any = {
+ };
+ 
+ export default function InvestigatorsPreview() {
++  const preview = investigators.slice(0, 3);
+   return (
+     <section className="py-12">
+       <div className="max-w-7xl mx-auto px-4">
+-        <div className="text-center mb-12">
+-          <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Mentes Detrás del Fenómeno</span>
+-          <h2 className="text-2xl md:text-3xl font-display font-bold text-white">Investigadores Destacados</h2>
++        <div className="flex items-end justify-between mb-12">
++          <div>
++            <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Mentes Detrás del Fenómeno</span>
++            <h2 className="text-2xl md:text-3xl font-display font-bold text-white">Investigadores Destacados</h2>
++          </div>
++          <Link to="/investigadores" className="hidden sm:flex items-center gap-1 text-sm font-semibold text-aurora-cyan hover:text-aurora-cyanGlow">Ver todos <ArrowRight className="w-4 h-4" /></Link>
+         </div>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+-          {investigators.map((inv) => {
++          {preview.map((inv) => {
+             const c = cred[inv.credibility] || { label: inv.credibility, color: 'text-gray-400 border-gray-400/40' };
+             return (
+-              <div key={inv.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-aurora-cyan/30 transition-all">
++              <Link key={inv.id} to={`/investigadores?highlight=${inv.id}`} className="group block bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-aurora-cyan/30 transition-all">
+                 <div className="flex items-start gap-4 mb-4">
+                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-aurora-cyan/20 to-blue-600/20 border border-aurora-cyan/20 flex items-center justify-center">
+                     <span className="text-xl font-display font-bold text-aurora-cyan">{inv.name.split(' ').map(n => n[0]).join('').slice(0, 2)}</span>
+@@ -36,10 +41,13 @@ export default function InvestigatorsPreview() {
+                   {inv.works.slice(0, 2).map((w) => <span key={w} className="text-[10px] px-2 py-1 rounded-md bg-white/5 text-gray-400 border border-white/5 flex items-center gap-1"><BookOpen className="w-2.5 h-2.5" />{w.split('(')[0].trim()}</span>)}
+                 </div>
+                 <span className={`text-[10px] font-bold px-2 py-1 rounded border ${c.color}`}><Award className="w-3 h-3 inline mr-1" />{c.label}</span>
+-              </div>
++              </Link>
+             );
+           })}
+         </div>
++        <div className="sm:hidden mt-6 text-center">
++          <Link to="/investigadores" className="inline-flex items-center gap-1 text-sm font-semibold text-aurora-cyan">Ver todos <ArrowRight className="w-4 h-4" /></Link>
++        </div>
+       </div>
+     </section>
+   );
+diff --git a/src/components/Layout.tsx b/src/components/Layout.tsx
+index f5f888f..419c1de 100644
+--- a/src/components/Layout.tsx
++++ b/src/components/Layout.tsx
+@@ -1,8 +1,9 @@
++import { useState } from 'react';
+ import { Outlet, Link, useLocation } from 'react-router-dom';
+-import { Home, Film, Map, Compass, Book } from 'lucide-react';
++import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart } from 'lucide-react';
+ import GlobalSearch from './GlobalSearch';
+ 
+-const navItems = [
++const primaryNavItems = [
+   { to: '/', label: 'Inicio', icon: Home },
+   { to: '/catalogo', label: 'Catálogo', icon: Film },
+   { to: '/mapa', label: 'Mapa', icon: Map },
+@@ -10,21 +11,35 @@ const navItems = [
+   { to: '/biblioteca', label: 'Biblioteca', icon: Book },
+ ];
+ 
++const moreNavItems = [
++  { to: '/investigadores', label: 'Investigadores', icon: Users },
++  { to: '/timeline', label: 'Línea de tiempo', icon: Clock },
++  { to: '/favoritos', label: 'Favoritos', icon: Heart },
++];
++
++const allNavItems = [...primaryNavItems, ...moreNavItems];
++
+ export default function Layout() {
+   const location = useLocation();
++  const [moreOpen, setMoreOpen] = useState(false);
++  const [mobileOpen, setMobileOpen] = useState(false);
++
++  const isMoreActive = moreNavItems.some((item) => item.to === location.pathname);
++
+   return (
+     <div className="min-h-screen bg-aurora-black text-white relative">
+       <div className="starfield" aria-hidden="true" />
+       <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 py-4 bg-aurora-black/80 backdrop-blur-xl border-b border-white/5">
+         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+-          <Link to="/" className="flex items-center gap-2">
++          <Link to="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
+             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-aurora-cyan to-blue-600 flex items-center justify-center">
+               <span className="text-aurora-black font-display font-bold text-sm">A</span>
+             </div>
+             <span className="font-display font-bold text-lg hidden sm:inline">Aurora</span>
+           </Link>
++
+           <div className="hidden md:flex items-center gap-1">
+-            {navItems.map((item) => {
++            {primaryNavItems.map((item) => {
+               const Icon = item.icon;
+               const isActive = location.pathname === item.to;
+               return (
+@@ -33,9 +48,59 @@ export default function Layout() {
+                 </Link>
+               );
+             })}
++            <div className="relative" onMouseEnter={() => setMoreOpen(true)} onMouseLeave={() => setMoreOpen(false)}>
++              <button className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isMoreActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-400 hover:text-white'}`}>
++                Más <ChevronDown className="w-3.5 h-3.5" />
++              </button>
++              {moreOpen && (
++                <div className="absolute right-0 top-full pt-2 w-52">
++                  <div className="bg-aurora-charcoal border border-white/10 rounded-xl shadow-2xl overflow-hidden">
++                    {moreNavItems.map((item) => {
++                      const Icon = item.icon;
++                      const isActive = location.pathname === item.to;
++                      return (
++                        <Link key={item.to} to={item.to} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${isActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}>
++                          <Icon className="w-4 h-4" /> {item.label}
++                        </Link>
++                      );
++                    })}
++                  </div>
++                </div>
++              )}
++            </div>
++          </div>
++
++          <div className="flex items-center gap-2">
++            <GlobalSearch />
++            <button
++              onClick={() => setMobileOpen((v) => !v)}
++              className="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-300"
++              aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
++              aria-expanded={mobileOpen}
++            >
++              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
++            </button>
+           </div>
+-          <GlobalSearch />
+         </div>
++
++        {mobileOpen && (
++          <div className="md:hidden max-w-7xl mx-auto mt-4 pb-2 grid grid-cols-2 gap-2">
++            {allNavItems.map((item) => {
++              const Icon = item.icon;
++              const isActive = location.pathname === item.to;
++              return (
++                <Link
++                  key={item.to}
++                  to={item.to}
++                  onClick={() => setMobileOpen(false)}
++                  className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-300 bg-white/5 hover:text-white'}`}
++                >
++                  <Icon className="w-4 h-4" /> {item.label}
++                </Link>
++              );
++            })}
++          </div>
++        )}
+       </nav>
+       <main className="pt-16 relative z-10"><Outlet /></main>
+       <footer className="relative z-10 border-t border-white/5 mt-20 py-8 px-4 text-center text-sm text-gray-500">
+@@ -43,4 +108,4 @@ export default function Layout() {
+       </footer>
+     </div>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/components/MediaDetailModal.tsx b/src/components/MediaDetailModal.tsx
+index 45b4088..cd50014 100644
+--- a/src/components/MediaDetailModal.tsx
++++ b/src/components/MediaDetailModal.tsx
+@@ -30,7 +30,7 @@ export default function MediaDetailModal({ mediaId, mediaType, onClose }: { medi
+             <div className="p-6 md:p-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+               <div className="space-y-6">
+                 {media.poster_path && <img src={`${import.meta.env.VITE_TMDB_IMAGE_BASE_URL}${media.poster_path}`} alt="" className="w-full rounded-xl" />}
+-                <button onClick={() => toggleFavorite({ id: String(media.id), title: media.title || media.name || '', type: mediaType })} className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold ${isFavorite ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-white hover:bg-white/10'}`}>
++                <button onClick={() => toggleFavorite({ id: String(media.id), title: media.title || media.name || '', type: mediaType, poster: media.poster_path || undefined })} className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold ${isFavorite ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-white hover:bg-white/10'}`}>
+                   <Heart className={`w-5 h-5 ${isFavorite ? 'fill-aurora-black' : ''}`} /> {isFavorite ? 'En Favoritos' : 'Añadir a Favoritos'}
+                 </button>
+               </div>
+diff --git a/src/components/TimelinePreview.tsx b/src/components/TimelinePreview.tsx
+index 6aae6dd..d87d94b 100644
+--- a/src/components/TimelinePreview.tsx
++++ b/src/components/TimelinePreview.tsx
+@@ -21,7 +21,8 @@ export default function TimelinePreview() {
+             <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Línea Temporal</span>
+             <h2 className="text-2xl md:text-3xl font-display font-bold text-white">70 Años de Fenómeno</h2>
+           </div>
+-          <div className="hidden md:flex items-center gap-2">
++          <div className="hidden md:flex items-center gap-3">
++            <Link to="/timeline" className="text-sm font-semibold text-aurora-cyan hover:text-aurora-cyanGlow">Ver línea completa</Link>
+             <button onClick={() => scroll('left')} className="p-2 rounded-lg bg-white/5 border border-white/10 hover:border-aurora-cyan/50 text-gray-400 hover:text-aurora-cyan"><ChevronLeft className="w-4 h-4" /></button>
+             <button onClick={() => scroll('right')} className="p-2 rounded-lg bg-white/5 border border-white/10 hover:border-aurora-cyan/50 text-gray-400 hover:text-aurora-cyan"><ChevronRight className="w-4 h-4" /></button>
+           </div>
+diff --git a/src/hooks/useDocumentTitle.ts b/src/hooks/useDocumentTitle.ts
+new file mode 100644
+index 0000000..0761e7c
+--- /dev/null
++++ b/src/hooks/useDocumentTitle.ts
+@@ -0,0 +1,18 @@
++import { useEffect } from 'react';
++
++const SITE_NAME = 'Project Aurora';
++
++/**
++ * Cambia el título de la pestaña del navegador mientras el componente
++ * está montado, y lo restaura al desmontar. Sin esto, todas las páginas
++ * (y todos los expedientes) comparten el mismo título genérico.
++ */
++export function useDocumentTitle(title?: string) {
++  useEffect(() => {
++    const previous = document.title;
++    document.title = title ? `${title} · ${SITE_NAME}` : `${SITE_NAME} — Archivo Desclasificado UAP`;
++    return () => {
++      document.title = previous;
++    };
++  }, [title]);
++}
+diff --git a/src/pages/Biblioteca.tsx b/src/pages/Biblioteca.tsx
+index c7c9ce2..66d30ba 100644
+--- a/src/pages/Biblioteca.tsx
++++ b/src/pages/Biblioteca.tsx
+@@ -1,13 +1,26 @@
+-import { useState } from 'react';
++import { useEffect, useState } from 'react';
++import { useSearchParams } from 'react-router-dom';
+ import { Book, Headphones, Search, Star, ExternalLink } from 'lucide-react';
+ import { books } from '../data/books';
+ import { podcasts } from '../data/podcasts';
++import { useDocumentTitle } from '../hooks/useDocumentTitle';
+ 
+ type Tab = 'todos' | 'libros' | 'podcasts' | 'esenciales';
+ 
+ export default function Biblioteca() {
++  useDocumentTitle('Biblioteca');
++  const [searchParams, setSearchParams] = useSearchParams();
+   const [tab, setTab] = useState<Tab>('todos');
+-  const [query, setQuery] = useState('');
++  const [query, setQuery] = useState(searchParams.get('q') || '');
++
++  useEffect(() => {
++    setQuery(searchParams.get('q') || '');
++  }, [searchParams]);
++
++  const handleQueryChange = (value: string) => {
++    setQuery(value);
++    if (value) setSearchParams({ q: value }); else setSearchParams({});
++  };
+ 
+   const filteredBooks = books.filter(b => b.title.toLowerCase().includes(query.toLowerCase()) && (tab === 'podcasts' ? false : tab === 'esenciales' ? b.essential : true));
+   const filteredPodcasts = podcasts.filter(p => p.title.toLowerCase().includes(query.toLowerCase()) && (tab === 'libros' ? false : tab === 'esenciales' ? p.essential : true));
+@@ -37,7 +50,7 @@ export default function Biblioteca() {
+         </div>
+         <div className="relative max-w-2xl mx-auto mb-10">
+           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+-          <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-amber-400/50" />
++          <input type="text" value={query} onChange={(e) => handleQueryChange(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-amber-400/50" />
+         </div>
+         <div className="space-y-12">
+           {filteredBooks.length > 0 && (
+diff --git a/src/pages/Catalogo.tsx b/src/pages/Catalogo.tsx
+index 7190938..bb5ebc2 100644
+--- a/src/pages/Catalogo.tsx
++++ b/src/pages/Catalogo.tsx
+@@ -4,6 +4,7 @@ import { useSearchMedia } from '../hooks/useTMDB';
+ import MediaCard from '../components/MediaCard';
+ import MediaDetailModal from '../components/MediaDetailModal';
+ import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
++import { useDocumentTitle } from '../hooks/useDocumentTitle';
+ 
+ const AUTO_QUERIES = [
+   { term: 'UFO', title: 'OVNI / UAP' },
+@@ -19,6 +20,7 @@ const AUTO_QUERIES = [
+ ];
+ 
+ export default function Catalogo() {
++  useDocumentTitle('Catálogo');
+   const [searchParams, setSearchParams] = useSearchParams();
+   const urlQuery = searchParams.get('q') || '';
+   
+diff --git a/src/pages/ExpedienteDetail.tsx b/src/pages/ExpedienteDetail.tsx
+index 87ba370..e1be250 100644
+--- a/src/pages/ExpedienteDetail.tsx
++++ b/src/pages/ExpedienteDetail.tsx
+@@ -2,7 +2,9 @@ import { useParams, Link } from 'react-router-dom';
+ import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download } from 'lucide-react';
+ import { getExpediente } from '../data/expedientes';
+ import { investigators } from '../data/investigators';
++import { ufoCases } from '../data/cases';
+ import CaseTypeIcon from '../components/CaseTypeIcon';
++import { useDocumentTitle } from '../hooks/useDocumentTitle';
+ 
+ const credColors: Record<string, string> = {
+   A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
+@@ -37,6 +39,7 @@ const typeLabels: Record<string, string> = {
+ export default function ExpedienteDetail() {
+   const { id } = useParams<{ id: string }>();
+   const exp = id ? getExpediente(id) : undefined;
++  useDocumentTitle(exp?.title);
+ 
+   if (!exp) {
+     return (
+@@ -51,6 +54,11 @@ export default function ExpedienteDetail() {
+ 
+   const relatedInvestigators = investigators.filter((inv) => exp.relatedInvestigators.includes(inv.id));
+ 
++  const relatedCases = ufoCases
++    .filter((c) => c.id !== exp.id && (c.type === exp.type || c.country === exp.country))
++    .sort((a, b) => (a.type === exp.type && b.type !== exp.type ? -1 : a.country === exp.country && b.country !== exp.country ? -1 : 0))
++    .slice(0, 3);
++
+   return (
+     <div className="min-h-screen">
+       <div className="sticky top-16 z-40 bg-aurora-black/80 backdrop-blur-xl border-b border-white/5">
+@@ -194,10 +202,10 @@ export default function ExpedienteDetail() {
+                 <h3 className="text-lg font-display font-bold mb-4">Investigadores relacionados</h3>
+                 <div className="space-y-3">
+                   {relatedInvestigators.map((inv) => (
+-                    <div key={inv.id}>
++                    <Link key={inv.id} to={`/investigadores?highlight=${inv.id}`} className="block hover:opacity-80">
+                       <p className="text-sm font-medium text-white">{inv.name}</p>
+                       <p className="text-xs text-gray-500">{inv.specialty}</p>
+-                    </div>
++                    </Link>
+                   ))}
+                 </div>
+               </div>
+@@ -209,6 +217,23 @@ export default function ExpedienteDetail() {
+             </Link>
+           </div>
+         </div>
++
++        {relatedCases.length > 0 && (
++          <div className="mt-16 pt-10 border-t border-white/5">
++            <h2 className="text-xl font-display font-bold mb-6">Casos relacionados</h2>
++            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
++              {relatedCases.map((c) => (
++                <Link key={c.id} to={`/expedientes/${c.id}`} className="flex items-center gap-3 bg-aurora-charcoal/60 border border-white/5 rounded-xl p-4 hover:border-aurora-cyan/30 transition-all">
++                  <CaseTypeIcon type={c.type} color={credHex[c.credibility]} size={36} />
++                  <div className="min-w-0">
++                    <p className="text-sm font-semibold text-white truncate">{c.title}</p>
++                    <p className="text-xs text-gray-500">{c.date.split('-')[0]} • {c.country}</p>
++                  </div>
++                </Link>
++              ))}
++            </div>
++          </div>
++        )}
+       </div>
+     </div>
+   );
+diff --git a/src/pages/Expedientes.tsx b/src/pages/Expedientes.tsx
+index f275e2f..59cf54b 100644
+--- a/src/pages/Expedientes.tsx
++++ b/src/pages/Expedientes.tsx
+@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
+ import { MapPin, Calendar, Shield, Search } from 'lucide-react';
+ import { ufoCases } from '../data/cases';
+ import CaseTypeIcon from '../components/CaseTypeIcon';
++import { useDocumentTitle } from '../hooks/useDocumentTitle';
+ 
+ const typeLabels: Record<string, string> = {
+   avistamiento: 'Avistamiento',
+@@ -13,6 +14,7 @@ const typeLabels: Record<string, string> = {
+ };
+ 
+ export default function Expedientes() {
++  useDocumentTitle('Expedientes');
+   const [query, setQuery] = useState('');
+   const filtered = ufoCases.filter(c => c.title.toLowerCase().includes(query.toLowerCase()) || c.country.toLowerCase().includes(query.toLowerCase()));
+   const credColors: any = { A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10', B: 'text-blue-400 border-blue-400/40 bg-blue-400/10', C: 'text-purple-400 border-purple-400/40 bg-purple-400/10' };
+diff --git a/src/pages/Favoritos.tsx b/src/pages/Favoritos.tsx
+new file mode 100644
+index 0000000..80af1ea
+--- /dev/null
++++ b/src/pages/Favoritos.tsx
+@@ -0,0 +1,72 @@
++import { useState } from 'react';
++import { Heart, Film, Tv, X } from 'lucide-react';
++import { useAuroraStore } from '../store/useStore';
++import MediaDetailModal from '../components/MediaDetailModal';
++import { useDocumentTitle } from '../hooks/useDocumentTitle';
++
++interface FavoriteItem {
++  id: string;
++  title: string;
++  type: string;
++  poster?: string;
++}
++
++export default function Favoritos() {
++  useDocumentTitle('Favoritos');
++  const { favorites, toggleFavorite } = useAuroraStore();
++  const [selected, setSelected] = useState<{ id: number; type: 'movie' | 'tv' } | null>(null);
++
++  return (
++    <div className="min-h-screen px-4 py-12">
++      <div className="max-w-7xl mx-auto">
++        <div className="text-center mb-12">
++          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Tu colección</span>
++          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Mis <span className="text-aurora-cyan">Favoritos</span></h1>
++          <p className="text-gray-400">{favorites.length === 0 ? 'Todavía no marcaste ningún título' : `${favorites.length} título${favorites.length === 1 ? '' : 's'} guardado${favorites.length === 1 ? '' : 's'}`}</p>
++        </div>
++
++        {favorites.length === 0 ? (
++          <div className="max-w-md mx-auto text-center py-16">
++            <Heart className="w-12 h-12 text-gray-600 mx-auto mb-4" />
++            <p className="text-gray-400">Marcá el corazón en cualquier película o serie del catálogo para verla acá.</p>
++          </div>
++        ) : (
++          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
++            {favorites.map((f: FavoriteItem) => (
++              <div key={f.id} className="group relative rounded-xl overflow-hidden bg-aurora-charcoal border border-white/5 hover:border-aurora-cyan/50 transition-all">
++                <button
++                  onClick={() => toggleFavorite(f)}
++                  aria-label="Quitar de favoritos"
++                  className="absolute top-2 right-2 z-10 p-1.5 rounded-md bg-black/60 border border-white/10 text-gray-300 hover:text-red-400 hover:border-red-400/40 opacity-0 group-hover:opacity-100 transition-opacity"
++                >
++                  <X className="w-3.5 h-3.5" />
++                </button>
++                <button
++                  onClick={() => setSelected({ id: Number(f.id), type: f.type === 'tv' ? 'tv' : 'movie' })}
++                  className="block w-full text-left"
++                >
++                  <div className="relative aspect-[2/3] overflow-hidden bg-white/5">
++                    {f.poster ? (
++                      <img src={`${import.meta.env.VITE_TMDB_IMAGE_BASE_URL}${f.poster}`} alt={f.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
++                    ) : (
++                      <div className="w-full h-full flex items-center justify-center text-gray-600">
++                        {f.type === 'tv' ? <Tv className="w-8 h-8" /> : <Film className="w-8 h-8" />}
++                      </div>
++                    )}
++                    <div className="absolute inset-0 bg-gradient-to-t from-aurora-black via-transparent to-transparent opacity-80" />
++                  </div>
++                  <div className="p-4">
++                    <h3 className="text-white font-display font-semibold text-sm leading-tight mb-1 line-clamp-2 group-hover:text-aurora-cyan">{f.title}</h3>
++                    <p className="text-xs text-gray-400">{f.type === 'tv' ? 'Serie' : 'Película'}</p>
++                  </div>
++                </button>
++              </div>
++            ))}
++          </div>
++        )}
++      </div>
++
++      {selected && <MediaDetailModal mediaId={selected.id} mediaType={selected.type} onClose={() => setSelected(null)} />}
++    </div>
++  );
++}
+diff --git a/src/pages/Investigadores.tsx b/src/pages/Investigadores.tsx
+new file mode 100644
+index 0000000..582359c
+--- /dev/null
++++ b/src/pages/Investigadores.tsx
+@@ -0,0 +1,126 @@
++import { useEffect, useMemo, useRef, useState } from 'react';
++import { Link, useSearchParams } from 'react-router-dom';
++import { Globe, BookOpen, Award, FileText } from 'lucide-react';
++import { investigators } from '../data/investigators';
++import { expedientes } from '../data/expedientes';
++import { useDocumentTitle } from '../hooks/useDocumentTitle';
++
++const credStyles: Record<string, string> = {
++  referente: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
++  activo: 'text-green-400 border-green-400/40 bg-green-400/10',
++  histórico: 'text-amber-400 border-amber-400/40 bg-amber-400/10',
++  controvertido: 'text-orange-400 border-orange-400/40 bg-orange-400/10',
++};
++
++const credLabels: Record<string, string> = {
++  referente: 'Referente Mundial',
++  activo: 'Investigador Activo',
++  histórico: 'Figura Histórica',
++  controvertido: 'Controvertido',
++};
++
++export default function Investigadores() {
++  useDocumentTitle('Investigadores');
++  const [searchParams] = useSearchParams();
++  const highlightId = searchParams.get('highlight');
++  const [countryFilter, setCountryFilter] = useState<string>('todos');
++  const refs = useRef<Record<string, HTMLDivElement | null>>({});
++
++  const relatedCasesByInvestigator = useMemo(() => {
++    const map: Record<string, { id: string; title: string }[]> = {};
++    Object.values(expedientes).forEach((exp) => {
++      exp.relatedInvestigators.forEach((invId) => {
++        if (!map[invId]) map[invId] = [];
++        map[invId].push({ id: exp.id, title: exp.title });
++      });
++    });
++    return map;
++  }, []);
++
++  const countries = useMemo(() => {
++    const set = new Set(investigators.map((i) => i.country));
++    return ['todos', ...Array.from(set)];
++  }, []);
++
++  const filtered = countryFilter === 'todos' ? investigators : investigators.filter((i) => i.country === countryFilter);
++
++  useEffect(() => {
++    if (highlightId && refs.current[highlightId]) {
++      refs.current[highlightId]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
++    }
++  }, [highlightId]);
++
++  return (
++    <div className="min-h-screen px-4 py-12">
++      <div className="max-w-7xl mx-auto">
++        <div className="text-center mb-10">
++          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Mentes Detrás del Fenómeno</span>
++          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Investigadores</h1>
++          <p className="text-gray-400">Las figuras que documentaron, analizaron o divulgaron el fenómeno OVNI/UAP</p>
++        </div>
++
++        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
++          {countries.map((c) => (
++            <button
++              key={c}
++              onClick={() => setCountryFilter(c)}
++              className={`px-4 py-2 rounded-lg text-sm font-medium ${countryFilter === c ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
++            >
++              {c === 'todos' ? 'Todos' : c}
++            </button>
++          ))}
++        </div>
++
++        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
++          {filtered.map((inv) => {
++            const cred = credStyles[inv.credibility] || 'text-gray-400 border-gray-400/40 bg-gray-400/10';
++            const label = credLabels[inv.credibility] || inv.credibility;
++            const relatedCases = relatedCasesByInvestigator[inv.id] || [];
++            const isHighlighted = highlightId === inv.id;
++            return (
++              <div
++                key={inv.id}
++                ref={(el) => { refs.current[inv.id] = el; }}
++                className={`bg-aurora-charcoal/60 border rounded-2xl p-6 transition-all ${isHighlighted ? 'border-aurora-cyan/60 ring-1 ring-aurora-cyan/40' : 'border-white/5 hover:border-aurora-cyan/30'}`}
++              >
++                <div className="flex items-start gap-4 mb-4">
++                  <div className="w-14 h-14 shrink-0 rounded-xl bg-gradient-to-br from-aurora-cyan/20 to-blue-600/20 border border-aurora-cyan/20 flex items-center justify-center">
++                    <span className="text-xl font-display font-bold text-aurora-cyan">{inv.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}</span>
++                  </div>
++                  <div>
++                    <h2 className="font-display font-bold text-lg text-white">{inv.name}</h2>
++                    <div className="flex items-center gap-2 text-xs text-gray-400"><Globe className="w-3 h-3" />{inv.country}</div>
++                  </div>
++                </div>
++                <p className="text-xs text-aurora-cyan/80 font-semibold uppercase tracking-wider mb-2">{inv.specialty}</p>
++                <p className="text-sm text-gray-300 mb-4">{inv.bio}</p>
++                <div className="flex flex-wrap gap-1.5 mb-4">
++                  {inv.works.map((w) => (
++                    <span key={w} className="text-[10px] px-2 py-1 rounded-md bg-white/5 text-gray-400 border border-white/5 flex items-center gap-1">
++                      <BookOpen className="w-2.5 h-2.5" />{w}
++                    </span>
++                  ))}
++                </div>
++                <span className={`inline-flex items-center text-[10px] font-bold px-2 py-1 rounded border mb-4 ${cred}`}>
++                  <Award className="w-3 h-3 inline mr-1" />{label}
++                </span>
++                {relatedCases.length > 0 && (
++                  <div className="pt-4 border-t border-white/5">
++                    <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Casos relacionados</p>
++                    <div className="flex flex-col gap-1.5">
++                      {relatedCases.map((c) => (
++                        <Link key={c.id} to={`/expedientes/${c.id}`} className="flex items-center gap-2 text-xs text-gray-300 hover:text-aurora-cyan">
++                          <FileText className="w-3 h-3 text-aurora-cyan/60 shrink-0" />{c.title}
++                        </Link>
++                      ))}
++                    </div>
++                  </div>
++                )}
++              </div>
++            );
++          })}
++        </div>
++      </div>
++    </div>
++  );
++}
+diff --git a/src/pages/Mapa.tsx b/src/pages/Mapa.tsx
+index 598b094..ab88fdf 100644
+--- a/src/pages/Mapa.tsx
++++ b/src/pages/Mapa.tsx
+@@ -1,41 +1,117 @@
+-import { useState, useEffect } from 'react';
++import { useEffect, useMemo, useState } from 'react';
+ import { useSearchParams, Link } from 'react-router-dom';
+-import { List, MapPin } from 'lucide-react';
++import { List, MapPin, Filter, X } from 'lucide-react';
+ import InteractiveMap from '../components/Map/InteractiveMap';
+ import { ufoCases } from '../data/cases';
++import type { CaseType, Credibility } from '../data/cases';
++import { useDocumentTitle } from '../hooks/useDocumentTitle';
++
++const typeLabels: Record<CaseType, string> = {
++  avistamiento: 'Avistamiento',
++  aterrizaje: 'Aterrizaje',
++  contacto: 'Contacto',
++  radar: 'Radar',
++  fotografico: 'Fotográfico',
++};
++
++const credibilities: Credibility[] = ['A', 'B', 'C'];
+ 
+ export default function Mapa() {
++  useDocumentTitle('Mapa Global');
+   const [searchParams] = useSearchParams();
+   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
+   const [listOpen, setListOpen] = useState(false);
++  const [filtersOpen, setFiltersOpen] = useState(false);
++  const [typeFilter, setTypeFilter] = useState<CaseType[]>([]);
++  const [credFilter, setCredFilter] = useState<Credibility[]>([]);
++  const [countryFilter, setCountryFilter] = useState<string>('todos');
+ 
+   useEffect(() => {
+     const caseId = searchParams.get('case');
+     if (caseId) setSelectedCaseId(caseId);
+   }, [searchParams]);
+ 
++  const countries = useMemo(() => ['todos', ...Array.from(new Set(ufoCases.map((c) => c.country))).sort()], []);
++
++  const filteredCases = useMemo(() => {
++    return ufoCases.filter((c) => {
++      if (typeFilter.length > 0 && !typeFilter.includes(c.type)) return false;
++      if (credFilter.length > 0 && !credFilter.includes(c.credibility)) return false;
++      if (countryFilter !== 'todos' && c.country !== countryFilter) return false;
++      return true;
++    });
++  }, [typeFilter, credFilter, countryFilter]);
++
++  const toggleType = (t: CaseType) => setTypeFilter((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
++  const toggleCred = (c: Credibility) => setCredFilter((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
++  const activeFilterCount = typeFilter.length + credFilter.length + (countryFilter !== 'todos' ? 1 : 0);
++  const clearFilters = () => { setTypeFilter([]); setCredFilter([]); setCountryFilter('todos'); };
++
+   return (
+     <div className="relative h-screen w-full bg-aurora-black overflow-hidden">
+       <div className="absolute top-0 left-0 right-0 z-[1000] p-6 bg-gradient-to-b from-aurora-black via-aurora-black/80 to-transparent pointer-events-none">
+-        <div className="max-w-7xl mx-auto flex items-center justify-between">
++        <div className="max-w-7xl mx-auto flex items-start justify-between gap-4 flex-wrap">
+           <div>
+             <span className="inline-block px-3 py-1 mb-2 text-[10px] font-bold tracking-widest text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Archivo Geográfico</span>
+             <h1 className="text-3xl md:text-4xl font-display font-bold text-white">Mapa Global de <span className="text-aurora-cyan">Avistamientos</span></h1>
+-            <p className="text-sm text-gray-400 mt-1">{ufoCases.length} casos documentados</p>
++            <p className="text-sm text-gray-400 mt-1">{filteredCases.length} de {ufoCases.length} casos {activeFilterCount > 0 ? 'filtrados' : 'documentados'}</p>
++          </div>
++          <div className="pointer-events-auto flex items-center gap-2">
++            <button onClick={() => setFiltersOpen(!filtersOpen)} className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium ${activeFilterCount > 0 ? 'bg-aurora-cyan/10 border-aurora-cyan/50 text-aurora-cyan' : 'bg-aurora-charcoal/90 border-white/10 hover:border-aurora-cyan/50 text-white'}`}>
++              <Filter className="w-4 h-4" /> Filtros {activeFilterCount > 0 && `(${activeFilterCount})`}
++            </button>
++            <button onClick={() => setListOpen(!listOpen)} className="flex items-center gap-2 px-4 py-2 bg-aurora-charcoal/90 border border-white/10 hover:border-aurora-cyan/50 rounded-lg text-white text-sm font-medium">
++              <List className="w-4 h-4 text-aurora-cyan" /> Expedientes
++            </button>
+           </div>
+-          <button onClick={() => setListOpen(!listOpen)} className="pointer-events-auto flex items-center gap-2 px-4 py-2 bg-aurora-charcoal/90 border border-white/10 hover:border-aurora-cyan/50 rounded-lg text-white text-sm font-medium">
+-            <List className="w-4 h-4 text-aurora-cyan" /> Expedientes
+-          </button>
+         </div>
++
++        {filtersOpen && (
++          <div className="pointer-events-auto max-w-7xl mx-auto mt-4 bg-aurora-charcoal/95 backdrop-blur-xl border border-white/10 rounded-xl p-5">
++            <div className="flex items-center justify-between mb-4">
++              <h3 className="text-sm font-display font-semibold text-white">Filtrar casos</h3>
++              {activeFilterCount > 0 && <button onClick={clearFilters} className="flex items-center gap-1 text-xs text-gray-400 hover:text-white"><X className="w-3 h-3" /> Limpiar</button>}
++            </div>
++            <div className="space-y-4">
++              <div>
++                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Tipo</p>
++                <div className="flex flex-wrap gap-2">
++                  {(Object.keys(typeLabels) as CaseType[]).map((t) => (
++                    <button key={t} onClick={() => toggleType(t)} className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${typeFilter.includes(t) ? 'bg-aurora-cyan text-aurora-black border-aurora-cyan' : 'bg-white/5 text-gray-300 border-white/10 hover:border-aurora-cyan/40'}`}>
++                      {typeLabels[t]}
++                    </button>
++                  ))}
++                </div>
++              </div>
++              <div>
++                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Credibilidad</p>
++                <div className="flex flex-wrap gap-2">
++                  {credibilities.map((c) => (
++                    <button key={c} onClick={() => toggleCred(c)} className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${credFilter.includes(c) ? 'bg-aurora-cyan text-aurora-black border-aurora-cyan' : 'bg-white/5 text-gray-300 border-white/10 hover:border-aurora-cyan/40'}`}>
++                      Evidencia {c}
++                    </button>
++                  ))}
++                </div>
++              </div>
++              <div>
++                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">País</p>
++                <select value={countryFilter} onChange={(e) => setCountryFilter(e.target.value)} className="w-full sm:w-64 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora-cyan/50">
++                  {countries.map((c) => <option key={c} value={c} className="bg-aurora-charcoal">{c === 'todos' ? 'Todos los países' : c}</option>)}
++                </select>
++              </div>
++            </div>
++          </div>
++        )}
+       </div>
+-      <InteractiveMap cases={ufoCases} selectedCaseId={selectedCaseId} onSelectCase={setSelectedCaseId} />
++      <InteractiveMap cases={filteredCases} selectedCaseId={selectedCaseId} onSelectCase={setSelectedCaseId} />
+       {listOpen && (
+         <div className="absolute top-24 right-4 bottom-4 z-[1000] w-80 bg-aurora-charcoal/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col">
+           <div className="p-4 border-b border-white/5">
+-            <h3 className="font-display font-semibold text-white flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" /> Expedientes</h3>
++            <h3 className="font-display font-semibold text-white flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" /> Expedientes ({filteredCases.length})</h3>
+           </div>
+           <div className="flex-1 overflow-y-auto p-2">
+-            {ufoCases.map((c) => (
++            {filteredCases.length === 0 && <p className="text-sm text-gray-500 text-center py-8">Ningún caso coincide con los filtros.</p>}
++            {filteredCases.map((c) => (
+               <Link key={c.id} to={`/expedientes/${c.id}`} className={`block p-3 rounded-lg mb-1 border ${selectedCaseId === c.id ? 'bg-aurora-cyan/10 border-aurora-cyan/40' : 'border-transparent hover:bg-white/5'}`}>
+                 <h4 className="text-sm font-semibold text-white">{c.title}</h4>
+                 <p className="text-xs text-gray-400 mt-1">{c.date.split('-')[0]} • {c.country}</p>
+@@ -46,4 +122,4 @@ export default function Mapa() {
+       )}
+     </div>
+   );
+-}
+\ No newline at end of file
++}
+diff --git a/src/pages/Timeline.tsx b/src/pages/Timeline.tsx
+new file mode 100644
+index 0000000..c73b9f5
+--- /dev/null
++++ b/src/pages/Timeline.tsx
+@@ -0,0 +1,59 @@
++import { Link } from 'react-router-dom';
++import { ExternalLink } from 'lucide-react';
++import { timelineEvents } from '../data/timeline';
++import { useDocumentTitle } from '../hooks/useDocumentTitle';
++
++const colors: Record<string, { dot: string; badge: string }> = {
++  hito: { dot: 'bg-amber-400', badge: 'text-amber-400 border-amber-400/40 bg-amber-400/10' },
++  caso: { dot: 'bg-cyan-400', badge: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10' },
++  desclasificacion: { dot: 'bg-green-400', badge: 'text-green-400 border-green-400/40 bg-green-400/10' },
++  cultura: { dot: 'bg-purple-400', badge: 'text-purple-400 border-purple-400/40 bg-purple-400/10' },
++};
++
++const categoryLabels: Record<string, string> = {
++  hito: 'Hito',
++  caso: 'Caso',
++  desclasificacion: 'Desclasificación',
++  cultura: 'Cultura',
++};
++
++export default function Timeline() {
++  useDocumentTitle('Línea de tiempo');
++  const sorted = [...timelineEvents].sort((a, b) => a.year - b.year);
++
++  return (
++    <div className="min-h-screen px-4 py-12">
++      <div className="max-w-4xl mx-auto">
++        <div className="text-center mb-14">
++          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Línea Temporal</span>
++          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">{sorted[0]?.year}—{sorted[sorted.length - 1]?.year}</h1>
++          <p className="text-gray-400">Casos, desclasificaciones e hitos culturales del fenómeno OVNI/UAP</p>
++        </div>
++
++        <div className="relative pl-8 border-l border-white/10">
++          {sorted.map((event) => {
++            const c = colors[event.category] || colors.hito;
++            return (
++              <div key={`${event.year}-${event.title}`} className="relative pb-10 last:pb-0">
++                <div className={`absolute -left-[calc(2rem+5px)] top-1.5 w-3 h-3 rounded-full ${c.dot} border-2 border-aurora-black`} />
++                <div className="bg-aurora-charcoal/60 border border-white/5 rounded-xl p-5 hover:border-aurora-cyan/30 transition-all">
++                  <div className="flex items-center gap-3 mb-2">
++                    <span className="text-2xl font-display font-bold text-white">{event.year}</span>
++                    <span className={`text-[10px] font-bold px-2 py-1 rounded border ${c.badge}`}>{categoryLabels[event.category] || event.category}</span>
++                  </div>
++                  <h3 className="text-lg font-semibold text-white mb-1">{event.title}</h3>
++                  <p className="text-sm text-gray-400">{event.description}</p>
++                  {event.caseId && (
++                    <Link to={`/expedientes/${event.caseId}`} className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-aurora-cyan hover:text-aurora-cyanGlow">
++                      Ver expediente <ExternalLink className="w-3 h-3" />
++                    </Link>
++                  )}
++                </div>
++              </div>
++            );
++          })}
++        </div>
++      </div>
++    </div>
++  );
++}

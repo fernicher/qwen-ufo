@@ -21,7 +21,8 @@ export default function TimelinePreview() {
             <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Línea Temporal</span>
             <h2 className="text-2xl md:text-3xl font-display font-bold text-white">70 Años de Fenómeno</h2>
           </div>
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-3">
+            <Link to="/timeline" className="text-sm font-semibold text-aurora-cyan hover:text-aurora-cyanGlow">Ver línea completa</Link>
             <button onClick={() => scroll('left')} className="p-2 rounded-lg bg-white/5 border border-white/10 hover:border-aurora-cyan/50 text-gray-400 hover:text-aurora-cyan"><ChevronLeft className="w-4 h-4" /></button>
             <button onClick={() => scroll('right')} className="p-2 rounded-lg bg-white/5 border border-white/10 hover:border-aurora-cyan/50 text-gray-400 hover:text-aurora-cyan"><ChevronRight className="w-4 h-4" /></button>
           </div>

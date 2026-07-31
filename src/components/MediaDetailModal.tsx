@@ -30,7 +30,7 @@ export default function MediaDetailModal({ mediaId, mediaType, onClose }: { medi
             <div className="p-6 md:p-10 grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="space-y-6">
                 {media.poster_path && <img src={`${import.meta.env.VITE_TMDB_IMAGE_BASE_URL}${media.poster_path}`} alt="" className="w-full rounded-xl" />}
-                <button onClick={() => toggleFavorite({ id: String(media.id), title: media.title || media.name || '', type: mediaType })} className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold ${isFavorite ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-white hover:bg-white/10'}`}>
+                <button onClick={() => toggleFavorite({ id: String(media.id), title: media.title || media.name || '', type: mediaType, poster: media.poster_path || undefined })} className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold ${isFavorite ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-white hover:bg-white/10'}`}>
                   <Heart className={`w-5 h-5 ${isFavorite ? 'fill-aurora-black' : ''}`} /> {isFavorite ? 'En Favoritos' : 'Añadir a Favoritos'}
                 </button>
               </div>

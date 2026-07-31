@@ -4,6 +4,7 @@ import { useSearchMedia } from '../hooks/useTMDB';
 import MediaCard from '../components/MediaCard';
 import MediaDetailModal from '../components/MediaDetailModal';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const AUTO_QUERIES = [
   { term: 'UFO', title: 'OVNI / UAP' },
@@ -19,6 +20,7 @@ const AUTO_QUERIES = [
 ];
 
 export default function Catalogo() {
+  useDocumentTitle('Catálogo');
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQuery = searchParams.get('q') || '';
   
