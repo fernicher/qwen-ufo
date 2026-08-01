@@ -15,6 +15,7 @@ export const channels: Channel[] = [
   { id: 'mundo-desconocido', name: 'Mundo Desconocido', lang: 'es', description: 'Canal español veterano de misterio y ufología con producción propia.', query: yt('Mundo Desconocido ovnis') },
   { id: 'ovni-hunters', name: 'National Geographic — OVNIs', lang: 'es', description: 'Documentales de National Geographic en español sobre el fenómeno.', query: yt('National Geographic ovnis documental español') },
   { id: 'maussan-tv', name: 'Tercer Milenio (Jaime Maussan)', lang: 'es', description: 'Canal del divulgador mexicano. Muy popular; mirar con criterio.', query: yt('Tercer Milenio Jaime Maussan ovnis') },
+  { id: 'la-senal', name: 'La Señal (ciencia y misterios)', lang: 'es', description: 'Programa argentino conducido por Andrea Pérez Simondini con Joaquín Abenza y José Antonio Caravaca. Casos, entrevistas y análisis de ufología con enfoque serio.', query: yt('La Señal ciencia y misterios cienciaymisterio ovnis') },
   // -------- Inglés --------
   { id: 'why-files', name: 'The Why Files', lang: 'en', description: 'Uno de los canales más grandes de misterio y UAP, con guion cuidado y humor. Muy recomendable para arrancar.', query: yt('The Why Files UFO UAP') },
   { id: 'richard-dolan-yt', name: 'Richard Dolan Intelligent Disclosure', lang: 'en', description: 'El canal del historiador Richard Dolan: enfoque documental y riguroso.', query: yt('Richard Dolan Intelligent Disclosure') },

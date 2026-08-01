@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Book, Headphones, Search, Star, ExternalLink, MonitorPlay, Users, Globe } from 'lucide-react';
+import { Book, Headphones, Search, Star, ExternalLink, MonitorPlay, Users, Globe, Lock, Landmark } from 'lucide-react';
 import { books } from '../data/books';
 import { podcasts } from '../data/podcasts';
 import { channels } from '../data/channels';
 import { divulgadores } from '../data/divulgadores';
+import { declassifications } from '../data/declassifications';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
 import BookCard from '../components/BookCard';
 
-type Tab = 'libros' | 'podcasts' | 'canales' | 'divulgadores';
+type Tab = 'libros' | 'podcasts' | 'canales' | 'divulgadores' | 'desclasificaciones';
 
 const tags: Record<string, string> = {
   divulgador: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
@@ -69,12 +70,14 @@ export default function Biblioteca() {
   const fPodcasts = podcasts.filter((p) => p.title.toLowerCase().includes(q) || p.host.toLowerCase().includes(q));
   const fChannels = channels.filter((c) => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
   const fDivulgadores = divulgadores.filter((d) => d.name.toLowerCase().includes(q) || d.role.toLowerCase().includes(q));
+  const fDeclassifications = declassifications.filter((d) => d.country.toLowerCase().includes(q) || d.title.toLowerCase().includes(q) || d.agency.toLowerCase().includes(q));
 
   const tabsDef = [
     { id: 'libros' as Tab, label: 'Libros', icon: Book, count: books.length },
     { id: 'podcasts' as Tab, label: 'Podcasts', icon: Headphones, count: podcasts.length },
     { id: 'canales' as Tab, label: 'Canales', icon: MonitorPlay, count: channels.length },
     { id: 'divulgadores' as Tab, label: 'Divulgadores', icon: Users, count: divulgadores.length },
+    { id: 'desclasificaciones' as Tab, label: 'Desclasificaciones', icon: Lock, count: declassifications.length },
   ];
 
   return (
@@ -160,6 +163,25 @@ export default function Biblioteca() {
           fDivulgadores.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {fDivulgadores.map((d) => <DivulgadorCard key={d.id} d={d} />)}
+            </div>
+          ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
+        )}
+
+        {tab === 'desclasificaciones' && (
+          fDeclassifications.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {fDeclassifications.map((d) => (
+                <a key={d.id} href={d.url} target="_blank" rel="noopener noreferrer" className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-emerald-400/30 transition-all block">
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center"><Landmark className="w-5 h-5 text-emerald-400" /></div>
+                    <span className="text-[10px] font-bold px-2 py-1 rounded border border-white/10 bg-white/5 text-gray-400 uppercase flex items-center gap-1"><Globe className="w-3 h-3" />{d.country}</span>
+                  </div>
+                  <h3 className="font-display font-bold text-white group-hover:text-emerald-400 mb-1">{d.title}</h3>
+                  <p className="text-xs text-emerald-400/80 mb-2">{d.agency} · {d.period}</p>
+                  <p className="text-sm text-gray-400">{d.description}</p>
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-400 mt-3">Ver archivo oficial <ExternalLink className="w-3 h-3" /></span>
+                </a>
+              ))}
             </div>
           ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
         )}

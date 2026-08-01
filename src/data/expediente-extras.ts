@@ -34,6 +34,9 @@ const raw: Record<string, { wiki?: string; ytTerms: string }> = {
   'guadalupe-2004': { ytTerms: 'ovni Guadalupe 2004' },
   'san-jose-1979': { ytTerms: 'caso San José 1979 ovni' },
   'mapendulo-1995': { ytTerms: 'Ariel School Ruwa 1994 UFO children documentary' },
+  'uritorco-1986': { ytTerms: 'cerro Uritorco Capilla del Monte ovni 1986 Sierra del Pajarillo documental' },
+  'erks-uritorco': { ytTerms: 'ciudad de Erks Uritorco leyenda documental' },
+  'ingeniero-white-1975': { ytTerms: 'Carlos Díaz Ingeniero White ovni Bahía Blanca Constitución documental' },
 };
 
 export const expedienteExtras: Record<string, ExpedienteExtra> = Object.fromEntries(

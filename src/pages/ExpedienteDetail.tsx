@@ -31,6 +31,9 @@ const probColors: Record<string, string> = {
 
 const credHex: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
 
+/** Parsea 'YYYY-MM-DD' como fecha local para evitar que timezones detrás de UTC muestren el día anterior. */
+const parseLocalDate = (dateStr: string) => new Date(`${dateStr}T00:00:00`);
+
 const typeLabels: Record<string, string> = {
   avistamiento: 'Avistamiento',
   aterrizaje: 'Aterrizaje',
@@ -83,7 +86,7 @@ export default function ExpedienteDetail() {
           <CaseHero exp={exp} wiki={extra.wiki} />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
-            <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-aurora-cyan" />{new Date(exp.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-aurora-cyan" />{parseLocalDate(exp.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
             <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" />{exp.location}, {exp.country}</span>
           </div>
           <p className="text-lg text-gray-300 leading-relaxed max-w-4xl">{exp.fullDescription}</p>
@@ -150,7 +153,7 @@ export default function ExpedienteDetail() {
                           <p className="text-sm font-medium text-white">{d.title}</p>
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-gray-400">{d.classification}</span>
                         </div>
-                        <p className="text-xs text-gray-500 mb-1">{d.agency ? `${d.agency} • ` : ''}{new Date(d.date).getFullYear()} • {d.pages} pág.</p>
+                        <p className="text-xs text-gray-500 mb-1">{d.agency ? `${d.agency} • ` : ''}{parseLocalDate(d.date).getFullYear()} • {d.pages} pág.</p>
                         <p className="text-sm text-gray-300">{d.summary}</p>
                       </div>
                     </div>
@@ -170,7 +173,7 @@ export default function ExpedienteDetail() {
                         {i < exp.timeline.length - 1 && <div className="w-px flex-1 bg-white/10 mt-1" />}
                       </div>
                       <div className="pb-4">
-                        <p className="text-xs text-aurora-cyan font-semibold mb-0.5">{new Date(t.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                        <p className="text-xs text-aurora-cyan font-semibold mb-0.5">{parseLocalDate(t.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
                         <p className="text-sm text-gray-300">{t.event}</p>
                       </div>
                     </div>
