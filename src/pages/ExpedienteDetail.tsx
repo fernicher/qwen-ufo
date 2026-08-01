@@ -1,10 +1,13 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download, MonitorPlay, BookOpen } from 'lucide-react';
 import { getExpediente } from '../data/expedientes';
 import { investigators } from '../data/investigators';
 import { ufoCases } from '../data/cases';
+import { books } from '../data/books';
+import { getExtra } from '../data/expediente-extras';
 import CaseTypeIcon from '../components/CaseTypeIcon';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useWikiPoster } from '../hooks/useWikiPoster';
 
 const credColors: Record<string, string> = {
   A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
@@ -59,6 +62,9 @@ export default function ExpedienteDetail() {
     .sort((a, b) => (a.type === exp.type && b.type !== exp.type ? -1 : a.country === exp.country && b.country !== exp.country ? -1 : 0))
     .slice(0, 3);
 
+  const extra = getExtra(exp.id);
+  const relatedBooks = books.filter((b) => Array.isArray(b.relatedCases) && b.relatedCases.includes(exp.id));
+
   return (
     <div className="min-h-screen">
       <div className="sticky top-16 z-40 bg-aurora-black/80 backdrop-blur-xl border-b border-white/5">
@@ -74,15 +80,8 @@ export default function ExpedienteDetail() {
             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{statusLabels[exp.investigationStatus]}</span>
             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{typeLabels[exp.type]}</span>
           </div>
-          <div className="flex items-start gap-5">
-            <div
-              className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl items-center justify-center border"
-              style={{ borderColor: `${credHex[exp.credibility]}40`, background: `radial-gradient(circle, ${credHex[exp.credibility]}1a 0%, transparent 70%)` }}
-            >
-              <CaseTypeIcon type={exp.type} color={credHex[exp.credibility]} size={44} />
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
-          </div>
+          <CaseHero exp={exp} wiki={extra.wiki} />
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
             <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-aurora-cyan" />{new Date(exp.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
             <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" />{exp.location}, {exp.country}</span>
@@ -187,6 +186,32 @@ export default function ExpedienteDetail() {
                 {exp.culturalImpact && <p className="text-sm text-gray-300 leading-relaxed"><span className="text-white font-semibold">Impacto cultural: </span>{exp.culturalImpact}</p>}
               </section>
             )}
+
+            <section className="bg-aurora-charcoal/60 border border-white/5 rounded-xl p-6">
+              <h2 className="text-xl font-display font-bold mb-3 flex items-center gap-2"><MonitorPlay className="w-5 h-5 text-red-500" /> Videos y documentales</h2>
+              <p className="text-sm text-gray-400 mb-4">Documentales, análisis y material de archivo sobre este caso en YouTube.</p>
+              <a href={extra.youtubeQuery} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold hover:bg-red-500/20">
+                <MonitorPlay className="w-4 h-4" /> Ver videos sobre este caso
+              </a>
+            </section>
+
+            {relatedBooks.length > 0 && (
+              <section className="bg-aurora-charcoal/60 border border-white/5 rounded-xl p-6">
+                <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-amber-400" /> Bibliografía relacionada</h2>
+                <div className="space-y-3">
+                  {relatedBooks.map((b) => (
+                    <a key={b.id} href={b.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 group">
+                      <BookOpen className="w-4 h-4 text-amber-400/60 mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-white group-hover:text-amber-400">{b.title}</p>
+                        <p className="text-xs text-gray-500">{b.authors.join(', ')} • {b.year}</p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+                <Link to="/biblioteca" className="inline-block mt-4 text-xs font-semibold text-amber-400 hover:text-amber-300">Ver toda la biblioteca →</Link>
+              </section>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -235,6 +260,28 @@ export default function ExpedienteDetail() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function CaseHero({ exp, wiki }: { exp: any; wiki?: string }) {
+  const { poster } = useWikiPoster(wiki || '');
+  const credHexMap: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
+  const hex = credHexMap[exp.credibility];
+  if (poster) {
+    return (
+      <div className="relative w-full h-56 sm:h-72 rounded-2xl overflow-hidden mb-6 border border-white/10">
+        <img src={poster} alt={exp.title} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-aurora-black via-aurora-black/40 to-transparent" />
+      </div>
+    );
+  }
+  return (
+    <div
+      className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl items-center justify-center border mb-6"
+      style={{ borderColor: `${hex}40`, background: `radial-gradient(circle, ${hex}1a 0%, transparent 70%)` }}
+    >
+      <CaseTypeIcon type={exp.type} color={hex} size={44} />
     </div>
   );
 }

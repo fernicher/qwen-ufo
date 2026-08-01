@@ -1,0 +1,724 @@
+diff --git a/src/components/BookCard.tsx b/src/components/BookCard.tsx
+new file mode 100644
+index 0000000..89b100d
+--- /dev/null
++++ b/src/components/BookCard.tsx
+@@ -0,0 +1,53 @@
++import { Star, ExternalLink, BookOpen } from 'lucide-react';
++import { useBookData } from '../hooks/useBookData';
++
++interface BookCardProps {
++  book: any;
++}
++
++export default function BookCard({ book }: BookCardProps) {
++  const author = book.authors?.[0] || '';
++  const { cover, isbn, loading } = useBookData(book.title, author);
++
++  return (
++    <div className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-amber-400/30 transition-all flex flex-col">
++      <div className="flex gap-4 p-4">
++        <div className="relative w-24 shrink-0 aspect-[2/3] rounded-lg overflow-hidden bg-gradient-to-br from-amber-500/15 to-orange-600/10 flex items-center justify-center">
++          {cover ? (
++            <img src={cover} alt={book.title} loading="lazy" className="w-full h-full object-cover" />
++          ) : (
++            <div className="flex flex-col items-center gap-2 p-2 text-center">
++              <BookOpen className="w-7 h-7 text-amber-400/70" strokeWidth={1.5} />
++              {loading && <div className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />}
++            </div>
++          )}
++        </div>
++        <div className="flex-1 min-w-0">
++          <div className="flex items-start justify-between gap-2">
++            <h3 className="font-display font-bold text-white text-sm leading-tight group-hover:text-amber-400">{book.title}</h3>
++            {book.essential && <Star className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />}
++          </div>
++          <p className="text-xs text-gray-500 mt-1 mb-1">{book.authors.join(', ')} • {book.year}</p>
++          {book.rating && (
++            <div className="flex items-center gap-1 mb-2">
++              <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
++              <span className="text-xs font-semibold">{book.rating}/10</span>
++            </div>
++          )}
++          <span className="inline-block text-[10px] px-2 py-0.5 rounded bg-white/5 text-gray-400 uppercase">{book.category}</span>
++        </div>
++      </div>
++      <div className="px-4 pb-4 flex flex-col flex-1">
++        <p className="text-sm text-gray-300 line-clamp-3 flex-1">{book.description}</p>
++        <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between gap-2">
++          <span className="text-[10px] text-gray-600 font-mono">{isbn ? `ISBN ${isbn}` : ''}</span>
++          {book.url && (
++            <a href={book.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium text-amber-400 hover:text-amber-300 shrink-0">
++              Buscar libro <ExternalLink className="w-3 h-3" />
++            </a>
++          )}
++        </div>
++      </div>
++    </div>
++  );
++}
+diff --git a/src/components/ExpedienteCard.tsx b/src/components/ExpedienteCard.tsx
+new file mode 100644
+index 0000000..00d23cf
+--- /dev/null
++++ b/src/components/ExpedienteCard.tsx
+@@ -0,0 +1,62 @@
++import { Link } from 'react-router-dom';
++import { MapPin, Calendar, Shield } from 'lucide-react';
++import CaseTypeIcon from './CaseTypeIcon';
++import { getExtra } from '../data/expediente-extras';
++import { useWikiPoster } from '../hooks/useWikiPoster';
++
++const credColors: Record<string, string> = {
++  A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
++  B: 'text-blue-400 border-blue-400/40 bg-blue-400/10',
++  C: 'text-purple-400 border-purple-400/40 bg-purple-400/10',
++};
++const credHex: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
++const typeLabels: Record<string, string> = {
++  avistamiento: 'Avistamiento', aterrizaje: 'Aterrizaje', contacto: 'Contacto',
++  radar: 'Detección por radar', fotografico: 'Registro fotográfico',
++};
++
++export default function ExpedienteCard({ c }: { c: any }) {
++  const hex = credHex[c.credibility];
++  const extra = getExtra(c.id);
++  const { poster } = useWikiPoster(extra.wiki || '');
++
++  return (
++    <Link to={`/expedientes/${c.id}`} className="group block bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-aurora-cyan/30 transition-all">
++      <div
++        className="relative h-44 flex items-center justify-center overflow-hidden"
++        style={{ background: `radial-gradient(circle at 50% 40%, ${hex}22 0%, transparent 60%), linear-gradient(135deg, rgba(15,23,42,0.6), rgba(18,18,22,0.9))` }}
++      >
++        {poster ? (
++          <>
++            <img src={poster} alt={c.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
++            <div className="absolute inset-0 bg-gradient-to-t from-aurora-black via-aurora-black/30 to-transparent" />
++          </>
++        ) : (
++          <>
++            <svg className="absolute inset-0 w-full h-full opacity-25" aria-hidden="true">
++              <circle cx="50%" cy="50%" r="30" fill="none" stroke={hex} strokeWidth="1" opacity="0.4" />
++              <circle cx="50%" cy="50%" r="55" fill="none" stroke={hex} strokeWidth="1" opacity="0.25" />
++              <circle cx="50%" cy="50%" r="80" fill="none" stroke={hex} strokeWidth="1" opacity="0.12" />
++            </svg>
++            <CaseTypeIcon type={c.type} color={hex} size={72} className="relative drop-shadow-[0_0_12px_rgba(34,211,238,0.25)] group-hover:scale-110 transition-transform duration-300" />
++          </>
++        )}
++        <div className="absolute top-4 right-4 z-10">
++          <span className={`text-xs font-bold px-2 py-1 rounded border ${credColors[c.credibility]}`}><Shield className="w-3 h-3 inline mr-1" />{c.credibility}</span>
++        </div>
++        <span className="absolute bottom-3 left-4 z-10 text-[10px] uppercase tracking-wider text-gray-300">{typeLabels[c.type]}</span>
++      </div>
++      <div className="p-6">
++        <h3 className="font-display font-bold text-xl text-white mb-2 group-hover:text-aurora-cyan">{c.title}</h3>
++        <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
++          <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{c.date.split('-')[0]}</span>
++          <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{c.country}</span>
++        </div>
++        <p className="text-sm text-gray-300 line-clamp-3">{c.description}</p>
++        <div className="mt-4 pt-4 border-t border-white/5 flex flex-wrap gap-1.5">
++          {c.tags.slice(0, 3).map((t: string) => <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-gray-400">{t}</span>)}
++        </div>
++      </div>
++    </Link>
++  );
++}
+diff --git a/src/data/channels.ts b/src/data/channels.ts
+new file mode 100644
+index 0000000..36fd6d0
+--- /dev/null
++++ b/src/data/channels.ts
+@@ -0,0 +1,24 @@
++export interface Channel {
++  id: string;
++  name: string;
++  lang: 'es' | 'en';
++  description: string;
++  /** Búsqueda de YouTube: robusta, nunca queda rota aunque el canal cambie de handle. */
++  query: string;
++}
++
++const yt = (q: string) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
++
++export const channels: Channel[] = [
++  // -------- Español --------
++  { id: 'cuarto-milenio', name: 'Cuarto Milenio', lang: 'es', description: 'El programa de Iker Jiménez, la mayor referencia del misterio y la ufología en español.', query: yt('Cuarto Milenio ovnis Iker Jiménez') },
++  { id: 'mundo-desconocido', name: 'Mundo Desconocido', lang: 'es', description: 'Canal español veterano de misterio y ufología con producción propia.', query: yt('Mundo Desconocido ovnis') },
++  { id: 'ovni-hunters', name: 'National Geographic — OVNIs', lang: 'es', description: 'Documentales de National Geographic en español sobre el fenómeno.', query: yt('National Geographic ovnis documental español') },
++  { id: 'maussan-tv', name: 'Tercer Milenio (Jaime Maussan)', lang: 'es', description: 'Canal del divulgador mexicano. Muy popular; mirar con criterio.', query: yt('Tercer Milenio Jaime Maussan ovnis') },
++  // -------- Inglés --------
++  { id: 'why-files', name: 'The Why Files', lang: 'en', description: 'Uno de los canales más grandes de misterio y UAP, con guion cuidado y humor. Muy recomendable para arrancar.', query: yt('The Why Files UFO UAP') },
++  { id: 'richard-dolan-yt', name: 'Richard Dolan Intelligent Disclosure', lang: 'en', description: 'El canal del historiador Richard Dolan: enfoque documental y riguroso.', query: yt('Richard Dolan Intelligent Disclosure') },
++  { id: 'corbell-yt', name: 'Jeremy Corbell / Weaponized', lang: 'en', description: 'Material militar verificado y entrevistas a whistleblowers, junto a George Knapp.', query: yt('Jeremy Corbell Weaponized podcast UAP') },
++  { id: 'jesse-michels', name: 'American Alchemy (Jesse Michels)', lang: 'en', description: 'Entrevistas largas y bien producidas con figuras clave del tema UAP y la ciencia de frontera.', query: yt('American Alchemy Jesse Michels UAP') },
++  { id: 'news-nation-uap', name: 'NewsNation — Cobertura UAP', lang: 'en', description: 'El canal de noticias que más cubre las audiencias del Congreso sobre UAP, con Ross Coulthart.', query: yt('NewsNation UAP hearing Coulthart') },
++];
+diff --git a/src/data/divulgadores.ts b/src/data/divulgadores.ts
+new file mode 100644
+index 0000000..de4ca55
+--- /dev/null
++++ b/src/data/divulgadores.ts
+@@ -0,0 +1,27 @@
++export interface Divulgador {
++  id: string;
++  name: string;
++  role: string;
++  country: string;
++  lang: 'es' | 'en';
++  bio: string;
++  /** Título del artículo en Wikipedia (para la foto, sin API key). */
++  wiki: string;
++  tag: 'divulgador' | 'testigo' | 'periodista' | 'militar' | 'científico' | 'controvertido';
++}
++
++export const divulgadores: Divulgador[] = [
++  { id: 'lue-elizondo', name: 'Luis "Lue" Elizondo', role: 'Ex director del programa AATIP del Pentágono', country: 'EE.UU.', lang: 'en', tag: 'militar', wiki: 'Luis_Elizondo', bio: 'Ex agente de contrainteligencia que dirigió el programa secreto del Pentágono para estudiar fenómenos aéreos no identificados. Su renuncia en 2017 destapó la existencia del AATIP y disparó la conversación moderna sobre UAP.' },
++  { id: 'david-grusch', name: 'David Grusch', role: 'Ex oficial de inteligencia y whistleblower', country: 'EE.UU.', lang: 'en', tag: 'militar', wiki: 'David_Grusch', bio: 'Ex oficial de la Fuerza Aérea e inteligencia que en 2023 declaró bajo juramento ante el Congreso que EE.UU. mantiene un programa de recuperación de naves de origen no humano. Sus afirmaciones son tan resonantes como discutidas.' },
++  { id: 'bob-lazar', name: 'Bob Lazar', role: 'Supuesto físico del Área 51 / S-4', country: 'EE.UU.', lang: 'en', tag: 'controvertido', wiki: 'Bob_Lazar', bio: 'Afirma haber trabajado en ingeniería inversa de naves extraterrestres en la instalación S-4, cerca del Área 51, a fines de los 80. Su historia es fundacional en el mito moderno del Área 51, aunque nunca pudo probarse.' },
++  { id: 'steven-greer', name: 'Dr. Steven Greer', role: 'Fundador del Disclosure Project', country: 'EE.UU.', lang: 'en', tag: 'controvertido', wiki: 'Steven_M._Greer', bio: 'Médico que abandonó la medicina para dedicarse a la divulgación OVNI. Creó el Disclosure Project y los protocolos de "contacto CE-5". Figura muy discutida: sus métodos y afirmaciones no tienen respaldo científico.' },
++  { id: 'ross-coulthart', name: 'Ross Coulthart', role: 'Periodista de investigación', country: 'Australia', lang: 'en', tag: 'periodista', wiki: 'Ross_Coulthart', bio: 'Periodista australiano premiado que llevó el tema UAP a los medios masivos con entrevistas a whistleblowers como David Grusch. Autor de "In Plain Sight".' },
++  { id: 'leslie-kean', name: 'Leslie Kean', role: 'Periodista de investigación', country: 'EE.UU.', lang: 'en', tag: 'periodista', wiki: 'Leslie_Kean', bio: 'Co-autora del artículo del New York Times de 2017 que reveló el programa AATIP y cambió para siempre la cobertura seria del fenómeno. Autora del best-seller "UFOs".' },
++  { id: 'jeremy-corbell', name: 'Jeremy Corbell', role: 'Cineasta e investigador', country: 'EE.UU.', lang: 'en', tag: 'divulgador', wiki: 'Jeremy_Kenyon_Lockyer_Corbell', bio: 'Documentalista que difundió material militar verificado (los videos del Tic Tac, las "esferas") y dirigió documentales sobre Bob Lazar y el fenómeno. Coconduce el podcast Weaponized con George Knapp.' },
++  { id: 'richard-dolan', name: 'Richard Dolan', role: 'Historiador del fenómeno OVNI', country: 'EE.UU.', lang: 'en', tag: 'divulgador', wiki: 'Richard_M._Dolan', bio: 'Historiador que documenta el fenómeno con enfoque en los archivos gubernamentales. Su serie "UFOs and the National Security State" es una referencia por su rigor documental.' },
++  { id: 'linda-moulton-howe', name: 'Linda Moulton Howe', role: 'Periodista de investigación', country: 'EE.UU.', lang: 'en', tag: 'periodista', wiki: 'Linda_Moulton_Howe', bio: 'Ganadora de premios Emmy, instaló en los 80 el misterio de las mutilaciones de ganado con su documental "A Strange Harvest". Editora de Earthfiles.' },
++  { id: 'travis-walton', name: 'Travis Walton', role: 'Testigo / abducido', country: 'EE.UU.', lang: 'en', tag: 'testigo', wiki: 'Travis_Walton', bio: 'Leñador de Arizona que en 1975 denunció haber sido abducido durante cinco días frente a sus compañeros de trabajo. Su caso inspiró la película "Fire in the Sky".' },
++  { id: 'stanton-friedman', name: 'Stanton Friedman', role: 'Físico nuclear y ufólogo', country: 'Canadá / EE.UU.', lang: 'en', tag: 'científico', wiki: 'Stanton_T._Friedman', bio: 'Físico nuclear que fue el primer investigador civil de Roswell y defensor de los documentos Majestic-12. Divulgador incansable hasta su muerte en 2019.' },
++  { id: 'iker-jimenez', name: 'Iker Jiménez', role: 'Periodista y comunicador', country: 'España', lang: 'es', tag: 'periodista', wiki: 'Iker_Jiménez', bio: 'El gran referente del misterio en español. Conduce "Cuarto Milenio", el programa de televisión sobre fenómenos anómalos más longevo e influyente del mundo hispanohablante.' },
++  { id: 'jaime-maussan', name: 'Jaime Maussan', role: 'Periodista y ufólogo', country: 'México', lang: 'es', tag: 'controvertido', wiki: 'Jaime_Maussan', bio: 'El divulgador OVNI más conocido de Latinoamérica. Muy popular pero también muy cuestionado: varias de las "pruebas" que presentó fueron desmentidas. Tomalo con espíritu crítico.' },
++];
+diff --git a/src/data/expediente-extras.ts b/src/data/expediente-extras.ts
+new file mode 100644
+index 0000000..4df5ca4
+--- /dev/null
++++ b/src/data/expediente-extras.ts
+@@ -0,0 +1,45 @@
++export interface ExpedienteExtra {
++  /** Título del artículo en Wikipedia (EN) para traer la foto del caso sin API key. */
++  wiki?: string;
++  /** Texto para buscar videos/documentales del caso en YouTube. */
++  youtubeQuery: string;
++}
++
++const ytSearch = (q: string) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
++
++/**
++ * Solo se cargan wiki de casos con artículo de Wikipedia confirmado, para evitar
++ * fotos equivocadas. Los que no tienen wiki usan el ícono ilustrado como antes.
++ * La búsqueda de YouTube siempre está disponible.
++ */
++const raw: Record<string, { wiki?: string; ytTerms: string }> = {
++  'roswell-1947': { wiki: 'Roswell_incident', ytTerms: 'Roswell incident 1947 documental' },
++  'rendlesham-1980': { wiki: 'Rendlesham_Forest_incident', ytTerms: 'Rendlesham Forest incident documentary' },
++  'phoenix-1997': { wiki: 'Phoenix_Lights', ytTerms: 'Phoenix Lights 1997 documental' },
++  'tic-tac-2004': { wiki: 'USS_Nimitz_UFO_incident', ytTerms: 'USS Nimitz Tic Tac UFO documentary' },
++  'belgica-1989': { wiki: 'Belgian_UFO_wave', ytTerms: 'Belgian UFO wave 1990 documental' },
++  'tehran-1976': { wiki: '1976_Tehran_UFO_incident', ytTerms: '1976 Tehran UFO incident documentary' },
++  'varginha-1996': { wiki: 'Varginha_UFO_incident', ytTerms: 'caso Varginha 1996 documental' },
++  'gimbal-2015': { wiki: 'Pentagon_UFO_videos', ytTerms: 'Gimbal UFO Pentagon video' },
++  'operacao-prato-1977': { wiki: 'Colares_UFO_flap', ytTerms: 'Operação Prato Colares OVNI documentário' },
++  'campeche-2004': { wiki: '2004_Mexican_UFO_incident', ytTerms: 'caso Campeche 2004 ovni México' },
++  'skinwalker': { wiki: 'Skinwalker_Ranch', ytTerms: 'Skinwalker Ranch documentary' },
++  'trelew-1962': { ytTerms: 'caso Trelew 1962 ovni Argentina' },
++  'bariloche-1995': { ytTerms: 'caso Bariloche 1995 ovni avión' },
++  'la-aurora-1977': { ytTerms: 'caso La Aurora 1977 ovni Uruguay' },
++  'cabo-valdes-1977': { ytTerms: 'caso Cabo Valdés 1977 ovni Chile' },
++  'anolaima-1969': { ytTerms: 'caso Anolaima 1969 ovni Colombia' },
++  'chile-2014': { ytTerms: 'caso ovni Chile 2014 CEFAA helicóptero' },
++  'penas-1976': { ytTerms: 'caso Cañas 1976 ovni' },
++  'guadalupe-2004': { ytTerms: 'ovni Guadalupe 2004' },
++  'san-jose-1979': { ytTerms: 'caso San José 1979 ovni' },
++  'mapendulo-1995': { ytTerms: 'Ariel School Ruwa 1994 UFO children documentary' },
++};
++
++export const expedienteExtras: Record<string, ExpedienteExtra> = Object.fromEntries(
++  Object.entries(raw).map(([id, v]) => [id, { wiki: v.wiki, youtubeQuery: ytSearch(v.ytTerms) }])
++);
++
++export function getExtra(caseId: string): ExpedienteExtra {
++  return expedienteExtras[caseId] || { youtubeQuery: ytSearch('ovni UAP documental') };
++}
+diff --git a/src/hooks/useBookData.ts b/src/hooks/useBookData.ts
+new file mode 100644
+index 0000000..269f91a
+--- /dev/null
++++ b/src/hooks/useBookData.ts
+@@ -0,0 +1,49 @@
++import { useEffect, useState } from 'react';
++
++/**
++ * Trae portada e ISBN de un libro usando la API pública de Open Library.
++ * No necesita API key ni variables de entorno. Cachea en memoria por sesión.
++ */
++
++interface BookData { cover: string | null; isbn: string | null; }
++type CacheState = { status: 'loading' | 'done'; data: BookData };
++
++const cache = new Map<string, CacheState>();
++const listeners = new Map<string, Set<() => void>>();
++
++function notify(key: string) {
++  listeners.get(key)?.forEach((cb) => cb());
++}
++
++async function fetchBook(key: string, title: string, author: string) {
++  cache.set(key, { status: 'loading', data: { cover: null, isbn: null } });
++  try {
++    const params = new URLSearchParams({ title, author, limit: '1', fields: 'cover_i,isbn' });
++    const res = await fetch(`https://openlibrary.org/search.json?${params.toString()}`);
++    if (!res.ok) throw new Error(String(res.status));
++    const json = await res.json();
++    const doc = json?.docs?.[0];
++    const cover = doc?.cover_i ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg` : null;
++    const isbn = Array.isArray(doc?.isbn) ? doc.isbn.find((x: string) => x.length === 13) || doc.isbn[0] : null;
++    cache.set(key, { status: 'done', data: { cover, isbn } });
++  } catch {
++    cache.set(key, { status: 'done', data: { cover: null, isbn: null } });
++  }
++  notify(key);
++}
++
++export function useBookData(title: string, author: string) {
++  const key = `${title}::${author}`;
++  const [, force] = useState(0);
++
++  useEffect(() => {
++    const rerender = () => force((n) => n + 1);
++    if (!listeners.has(key)) listeners.set(key, new Set());
++    listeners.get(key)!.add(rerender);
++    if (!cache.has(key)) fetchBook(key, title, author);
++    return () => { listeners.get(key)?.delete(rerender); };
++  }, [key, title, author]);
++
++  const state = cache.get(key);
++  return { cover: state?.data.cover ?? null, isbn: state?.data.isbn ?? null, loading: state?.status === 'loading' };
++}
+diff --git a/src/pages/Biblioteca.tsx b/src/pages/Biblioteca.tsx
+index 66d30ba..7e6e306 100644
+--- a/src/pages/Biblioteca.tsx
++++ b/src/pages/Biblioteca.tsx
+@@ -1,116 +1,168 @@
+ import { useEffect, useState } from 'react';
+ import { useSearchParams } from 'react-router-dom';
+-import { Book, Headphones, Search, Star, ExternalLink } from 'lucide-react';
++import { Book, Headphones, Search, Star, ExternalLink, MonitorPlay, Users, Globe } from 'lucide-react';
+ import { books } from '../data/books';
+ import { podcasts } from '../data/podcasts';
++import { channels } from '../data/channels';
++import { divulgadores } from '../data/divulgadores';
+ import { useDocumentTitle } from '../hooks/useDocumentTitle';
++import { useWikiPoster } from '../hooks/useWikiPoster';
++import BookCard from '../components/BookCard';
+ 
+-type Tab = 'todos' | 'libros' | 'podcasts' | 'esenciales';
++type Tab = 'libros' | 'podcasts' | 'canales' | 'divulgadores';
++
++const tags: Record<string, string> = {
++  divulgador: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
++  periodista: 'text-blue-400 border-blue-400/40 bg-blue-400/10',
++  militar: 'text-green-400 border-green-400/40 bg-green-400/10',
++  científico: 'text-purple-400 border-purple-400/40 bg-purple-400/10',
++  testigo: 'text-amber-400 border-amber-400/40 bg-amber-400/10',
++  controvertido: 'text-orange-400 border-orange-400/40 bg-orange-400/10',
++};
++
++const tagLabels: Record<string, string> = {
++  divulgador: 'Divulgador', periodista: 'Periodista', militar: 'Ex militar / inteligencia',
++  científico: 'Científico', testigo: 'Testigo', controvertido: 'Controvertido',
++};
++
++function DivulgadorCard({ d }: { d: any }) {
++  const { poster } = useWikiPoster(d.wiki);
++  const initials = d.name.replace(/"[^"]*"/g, '').split(' ').filter(Boolean).map((n: string) => n[0]).slice(0, 2).join('');
++  return (
++    <div className="bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all">
++      <div className="flex items-start gap-4 mb-3">
++        <div className="w-16 h-16 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-amber-500/20 to-orange-600/10 flex items-center justify-center">
++          {poster ? <img src={poster} alt={d.name} loading="lazy" className="w-full h-full object-cover" /> : <span className="text-lg font-display font-bold text-amber-400">{initials}</span>}
++        </div>
++        <div className="min-w-0">
++          <h3 className="font-display font-bold text-white leading-tight">{d.name}</h3>
++          <p className="text-xs text-amber-400/80 mt-0.5">{d.role}</p>
++          <div className="flex items-center gap-1 text-xs text-gray-500 mt-1"><Globe className="w-3 h-3" />{d.country}</div>
++        </div>
++      </div>
++      <p className="text-sm text-gray-300 mb-4">{d.bio}</p>
++      <div className="flex items-center justify-between gap-2">
++        <span className={`text-[10px] font-bold px-2 py-1 rounded border ${tags[d.tag]}`}>{tagLabels[d.tag]}</span>
++        <a href={`https://www.youtube.com/results?search_query=${encodeURIComponent(d.name)}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium text-amber-400 hover:text-amber-300">
++          <MonitorPlay className="w-3.5 h-3.5" /> Ver videos
++        </a>
++      </div>
++    </div>
++  );
++}
+ 
+ export default function Biblioteca() {
+   useDocumentTitle('Biblioteca');
+   const [searchParams, setSearchParams] = useSearchParams();
+-  const [tab, setTab] = useState<Tab>('todos');
++  const [tab, setTab] = useState<Tab>('libros');
+   const [query, setQuery] = useState(searchParams.get('q') || '');
+ 
+-  useEffect(() => {
+-    setQuery(searchParams.get('q') || '');
+-  }, [searchParams]);
++  useEffect(() => { setQuery(searchParams.get('q') || ''); }, [searchParams]);
+ 
+   const handleQueryChange = (value: string) => {
+     setQuery(value);
+     if (value) setSearchParams({ q: value }); else setSearchParams({});
+   };
+ 
+-  const filteredBooks = books.filter(b => b.title.toLowerCase().includes(query.toLowerCase()) && (tab === 'podcasts' ? false : tab === 'esenciales' ? b.essential : true));
+-  const filteredPodcasts = podcasts.filter(p => p.title.toLowerCase().includes(query.toLowerCase()) && (tab === 'libros' ? false : tab === 'esenciales' ? p.essential : true));
++  const q = query.toLowerCase();
++  const fBooks = books.filter((b) => b.title.toLowerCase().includes(q) || b.authors.some((a: string) => a.toLowerCase().includes(q)));
++  const fPodcasts = podcasts.filter((p) => p.title.toLowerCase().includes(q) || p.host.toLowerCase().includes(q));
++  const fChannels = channels.filter((c) => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
++  const fDivulgadores = divulgadores.filter((d) => d.name.toLowerCase().includes(q) || d.role.toLowerCase().includes(q));
++
++  const tabsDef = [
++    { id: 'libros' as Tab, label: 'Libros', icon: Book, count: books.length },
++    { id: 'podcasts' as Tab, label: 'Podcasts', icon: Headphones, count: podcasts.length },
++    { id: 'canales' as Tab, label: 'Canales', icon: MonitorPlay, count: channels.length },
++    { id: 'divulgadores' as Tab, label: 'Divulgadores', icon: Users, count: divulgadores.length },
++  ];
+ 
+   return (
+     <div className="min-h-screen px-4 py-12">
+       <div className="max-w-7xl mx-auto">
+-        <div className="text-center mb-12">
++        <div className="text-center mb-10">
+           <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-amber-400 uppercase border border-amber-400/30 rounded-full bg-amber-400/5">Biblioteca de Conocimiento</span>
+-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Libros y <span className="text-amber-400">Podcasts</span></h1>
+-          <p className="text-gray-400">La colección curada sobre el fenómeno OVNI/UAP</p>
++          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Fuentes y <span className="text-amber-400">Referentes</span></h1>
++          <p className="text-gray-400">Libros, podcasts, canales y las figuras clave del fenómeno OVNI/UAP</p>
+         </div>
++
+         <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+-          {([
+-            { id: 'todos', label: 'Todo', icon: Book },
+-            { id: 'libros', label: 'Libros', icon: Book },
+-            { id: 'podcasts', label: 'Podcasts', icon: Headphones },
+-            { id: 'esenciales', label: 'Esenciales', icon: Star },
+-          ] as const).map((t) => {
++          {tabsDef.map((t) => {
+             const Icon = t.icon;
+             return (
+-              <button key={t.id} onClick={() => setTab(t.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${tab === t.id ? 'bg-amber-400 text-aurora-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}>
+-                <Icon className="w-4 h-4" /> {t.label}
++              <button key={t.id} onClick={() => setTab(t.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === t.id ? 'bg-amber-400 text-aurora-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}>
++                <Icon className="w-4 h-4" /> {t.label} <span className="opacity-60">{t.count}</span>
+               </button>
+             );
+           })}
+         </div>
++
+         <div className="relative max-w-2xl mx-auto mb-10">
+           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+           <input type="text" value={query} onChange={(e) => handleQueryChange(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-amber-400/50" />
+         </div>
+-        <div className="space-y-12">
+-          {filteredBooks.length > 0 && (
+-            <section>
+-              <h2 className="text-2xl font-display font-bold mb-6 flex items-center gap-2"><Book className="w-6 h-6 text-amber-400" /> Libros</h2>
+-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+-                {filteredBooks.map((book) => (
+-                  <div key={book.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all flex flex-col">
+-                    <div className="flex items-start justify-between gap-2 mb-2">
+-                      <h3 className="font-display font-bold text-white group-hover:text-amber-400">{book.title}</h3>
+-                      {book.essential && <Star className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />}
+-                    </div>
+-                    <p className="text-xs text-gray-500 mb-2">{book.authors.join(', ')} • {book.year}</p>
+-                    {book.rating && <div className="flex items-center gap-1 mb-3"><Star className="w-3 h-3 text-amber-400 fill-amber-400" /><span className="text-xs font-semibold">{book.rating}/10</span></div>}
+-                    <p className="text-sm text-gray-300 line-clamp-3 flex-1">{book.description}</p>
+-                    <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between gap-2">
+-                      <span className="text-[10px] px-2 py-1 rounded bg-white/5 text-gray-400 uppercase">{book.category}</span>
+-                      {book.url && (
+-                        <a href={book.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium text-amber-400 hover:text-amber-300">
+-                          Buscar libro <ExternalLink className="w-3 h-3" />
+-                        </a>
+-                      )}
+-                    </div>
++
++        {tab === 'libros' && (
++          fBooks.length > 0 ? (
++            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
++              {fBooks.map((book) => <BookCard key={book.id} book={book} />)}
++            </div>
++          ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
++        )}
++
++        {tab === 'podcasts' && (
++          fPodcasts.length > 0 ? (
++            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
++              {fPodcasts.map((p) => (
++                <div key={p.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all">
++                  <div className="flex items-start justify-between gap-2 mb-2">
++                    <h3 className="font-display font-bold text-white group-hover:text-amber-400">{p.title}</h3>
++                    {p.essential && <Star className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />}
+                   </div>
+-                ))}
+-              </div>
+-            </section>
+-          )}
+-          {filteredPodcasts.length > 0 && (
+-            <section>
+-              <h2 className="text-2xl font-display font-bold mb-6 flex items-center gap-2"><Headphones className="w-6 h-6 text-amber-400" /> Podcasts</h2>
+-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+-                {filteredPodcasts.map((p) => (
+-                  <div key={p.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all">
+-                    <div className="flex items-start justify-between gap-2 mb-2">
+-                      <h3 className="font-display font-bold text-white group-hover:text-amber-400">{p.title}</h3>
+-                      {p.essential && <Star className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />}
+-                    </div>
+-                    <p className="text-xs text-gray-500 mb-2">{p.host}</p>
+-                    {p.rating && <div className="flex items-center gap-1 mb-3"><Star className="w-3 h-3 text-amber-400 fill-amber-400" /><span className="text-xs font-semibold">{p.rating}/10</span></div>}
+-                    <p className="text-sm text-gray-300 line-clamp-3 mb-3">{p.description}</p>
+-                    <div className="flex items-center gap-2 text-xs text-gray-400 mb-4">
+-                      <span>{p.frequency}</span>
+-                      {p.episodes && <span>• {p.episodes} episodios</span>}
++                  <p className="text-xs text-gray-500 mb-2">{p.host}</p>
++                  {p.rating && <div className="flex items-center gap-1 mb-3"><Star className="w-3 h-3 text-amber-400 fill-amber-400" /><span className="text-xs font-semibold">{p.rating}/10</span></div>}
++                  <p className="text-sm text-gray-300 line-clamp-3 mb-3">{p.description}</p>
++                  <div className="flex items-center gap-2 text-xs text-gray-400 mb-4"><span>{p.frequency}</span>{p.episodes && <span>• {p.episodes} episodios</span>}</div>
++                  {p.platforms && p.platforms.length > 0 && (
++                    <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
++                      {p.platforms.map((pl: any) => (
++                        <a key={pl.name} href={pl.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 hover:bg-amber-400/20">
++                          {pl.name} <ExternalLink className="w-3 h-3" />
++                        </a>
++                      ))}
+                     </div>
+-                    {p.platforms && p.platforms.length > 0 && (
+-                      <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
+-                        {p.platforms.map((pl) => (
+-                          <a key={pl.name} href={pl.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 hover:bg-amber-400/20">
+-                            {pl.name} <ExternalLink className="w-3 h-3" />
+-                          </a>
+-                        ))}
+-                      </div>
+-                    )}
++                  )}
++                </div>
++              ))}
++            </div>
++          ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
++        )}
++
++        {tab === 'canales' && (
++          fChannels.length > 0 ? (
++            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
++              {fChannels.map((c) => (
++                <a key={c.id} href={c.query} target="_blank" rel="noopener noreferrer" className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-red-500/30 transition-all block">
++                  <div className="flex items-start justify-between gap-2 mb-2">
++                    <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center"><MonitorPlay className="w-5 h-5 text-red-500" /></div>
++                    <span className="text-[10px] font-bold px-2 py-1 rounded border border-white/10 bg-white/5 text-gray-400 uppercase">{c.lang === 'es' ? 'Español' : 'Inglés'}</span>
+                   </div>
+-                ))}
+-              </div>
+-            </section>
+-          )}
+-        </div>
++                  <h3 className="font-display font-bold text-white group-hover:text-red-400 mb-1">{c.name}</h3>
++                  <p className="text-sm text-gray-400">{c.description}</p>
++                  <span className="inline-flex items-center gap-1 text-xs font-medium text-red-400 mt-3">Abrir en YouTube <ExternalLink className="w-3 h-3" /></span>
++                </a>
++              ))}
++            </div>
++          ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
++        )}
++
++        {tab === 'divulgadores' && (
++          fDivulgadores.length > 0 ? (
++            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
++              {fDivulgadores.map((d) => <DivulgadorCard key={d.id} d={d} />)}
++            </div>
++          ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
++        )}
+       </div>
+     </div>
+   );
+diff --git a/src/pages/ExpedienteDetail.tsx b/src/pages/ExpedienteDetail.tsx
+index e1be250..54fd8b2 100644
+--- a/src/pages/ExpedienteDetail.tsx
++++ b/src/pages/ExpedienteDetail.tsx
+@@ -1,10 +1,13 @@
+ import { useParams, Link } from 'react-router-dom';
+-import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download } from 'lucide-react';
++import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download, MonitorPlay, BookOpen } from 'lucide-react';
+ import { getExpediente } from '../data/expedientes';
+ import { investigators } from '../data/investigators';
+ import { ufoCases } from '../data/cases';
++import { books } from '../data/books';
++import { getExtra } from '../data/expediente-extras';
+ import CaseTypeIcon from '../components/CaseTypeIcon';
+ import { useDocumentTitle } from '../hooks/useDocumentTitle';
++import { useWikiPoster } from '../hooks/useWikiPoster';
+ 
+ const credColors: Record<string, string> = {
+   A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
+@@ -59,6 +62,9 @@ export default function ExpedienteDetail() {
+     .sort((a, b) => (a.type === exp.type && b.type !== exp.type ? -1 : a.country === exp.country && b.country !== exp.country ? -1 : 0))
+     .slice(0, 3);
+ 
++  const extra = getExtra(exp.id);
++  const relatedBooks = books.filter((b) => Array.isArray(b.relatedCases) && b.relatedCases.includes(exp.id));
++
+   return (
+     <div className="min-h-screen">
+       <div className="sticky top-16 z-40 bg-aurora-black/80 backdrop-blur-xl border-b border-white/5">
+@@ -74,15 +80,8 @@ export default function ExpedienteDetail() {
+             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{statusLabels[exp.investigationStatus]}</span>
+             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{typeLabels[exp.type]}</span>
+           </div>
+-          <div className="flex items-start gap-5">
+-            <div
+-              className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl items-center justify-center border"
+-              style={{ borderColor: `${credHex[exp.credibility]}40`, background: `radial-gradient(circle, ${credHex[exp.credibility]}1a 0%, transparent 70%)` }}
+-            >
+-              <CaseTypeIcon type={exp.type} color={credHex[exp.credibility]} size={44} />
+-            </div>
+-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
+-          </div>
++          <CaseHero exp={exp} wiki={extra.wiki} />
++          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
+           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
+             <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-aurora-cyan" />{new Date(exp.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+             <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" />{exp.location}, {exp.country}</span>
+@@ -187,6 +186,32 @@ export default function ExpedienteDetail() {
+                 {exp.culturalImpact && <p className="text-sm text-gray-300 leading-relaxed"><span className="text-white font-semibold">Impacto cultural: </span>{exp.culturalImpact}</p>}
+               </section>
+             )}
++
++            <section className="bg-aurora-charcoal/60 border border-white/5 rounded-xl p-6">
++              <h2 className="text-xl font-display font-bold mb-3 flex items-center gap-2"><MonitorPlay className="w-5 h-5 text-red-500" /> Videos y documentales</h2>
++              <p className="text-sm text-gray-400 mb-4">Documentales, análisis y material de archivo sobre este caso en YouTube.</p>
++              <a href={extra.youtubeQuery} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold hover:bg-red-500/20">
++                <MonitorPlay className="w-4 h-4" /> Ver videos sobre este caso
++              </a>
++            </section>
++
++            {relatedBooks.length > 0 && (
++              <section className="bg-aurora-charcoal/60 border border-white/5 rounded-xl p-6">
++                <h2 className="text-xl font-display font-bold mb-4 flex items-center gap-2"><BookOpen className="w-5 h-5 text-amber-400" /> Bibliografía relacionada</h2>
++                <div className="space-y-3">
++                  {relatedBooks.map((b) => (
++                    <a key={b.id} href={b.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 group">
++                      <BookOpen className="w-4 h-4 text-amber-400/60 mt-0.5 shrink-0" />
++                      <div>
++                        <p className="text-sm font-medium text-white group-hover:text-amber-400">{b.title}</p>
++                        <p className="text-xs text-gray-500">{b.authors.join(', ')} • {b.year}</p>
++                      </div>
++                    </a>
++                  ))}
++                </div>
++                <Link to="/biblioteca" className="inline-block mt-4 text-xs font-semibold text-amber-400 hover:text-amber-300">Ver toda la biblioteca →</Link>
++              </section>
++            )}
+           </div>
+ 
+           <div className="space-y-4">
+@@ -238,3 +263,25 @@ export default function ExpedienteDetail() {
+     </div>
+   );
+ }
++
++function CaseHero({ exp, wiki }: { exp: any; wiki?: string }) {
++  const { poster } = useWikiPoster(wiki || '');
++  const credHexMap: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
++  const hex = credHexMap[exp.credibility];
++  if (poster) {
++    return (
++      <div className="relative w-full h-56 sm:h-72 rounded-2xl overflow-hidden mb-6 border border-white/10">
++        <img src={poster} alt={exp.title} className="w-full h-full object-cover" />
++        <div className="absolute inset-0 bg-gradient-to-t from-aurora-black via-aurora-black/40 to-transparent" />
++      </div>
++    );
++  }
++  return (
++    <div
++      className="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl items-center justify-center border mb-6"
++      style={{ borderColor: `${hex}40`, background: `radial-gradient(circle, ${hex}1a 0%, transparent 70%)` }}
++    >
++      <CaseTypeIcon type={exp.type} color={hex} size={44} />
++    </div>
++  );
++}
+diff --git a/src/pages/Expedientes.tsx b/src/pages/Expedientes.tsx
+index 59cf54b..799e9e9 100644
+--- a/src/pages/Expedientes.tsx
++++ b/src/pages/Expedientes.tsx
+@@ -1,24 +1,13 @@
+ import { useState } from 'react';
+-import { Link } from 'react-router-dom';
+-import { MapPin, Calendar, Shield, Search } from 'lucide-react';
++import { Search } from 'lucide-react';
+ import { ufoCases } from '../data/cases';
+-import CaseTypeIcon from '../components/CaseTypeIcon';
++import ExpedienteCard from '../components/ExpedienteCard';
+ import { useDocumentTitle } from '../hooks/useDocumentTitle';
+ 
+-const typeLabels: Record<string, string> = {
+-  avistamiento: 'Avistamiento',
+-  aterrizaje: 'Aterrizaje',
+-  contacto: 'Contacto',
+-  radar: 'Detección por radar',
+-  fotografico: 'Registro fotográfico',
+-};
+-
+ export default function Expedientes() {
+   useDocumentTitle('Expedientes');
+   const [query, setQuery] = useState('');
+   const filtered = ufoCases.filter(c => c.title.toLowerCase().includes(query.toLowerCase()) || c.country.toLowerCase().includes(query.toLowerCase()));
+-  const credColors: any = { A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10', B: 'text-blue-400 border-blue-400/40 bg-blue-400/10', C: 'text-purple-400 border-purple-400/40 bg-purple-400/10' };
+-  const credHex: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
+ 
+   return (
+     <div className="min-h-screen px-4 py-12">
+@@ -33,41 +22,7 @@ export default function Expedientes() {
+           <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar..." className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-aurora-cyan/50" />
+         </div>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+-          {filtered.map((c) => {
+-            const hex = credHex[c.credibility];
+-            return (
+-              <Link key={c.id} to={`/expedientes/${c.id}`} className="group block bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-aurora-cyan/30 transition-all">
+-                <div
+-                  className="relative h-40 flex items-center justify-center overflow-hidden"
+-                  style={{
+-                    background: `radial-gradient(circle at 50% 40%, ${hex}22 0%, transparent 60%), linear-gradient(135deg, rgba(15,23,42,0.6), rgba(18,18,22,0.9))`,
+-                  }}
+-                >
+-                  <svg className="absolute inset-0 w-full h-full opacity-25" aria-hidden="true">
+-                    <circle cx="50%" cy="50%" r="30" fill="none" stroke={hex} strokeWidth="1" opacity="0.4" />
+-                    <circle cx="50%" cy="50%" r="55" fill="none" stroke={hex} strokeWidth="1" opacity="0.25" />
+-                    <circle cx="50%" cy="50%" r="80" fill="none" stroke={hex} strokeWidth="1" opacity="0.12" />
+-                  </svg>
+-                  <div className="absolute top-4 right-4">
+-                    <span className={`text-xs font-bold px-2 py-1 rounded border ${credColors[c.credibility]}`}><Shield className="w-3 h-3 inline mr-1" />{c.credibility}</span>
+-                  </div>
+-                  <CaseTypeIcon type={c.type} color={hex} size={72} className="relative drop-shadow-[0_0_12px_rgba(34,211,238,0.25)] group-hover:scale-110 transition-transform duration-300" />
+-                  <span className="absolute bottom-3 left-4 text-[10px] uppercase tracking-wider text-gray-400">{typeLabels[c.type]}</span>
+-                </div>
+-                <div className="p-6">
+-                  <h3 className="font-display font-bold text-xl text-white mb-2 group-hover:text-aurora-cyan">{c.title}</h3>
+-                  <div className="flex items-center gap-3 text-xs text-gray-400 mb-3">
+-                    <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{c.date.split('-')[0]}</span>
+-                    <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{c.country}</span>
+-                  </div>
+-                  <p className="text-sm text-gray-300 line-clamp-3">{c.description}</p>
+-                  <div className="mt-4 pt-4 border-t border-white/5 flex flex-wrap gap-1.5">
+-                    {c.tags.slice(0, 3).map(t => <span key={t} className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-gray-400">{t}</span>)}
+-                  </div>
+-                </div>
+-              </Link>
+-            );
+-          })}
++          {filtered.map((c) => <ExpedienteCard key={c.id} c={c} />)}
+         </div>
+       </div>
+     </div>
