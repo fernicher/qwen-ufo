@@ -1,0 +1,952 @@
+diff --git a/package.json b/package.json
+index ae5c10b..ba1a5d3 100644
+--- a/package.json
++++ b/package.json
+@@ -11,6 +11,7 @@
+   },
+   "dependencies": {
+     "@tanstack/react-query": "^5.101.4",
++    "@vercel/analytics": "^2.0.1",
+     "framer-motion": "^12.43.0",
+     "leaflet": "^1.9.4",
+     "lucide-react": "^1.28.0",
+diff --git a/src/components/CatalogCard.tsx b/src/components/CatalogCard.tsx
+new file mode 100644
+index 0000000..bf64c0a
+--- /dev/null
++++ b/src/components/CatalogCard.tsx
+@@ -0,0 +1,62 @@
++import { Link } from 'react-router-dom';
++import { Heart, Film, Tv, Radio, ExternalLink, MapPin } from 'lucide-react';
++import type { CatalogItem, CatalogType } from '../data/catalog';
++import { useWikiPoster } from '../hooks/useWikiPoster';
++import { useAuroraStore } from '../store/useStore';
++
++const typeMeta: Record<CatalogType, { label: string; icon: typeof Film; accent: string; grad: string }> = {
++  pelicula: { label: 'Película', icon: Film, accent: '#22d3ee', grad: 'from-cyan-500/20 to-blue-600/10' },
++  serie: { label: 'Serie', icon: Tv, accent: '#c084fc', grad: 'from-purple-500/20 to-fuchsia-600/10' },
++  documental: { label: 'Documental', icon: Radio, accent: '#fbbf24', grad: 'from-amber-500/20 to-orange-600/10' },
++};
++
++export default function CatalogCard({ item }: { item: CatalogItem }) {
++  const { poster, loading } = useWikiPoster(item.wiki);
++  const { favorites, toggleFavorite } = useAuroraStore();
++  const isFav = favorites.some((f: any) => f.id === item.id);
++  const meta = typeMeta[item.type];
++  const Icon = meta.icon;
++  const justWatch = `https://www.justwatch.com/ar/buscar?q=${encodeURIComponent(item.title)}`;
++
++  return (
++    <div className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-aurora-cyan/30 transition-all flex flex-col">
++      <div className={`relative aspect-[2/3] overflow-hidden bg-gradient-to-br ${meta.grad}`}>
++        {poster ? (
++          <img src={poster} alt={item.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
++        ) : (
++          <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-4 text-center">
++            <Icon className="w-10 h-10" style={{ color: meta.accent }} strokeWidth={1.5} />
++            {loading && <div className="w-5 h-5 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />}
++            {!loading && <span className="text-xs text-gray-400 font-display font-semibold leading-tight">{item.title}</span>}
++          </div>
++        )}
++        <div className="absolute inset-0 bg-gradient-to-t from-aurora-black/90 via-transparent to-transparent" />
++        <button
++          onClick={() => toggleFavorite({ id: item.id, title: item.title, type: item.type })}
++          aria-label={isFav ? 'Quitar de favoritos' : 'Agregar a favoritos'}
++          className={`absolute top-2 right-2 p-2 rounded-lg border backdrop-blur-sm transition-colors ${isFav ? 'bg-aurora-cyan/20 border-aurora-cyan/50 text-aurora-cyan' : 'bg-black/40 border-white/10 text-gray-300 hover:text-white'}`}
++        >
++          <Heart className={`w-4 h-4 ${isFav ? 'fill-aurora-cyan' : ''}`} />
++        </button>
++        <span className="absolute bottom-2 left-2 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border" style={{ color: meta.accent, borderColor: `${meta.accent}55`, background: `${meta.accent}1a` }}>
++          {meta.label}
++        </span>
++      </div>
++      <div className="p-4 flex flex-col flex-1">
++        <h3 className="font-display font-bold text-white text-sm leading-tight mb-1 group-hover:text-aurora-cyan">{item.title}</h3>
++        <p className="text-xs text-gray-500 mb-2">{item.year} • {item.director}</p>
++        <p className="text-xs text-gray-400 line-clamp-3 flex-1">{item.synopsis}</p>
++        <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between gap-2">
++          <a href={justWatch} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium text-aurora-cyan hover:text-aurora-cyanGlow">
++            Dónde ver <ExternalLink className="w-3 h-3" />
++          </a>
++          {item.caseId && (
++            <Link to={`/expedientes/${item.caseId}`} className="flex items-center gap-1 text-xs text-gray-400 hover:text-white">
++              <MapPin className="w-3 h-3" /> Caso
++            </Link>
++          )}
++        </div>
++      </div>
++    </div>
++  );
++}
+diff --git a/src/components/GlobalSearch.tsx b/src/components/GlobalSearch.tsx
+index 8d43955..80e937c 100644
+--- a/src/components/GlobalSearch.tsx
++++ b/src/components/GlobalSearch.tsx
+@@ -2,11 +2,11 @@ import { useState, useEffect, useRef } from 'react';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import { Search, X, Film, MapPin, Command, ArrowRight, Book, Headphones, Users } from 'lucide-react';
+ import { useNavigate } from 'react-router-dom';
+-import { useSearchMedia } from '../hooks/useTMDB';
+ import { ufoCases } from '../data/cases';
+ import { books } from '../data/books';
+ import { podcasts } from '../data/podcasts';
+ import { investigators } from '../data/investigators';
++import { catalog } from '../data/catalog';
+ 
+ export default function GlobalSearch() {
+   const [isOpen, setIsOpen] = useState(false);
+@@ -31,8 +31,6 @@ export default function GlobalSearch() {
+     if (!isOpen) setQuery('');
+   }, [isOpen]);
+ 
+-  const { data: tmdbData } = useSearchMedia(query);
+-
+   const results: any[] = [];
+   if (query.length >= 2) {
+     const q = query.toLowerCase();
+@@ -49,9 +47,11 @@ export default function GlobalSearch() {
+       results.push({ type: 'podcast', id: `podcast-${p.id}`, title: p.title, subtitle: p.host, libraryQuery: p.title });
+     });
+   }
+-  if (tmdbData?.results) {
+-    tmdbData.results.filter(r => r.media_type === 'movie' || r.media_type === 'tv').slice(0, 5).forEach(m => {
+-      results.push({ type: 'media', id: `media-${m.id}`, title: m.title || m.name, subtitle: `${m.media_type === 'movie' ? 'Película' : 'Serie'}` });
++  if (query.length >= 2) {
++    const q = query.toLowerCase();
++    const typeLabel: Record<string, string> = { pelicula: 'Película', serie: 'Serie', documental: 'Documental' };
++    catalog.filter(m => m.title.toLowerCase().includes(q) || m.director.toLowerCase().includes(q)).slice(0, 5).forEach(m => {
++      results.push({ type: 'media', id: `media-${m.id}`, title: m.title, subtitle: `${typeLabel[m.type]} • ${m.year}`, mediaQuery: m.title });
+     });
+   }
+ 
+@@ -68,6 +68,7 @@ export default function GlobalSearch() {
+     if (r.caseId) return navigate(`/mapa?case=${r.caseId}`);
+     if (r.investigatorId) return navigate(`/investigadores?highlight=${r.investigatorId}`);
+     if (r.libraryQuery) return navigate(`/biblioteca?q=${encodeURIComponent(r.libraryQuery)}`);
++    if (r.mediaQuery) return navigate(`/catalogo?q=${encodeURIComponent(r.mediaQuery)}`);
+     return navigate(`/catalogo?q=${encodeURIComponent(query)}`);
+   };
+ 
+diff --git a/src/components/Layout.tsx b/src/components/Layout.tsx
+index 1e14bec..419c1de 100644
+--- a/src/components/Layout.tsx
++++ b/src/components/Layout.tsx
+@@ -1,10 +1,9 @@
++import { useState } from 'react';
+ import { Outlet, Link, useLocation } from 'react-router-dom';
+-import { Home, Film, Map, Compass, Book } from 'lucide-react';
+-import { Analytics } from '@vercel/analytics/react';
+-import AuroraBackground from './AuroraBackground';
++import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart } from 'lucide-react';
+ import GlobalSearch from './GlobalSearch';
+ 
+-const navItems = [
++const primaryNavItems = [
+   { to: '/', label: 'Inicio', icon: Home },
+   { to: '/catalogo', label: 'Catálogo', icon: Film },
+   { to: '/mapa', label: 'Mapa', icon: Map },
+@@ -12,15 +11,101 @@ const navItems = [
+   { to: '/biblioteca', label: 'Biblioteca', icon: Book },
+ ];
+ 
++const moreNavItems = [
++  { to: '/investigadores', label: 'Investigadores', icon: Users },
++  { to: '/timeline', label: 'Línea de tiempo', icon: Clock },
++  { to: '/favoritos', label: 'Favoritos', icon: Heart },
++];
++
++const allNavItems = [...primaryNavItems, ...moreNavItems];
++
+ export default function Layout() {
+   const location = useLocation();
+-  const isMapPage = location.pathname === '/mapa';
++  const [moreOpen, setMoreOpen] = useState(false);
++  const [mobileOpen, setMobileOpen] = useState(false);
++
++  const isMoreActive = moreNavItems.some((item) => item.to === location.pathname);
+ 
+   return (
+-    <div className="relative min-h-screen bg-aurora-black text-white overflow-x-hidden">
+-      {/* Analytics de Vercel */}
+-      <Analytics />
++    <div className="min-h-screen bg-aurora-black text-white relative">
++      <div className="starfield" aria-hidden="true" />
++      <nav className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8 py-4 bg-aurora-black/80 backdrop-blur-xl border-b border-white/5">
++        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
++          <Link to="/" className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
++            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-aurora-cyan to-blue-600 flex items-center justify-center">
++              <span className="text-aurora-black font-display font-bold text-sm">A</span>
++            </div>
++            <span className="font-display font-bold text-lg hidden sm:inline">Aurora</span>
++          </Link>
++
++          <div className="hidden md:flex items-center gap-1">
++            {primaryNavItems.map((item) => {
++              const Icon = item.icon;
++              const isActive = location.pathname === item.to;
++              return (
++                <Link key={item.to} to={item.to} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-400 hover:text-white'}`}>
++                  <Icon className="w-4 h-4" /> {item.label}
++                </Link>
++              );
++            })}
++            <div className="relative" onMouseEnter={() => setMoreOpen(true)} onMouseLeave={() => setMoreOpen(false)}>
++              <button className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isMoreActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-400 hover:text-white'}`}>
++                Más <ChevronDown className="w-3.5 h-3.5" />
++              </button>
++              {moreOpen && (
++                <div className="absolute right-0 top-full pt-2 w-52">
++                  <div className="bg-aurora-charcoal border border-white/10 rounded-xl shadow-2xl overflow-hidden">
++                    {moreNavItems.map((item) => {
++                      const Icon = item.icon;
++                      const isActive = location.pathname === item.to;
++                      return (
++                        <Link key={item.to} to={item.to} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${isActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}>
++                          <Icon className="w-4 h-4" /> {item.label}
++                        </Link>
++                      );
++                    })}
++                  </div>
++                </div>
++              )}
++            </div>
++          </div>
+ 
+-      {!isMapPage && <AuroraBackground />}
++          <div className="flex items-center gap-2">
++            <GlobalSearch />
++            <button
++              onClick={() => setMobileOpen((v) => !v)}
++              className="md:hidden p-2 rounded-lg bg-white/5 border border-white/10 text-gray-300"
++              aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
++              aria-expanded={mobileOpen}
++            >
++              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
++            </button>
++          </div>
++        </div>
+ 
+-      {/* ... resto del código del Layout ... */}
+\ No newline at end of file
++        {mobileOpen && (
++          <div className="md:hidden max-w-7xl mx-auto mt-4 pb-2 grid grid-cols-2 gap-2">
++            {allNavItems.map((item) => {
++              const Icon = item.icon;
++              const isActive = location.pathname === item.to;
++              return (
++                <Link
++                  key={item.to}
++                  to={item.to}
++                  onClick={() => setMobileOpen(false)}
++                  className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-300 bg-white/5 hover:text-white'}`}
++                >
++                  <Icon className="w-4 h-4" /> {item.label}
++                </Link>
++              );
++            })}
++          </div>
++        )}
++      </nav>
++      <main className="pt-16 relative z-10"><Outlet /></main>
++      <footer className="relative z-10 border-t border-white/5 mt-20 py-8 px-4 text-center text-sm text-gray-500">
++        © 2026 <span className="text-aurora-cyan">Project Aurora</span> — Archivo Desclasificado
++      </footer>
++    </div>
++  );
++}
+diff --git a/src/components/MediaCard.tsx b/src/components/MediaCard.tsx
+deleted file mode 100644
+index 22b05b5..0000000
+--- a/src/components/MediaCard.tsx
++++ /dev/null
+@@ -1,25 +0,0 @@
+-import { Star } from 'lucide-react';
+-import type { TMDBMedia } from '../types/tmdb';
+-
+-export default function MediaCard({ media, onClick }: { media: TMDBMedia; onClick: () => void }) {
+-  const title = media.title || media.name;
+-  const year = media.release_date?.split('-')[0] || media.first_air_date?.split('-')[0] || 'N/A';
+-  const imageUrl = media.poster_path ? `${import.meta.env.VITE_TMDB_IMAGE_BASE_URL}${media.poster_path}` : '';
+-
+-  return (
+-    <div onClick={onClick} className="group relative cursor-pointer rounded-xl overflow-hidden bg-aurora-charcoal border border-white/5 hover:border-aurora-cyan/50 transition-all">
+-      <div className="relative aspect-[2/3] overflow-hidden">
+-        {imageUrl && <img src={imageUrl} alt={title} className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />}
+-        <div className="absolute inset-0 bg-gradient-to-t from-aurora-black via-transparent to-transparent opacity-80" />
+-        <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/60 px-2 py-1 rounded-md border border-aurora-cyan/30">
+-          <Star className="w-3 h-3 text-aurora-cyan fill-aurora-cyan" />
+-          <span className="text-xs font-bold text-white">{media.vote_average.toFixed(1)}</span>
+-        </div>
+-      </div>
+-      <div className="p-4">
+-        <h3 className="text-white font-display font-semibold text-lg leading-tight mb-1 line-clamp-2 group-hover:text-aurora-cyan">{title}</h3>
+-        <p className="text-xs text-gray-400">{year} • {media.media_type === 'movie' ? 'Película' : 'Serie'}</p>
+-      </div>
+-    </div>
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/components/MediaDetailModal.tsx b/src/components/MediaDetailModal.tsx
+deleted file mode 100644
+index cd50014..0000000
+--- a/src/components/MediaDetailModal.tsx
++++ /dev/null
+@@ -1,60 +0,0 @@
+-import { X, Star, Calendar, Play, Heart } from 'lucide-react';
+-import { useMediaDetails } from '../hooks/useTMDB';
+-import { useAuroraStore } from '../store/useStore';
+-
+-export default function MediaDetailModal({ mediaId, mediaType, onClose }: { mediaId: number; mediaType: 'movie' | 'tv'; onClose: () => void }) {
+-  const { data: media, isLoading } = useMediaDetails(mediaId, mediaType);
+-  const { favorites, toggleFavorite } = useAuroraStore();
+-  const isFavorite = favorites.some((f: any) => f.id === String(mediaId));
+-  const trailer = media?.videos?.results?.find((v: any) => v.site === 'YouTube' && v.type === 'Trailer');
+-
+-  return (
+-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={onClose}>
+-      <div className="relative w-full max-w-5xl max-h-[90vh] bg-aurora-charcoal rounded-2xl overflow-hidden shadow-2xl border border-white/10" onClick={(e) => e.stopPropagation()}>
+-        <button onClick={onClose} className="absolute top-4 right-4 z-20 p-2 bg-black/50 text-white rounded-full"><X className="w-5 h-5" /></button>
+-        {isLoading ? (
+-          <div className="flex items-center justify-center h-96"><div className="w-10 h-10 border-4 border-aurora-cyan border-t-transparent rounded-full animate-spin" /></div>
+-        ) : media ? (
+-          <div className="overflow-y-auto max-h-[90vh]">
+-            <div className="relative h-64 md:h-96">
+-              {media.backdrop_path && <img src={`${import.meta.env.VITE_TMDB_IMAGE_BACKDROP_URL}${media.backdrop_path}`} alt="" className="w-full h-full object-cover" />}
+-              <div className="absolute inset-0 bg-gradient-to-t from-aurora-charcoal via-aurora-charcoal/60 to-transparent" />
+-              <div className="absolute bottom-0 left-0 p-6 md:p-10">
+-                <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-2">{media.title || media.name}</h2>
+-                <div className="flex items-center gap-4 text-sm text-gray-300">
+-                  <span className="flex items-center gap-1"><Calendar className="w-4 h-4 text-aurora-cyan" />{media.release_date?.split('-')[0] || media.first_air_date?.split('-')[0]}</span>
+-                  <span className="flex items-center gap-1"><Star className="w-4 h-4 text-aurora-cyan fill-aurora-cyan" />{media.vote_average.toFixed(1)}</span>
+-                </div>
+-              </div>
+-            </div>
+-            <div className="p-6 md:p-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+-              <div className="space-y-6">
+-                {media.poster_path && <img src={`${import.meta.env.VITE_TMDB_IMAGE_BASE_URL}${media.poster_path}`} alt="" className="w-full rounded-xl" />}
+-                <button onClick={() => toggleFavorite({ id: String(media.id), title: media.title || media.name || '', type: mediaType, poster: media.poster_path || undefined })} className={`flex items-center justify-center gap-2 w-full py-3 rounded-lg font-semibold ${isFavorite ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-white hover:bg-white/10'}`}>
+-                  <Heart className={`w-5 h-5 ${isFavorite ? 'fill-aurora-black' : ''}`} /> {isFavorite ? 'En Favoritos' : 'Añadir a Favoritos'}
+-                </button>
+-              </div>
+-              <div className="md:col-span-2 space-y-8">
+-                <div className="flex flex-wrap gap-2">
+-                  {media.genres?.map((g: any) => <span key={g.id} className="px-3 py-1 bg-white/5 text-gray-300 text-sm rounded-full">{g.name}</span>)}
+-                </div>
+-                <div>
+-                  <h3 className="text-xl font-display font-semibold text-white mb-3">Sinopsis</h3>
+-                  <p className="text-gray-300 leading-relaxed">{media.overview || 'Sin sinopsis disponible.'}</p>
+-                </div>
+-                {trailer && (
+-                  <div>
+-                    <h3 className="text-xl font-display font-semibold text-white mb-4 flex items-center gap-2"><Play className="w-5 h-5 text-aurora-cyan" />Trailer</h3>
+-                    <div className="relative w-full aspect-video rounded-xl overflow-hidden">
+-                      <iframe src={`https://www.youtube.com/embed/${trailer.key}`} title="Trailer" className="absolute inset-0 w-full h-full" allowFullScreen />
+-                    </div>
+-                  </div>
+-                )}
+-              </div>
+-            </div>
+-          </div>
+-        ) : <div className="flex items-center justify-center h-96 text-gray-400">Error al cargar</div>}
+-      </div>
+-    </div>
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/data/catalog.ts b/src/data/catalog.ts
+new file mode 100644
+index 0000000..54ba74b
+--- /dev/null
++++ b/src/data/catalog.ts
+@@ -0,0 +1,67 @@
++export type CatalogType = 'pelicula' | 'serie' | 'documental';
++
++export interface CatalogItem {
++  id: string;
++  title: string;
++  year: number;
++  director: string;
++  type: CatalogType;
++  synopsis: string;
++  /** Título del artículo en Wikipedia (EN) usado para traer el póster sin API key. */
++  wiki: string;
++  /** id de un expediente relacionado, si corresponde. */
++  caseId?: string;
++}
++
++export const catalog: CatalogItem[] = [
++  // ---------------- PELÍCULAS ----------------
++  { id: 'day-earth-stood-still-1951', title: 'The Day the Earth Stood Still', year: 1951, director: 'Robert Wise', type: 'pelicula', synopsis: 'Un emisario alienígena aterriza en Washington con una advertencia para la humanidad. El clásico fundacional del cine de contacto.', wiki: 'The_Day_the_Earth_Stood_Still' },
++  { id: 'war-worlds-1953', title: 'The War of the Worlds', year: 1953, director: 'Byron Haskin', type: 'pelicula', synopsis: 'La primera gran adaptación de H. G. Wells al cine: una invasión marciana arrasa la Tierra.', wiki: 'The_War_of_the_Worlds_(1953_film)' },
++  { id: 'earth-vs-saucers-1956', title: 'Earth vs. the Flying Saucers', year: 1956, director: 'Fred F. Sears', type: 'pelicula', synopsis: 'Platillos voladores atacan la Tierra en este clásico de efectos de Ray Harryhausen que definió la estética del "platillo".', wiki: 'Earth_vs._the_Flying_Saucers' },
++  { id: 'close-encounters-1977', title: 'Close Encounters of the Third Kind', year: 1977, director: 'Steven Spielberg', type: 'pelicula', synopsis: 'Un hombre común queda obsesionado tras un avistamiento. El título viene directo de la escala de contacto de J. Allen Hynek.', wiki: 'Close_Encounters_of_the_Third_Kind' },
++  { id: 'et-1982', title: 'E.T. the Extra-Terrestrial', year: 1982, director: 'Steven Spielberg', type: 'pelicula', synopsis: 'Un niño esconde a un ser de otro mundo que quedó varado en la Tierra. La cara más tierna del contacto.', wiki: 'E.T._the_Extra-Terrestrial' },
++  { id: 'the-thing-1982', title: 'The Thing', year: 1982, director: 'John Carpenter', type: 'pelicula', synopsis: 'En la Antártida, una forma de vida extraterrestre imita a quien devora. Paranoia pura en el hielo.', wiki: 'The_Thing_(1982_film)' },
++  { id: 'starman-1984', title: 'Starman', year: 1984, director: 'John Carpenter', type: 'pelicula', synopsis: 'Un alienígena toma forma humana y cruza Estados Unidos junto a una viuda para volver a su nave.', wiki: 'Starman_(film)' },
++  { id: 'cocoon-1985', title: 'Cocoon', year: 1985, director: 'Ron Howard', type: 'pelicula', synopsis: 'Un grupo de ancianos recupera la juventud gracias a unos visitantes extraterrestres benévolos.', wiki: 'Cocoon_(film)' },
++  { id: 'flight-navigator-1986', title: 'Flight of the Navigator', year: 1986, director: 'Randal Kleiser', type: 'pelicula', synopsis: 'Un chico desaparece y vuelve ocho años después sin haber envejecido, con una nave inteligente como única pista.', wiki: 'Flight_of_the_Navigator' },
++  { id: 'communion-1989', title: 'Communion', year: 1989, director: 'Philippe Mora', type: 'pelicula', synopsis: 'Adaptación del best-seller de Whitley Strieber sobre su propia experiencia de abducción. Christopher Walken como Strieber.', wiki: 'Communion_(film)' },
++  { id: 'the-abyss-1989', title: 'The Abyss', year: 1989, director: 'James Cameron', type: 'pelicula', synopsis: 'Buzos de una plataforma submarina se topan con una inteligencia no humana en el fondo del océano.', wiki: 'The_Abyss' },
++  { id: 'fire-in-the-sky-1993', title: 'Fire in the Sky', year: 1993, director: 'Robert Lieberman', type: 'pelicula', synopsis: 'Basada en la abducción que denunció el leñador Travis Walton en 1975. Una de las escenas de abducción más perturbadoras del cine.', wiki: 'Fire_in_the_Sky_(film)' },
++  { id: 'independence-day-1996', title: 'Independence Day', year: 1996, director: 'Roland Emmerich', type: 'pelicula', synopsis: 'Naves colosales aparecen sobre las ciudades del mundo en el blockbuster de invasión por excelencia.', wiki: 'Independence_Day_(1996_film)' },
++  { id: 'mars-attacks-1996', title: 'Mars Attacks!', year: 1996, director: 'Tim Burton', type: 'pelicula', synopsis: 'Sátira desopilante de las invasiones marcianas de los 50, con un elenco estelar y marcianos de gatillo fácil.', wiki: 'Mars_Attacks!' },
++  { id: 'men-in-black-1997', title: 'Men in Black', year: 1997, director: 'Barry Sonnenfeld', type: 'pelicula', synopsis: 'Una agencia secreta vigila a los alienígenas que viven de incógnito en la Tierra. Toma el mito real de los "hombres de negro".', wiki: 'Men_in_Black_(1997_film)' },
++  { id: 'contact-1997', title: 'Contact', year: 1997, director: 'Robert Zemeckis', type: 'pelicula', synopsis: 'Basada en la novela de Carl Sagan: una científica del SETI recibe la primera señal inequívoca de inteligencia extraterrestre.', wiki: 'Contact_(1997_American_film)' },
++  { id: 'signs-2002', title: 'Signs', year: 2002, director: 'M. Night Shyamalan', type: 'pelicula', synopsis: 'Aparecen círculos en los cultivos de una granja y algo empieza a acechar. El fenómeno de los crop circles llevado al terror.', wiki: 'Signs_(film)' },
++  { id: 'war-worlds-2005', title: 'War of the Worlds', year: 2005, director: 'Steven Spielberg', type: 'pelicula', synopsis: 'Relectura moderna de Wells: máquinas alienígenas emergen de la tierra y un padre intenta salvar a sus hijos.', wiki: 'War_of_the_Worlds_(2005_film)' },
++  { id: 'fourth-kind-2009', title: 'The Fourth Kind', year: 2009, director: 'Olatunde Osunsanmi', type: 'pelicula', synopsis: 'Falso documental sobre supuestas abducciones en Nome, Alaska, mezclando ficción con material "de archivo".', wiki: 'The_Fourth_Kind' },
++  { id: 'district-9-2009', title: 'District 9', year: 2009, director: 'Neill Blomkamp', type: 'pelicula', synopsis: 'Refugiados alienígenas viven segregados en un gueto de Johannesburgo. Ciencia ficción con carga social filmada como documental.', wiki: 'District_9' },
++  { id: 'super-8-2011', title: 'Super 8', year: 2011, director: 'J. J. Abrams', type: 'pelicula', synopsis: 'Unos chicos filman una película casera y captan por accidente un descarrilamiento que esconde algo del espacio. Homenaje al Spielberg ochentoso.', wiki: 'Super_8_(2011_film)' },
++  { id: 'cowboys-aliens-2011', title: 'Cowboys & Aliens', year: 2011, director: 'Jon Favreau', type: 'pelicula', synopsis: 'Western y ciencia ficción se cruzan cuando naves alienígenas atacan un pueblo del lejano oeste.', wiki: 'Cowboys_&_Aliens' },
++  { id: 'attack-the-block-2011', title: 'Attack the Block', year: 2011, director: 'Joe Cornish', type: 'pelicula', synopsis: 'Una banda de pibes de un barrio de Londres defiende su edificio de una invasión alienígena. De culto.', wiki: 'Attack_the_Block' },
++  { id: 'paul-2011', title: 'Paul', year: 2011, director: 'Greg Mottola', type: 'pelicula', synopsis: 'Comedia: dos nerds ayudan a un alienígena escapado del Área 51 a volver a casa. Guiños a todo el género.', wiki: 'Paul_(film)' },
++  { id: 'dark-skies-2013', title: 'Dark Skies', year: 2013, director: 'Scott Stewart', type: 'pelicula', synopsis: 'Una familia de suburbio empieza a sufrir fenómenos inexplicables ligados a los "grises" y las abducciones.', wiki: 'Dark_Skies_(2013_film)' },
++  { id: 'edge-of-tomorrow-2014', title: 'Edge of Tomorrow', year: 2014, director: 'Doug Liman', type: 'pelicula', synopsis: 'Un soldado revive el mismo día de combate contra una invasión alienígena una y otra vez.', wiki: 'Edge_of_Tomorrow' },
++  { id: 'arrival-2016', title: 'Arrival', year: 2016, director: 'Denis Villeneuve', type: 'pelicula', synopsis: 'Doce naves aterrizan en el mundo y una lingüista debe descifrar cómo comunicarse con sus ocupantes. Ciencia ficción adulta y profunda.', wiki: 'Arrival_(film)' },
++  { id: 'phoenix-forgotten-2017', title: 'Phoenix Forgotten', year: 2017, director: 'Justin Barber', type: 'pelicula', synopsis: 'Found-footage inspirado en las Luces de Phoenix de 1997: tres adolescentes desaparecen filmando las luces.', wiki: 'Phoenix_Forgotten', caseId: 'phoenix-1997' },
++  { id: 'nope-2022', title: 'Nope', year: 2022, director: 'Jordan Peele', type: 'pelicula', synopsis: 'Dos hermanos de un rancho de caballos intentan capturar en video algo que sobrevuela su valle. Terror y espectáculo sobre el acto de mirar al cielo.', wiki: 'Nope_(film)' },
++
++  // ---------------- SERIES ----------------
++  { id: 'v-1983', title: 'V', year: 1983, director: 'Kenneth Johnson', type: 'serie', synopsis: 'Visitantes de apariencia humana llegan en son de paz, pero esconden un plan reptiliano. Miniserie ochentosa de culto.', wiki: 'V_(1983_miniseries)' },
++  { id: 'x-files-1993', title: 'The X-Files', year: 1993, director: 'Chris Carter', type: 'serie', synopsis: 'Los agentes Mulder y Scully investigan casos paranormales y una conspiración de encubrimiento OVNI. "La verdad está ahí afuera".', wiki: 'The_X-Files' },
++  { id: 'taken-2002', title: 'Taken', year: 2002, director: 'Leslie Bohem', type: 'serie', synopsis: 'Miniserie producida por Spielberg que sigue tres familias y medio siglo de abducciones, de Roswell en adelante.', wiki: 'Taken_(miniseries)' },
++  { id: 'ancient-aliens-2009', title: 'Ancient Aliens', year: 2009, director: 'Kevin Burns', type: 'serie', synopsis: 'La serie que popularizó la hipótesis del "astronauta ancestral". Muy vista, muy discutida: tomala como entretenimiento especulativo.', wiki: 'Ancient_Aliens' },
++  { id: 'project-blue-book-2019', title: 'Project Blue Book', year: 2019, director: 'David O\'Leary', type: 'serie', synopsis: 'Dramatización del programa real de la Fuerza Aérea de EE.UU. y del propio J. Allen Hynek investigando avistamientos.', wiki: 'Project_Blue_Book_(TV_series)' },
++  { id: 'unidentified-2019', title: 'Unidentified: Inside America\'s UFO Investigation', year: 2019, director: 'History Channel', type: 'serie', synopsis: 'Luis Elizondo, ex jefe del programa AATIP del Pentágono, investiga los encuentros militares con UAP.', wiki: 'Unidentified:_Inside_America\'s_UFO_Investigation' },
++  { id: 'resident-alien-2021', title: 'Resident Alien', year: 2021, director: 'Chris Sheridan', type: 'serie', synopsis: 'Un alienígena estrellado suplanta a un médico rural mientras aprende a ser humano. Comedia con Alan Tudyk.', wiki: 'Resident_Alien_(TV_series)' },
++  { id: 'invasion-2021', title: 'Invasion', year: 2021, director: 'Simon Kinberg', type: 'serie', synopsis: 'Una invasión alienígena contada en simultáneo desde varios puntos del planeta y personajes comunes.', wiki: 'Invasion_(2021_TV_series)' },
++
++  // ---------------- DOCUMENTALES ----------------
++  { id: 'strange-harvest-1980', title: 'A Strange Harvest', year: 1980, director: 'Linda Moulton Howe', type: 'documental', synopsis: 'El documental que instaló el misterio de las mutilaciones de ganado. Ganó un Emmy regional.', wiki: 'A_Strange_Harvest' },
++  { id: 'out-of-the-blue-2002', title: 'Out of the Blue', year: 2002, director: 'James Fox', type: 'documental', synopsis: 'Repaso serio de los casos y testimonios militares más sólidos del fenómeno OVNI, narrado por Peter Coyote.', wiki: 'Out_of_the_Blue_(2002_film)' },
++  { id: 'unacknowledged-2017', title: 'Unacknowledged', year: 2017, director: 'Michael Mazzola', type: 'documental', synopsis: 'Documental basado en el trabajo de Steven Greer sobre supuestos programas secretos. Figura muy controvertida: tomalo con pinzas.', wiki: 'Unacknowledged_(film)' },
++  { id: 'bob-lazar-2018', title: 'Bob Lazar: Area 51 & Flying Saucers', year: 2018, director: 'Jeremy Corbell', type: 'documental', synopsis: 'Perfil de Bob Lazar, el hombre que dijo haber trabajado en ingeniería inversa de naves en el Área 51. Narra Mickey Rourke.', wiki: 'Bob_Lazar:_Area_51_&_Flying_Saucers' },
++  { id: 'the-phenomenon-2020', title: 'The Phenomenon', year: 2020, director: 'James Fox', type: 'documental', synopsis: 'El documental moderno más completo sobre el fenómeno, con testimonios de funcionarios, astronautas y el caso Ariel School.', wiki: 'The_Phenomenon_(film)' },
++  { id: 'moment-of-contact-2022', title: 'Moment of Contact', year: 2022, director: 'James Fox', type: 'documental', synopsis: 'Investigación del caso Varginha (Brasil, 1996), el "Roswell brasileño", con testigos directos.', wiki: 'Moment_of_Contact', caseId: 'varginha-1996' },
++  { id: 'encounters-2023', title: 'Encounters', year: 2023, director: 'Yon Motskin', type: 'documental', synopsis: 'Serie documental de Netflix (producida por Amblin, de Spielberg) sobre cuatro encuentros colectivos alrededor del mundo.', wiki: 'Encounters_(TV_series)' },
++  { id: 'mirage-men-2013', title: 'Mirage Men', year: 2013, director: 'John Lundberg', type: 'documental', synopsis: 'El lado oscuro: cómo la inteligencia de EE.UU. usó el mito OVNI para desinformar. Imprescindible para no comprar todo.', wiki: 'Mirage_Men' },
++];
+diff --git a/src/data/search-queries.ts b/src/data/search-queries.ts
+deleted file mode 100644
+index 407b0c3..0000000
+--- a/src/data/search-queries.ts
++++ /dev/null
+@@ -1,17 +0,0 @@
+-export const searchQueries = [
+-  'UFO',
+-  'OVNI',
+-  'alien',
+-  'extraterrestrial',
+-  'close encounters',
+-  'abduction',
+-  'Area 51',
+-  'Roswell',
+-  'UAP',
+-  'unidentified flying object',
+-  'alien invasion',
+-  'sci-fi classic',
+-  'space mystery',
+-  'government conspiracy',
+-  'documentary UFO',
+-];
+\ No newline at end of file
+diff --git a/src/hooks/useTMDB.ts b/src/hooks/useTMDB.ts
+deleted file mode 100644
+index 2e28b0e..0000000
+--- a/src/hooks/useTMDB.ts
++++ /dev/null
+@@ -1,15 +0,0 @@
+-import { useQuery } from '@tanstack/react-query';
+-import { tmdbService } from '../services/tmdb';
+-
+-export const useSearchMedia = (query: string, page = 1) => useQuery({
+-  queryKey: ['search', query, page],
+-  queryFn: () => tmdbService.searchMedia(query, page),
+-  enabled: query.length >= 3,
+-  staleTime: 1000 * 60 * 5,
+-});
+-
+-export const useMediaDetails = (id: number, type: 'movie' | 'tv') => useQuery({
+-  queryKey: ['mediaDetail', id, type],
+-  queryFn: () => tmdbService.getMediaDetails(id, type),
+-  staleTime: 1000 * 60 * 60,
+-});
+\ No newline at end of file
+diff --git a/src/hooks/useWikiPoster.ts b/src/hooks/useWikiPoster.ts
+new file mode 100644
+index 0000000..488421f
+--- /dev/null
++++ b/src/hooks/useWikiPoster.ts
+@@ -0,0 +1,51 @@
++import { useEffect, useState } from 'react';
++
++/**
++ * Trae el póster de un título usando la API REST pública de Wikipedia.
++ * No necesita API key ni variables de entorno (a diferencia de TMDB).
++ * Cachea en memoria para no repetir requests durante la sesión.
++ */
++
++type CacheState = { status: 'loading' | 'done'; url: string | null };
++const cache = new Map<string, CacheState>();
++const listeners = new Map<string, Set<() => void>>();
++
++function notify(wiki: string) {
++  listeners.get(wiki)?.forEach((cb) => cb());
++}
++
++async function fetchPoster(wiki: string) {
++  cache.set(wiki, { status: 'loading', url: null });
++  try {
++    const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wiki)}`);
++    if (!res.ok) throw new Error(String(res.status));
++    const data = await res.json();
++    const url: string | null = data?.thumbnail?.source || data?.originalimage?.source || null;
++    cache.set(wiki, { status: 'done', url });
++  } catch {
++    cache.set(wiki, { status: 'done', url: null });
++  }
++  notify(wiki);
++}
++
++export function useWikiPoster(wiki: string) {
++  const [, force] = useState(0);
++
++  useEffect(() => {
++    if (!wiki) return;
++    const rerender = () => force((n) => n + 1);
++    if (!listeners.has(wiki)) listeners.set(wiki, new Set());
++    listeners.get(wiki)!.add(rerender);
++
++    if (!cache.has(wiki)) {
++      fetchPoster(wiki);
++    }
++
++    return () => {
++      listeners.get(wiki)?.delete(rerender);
++    };
++  }, [wiki]);
++
++  const state = cache.get(wiki);
++  return { poster: state?.url ?? null, loading: state?.status === 'loading' };
++}
+diff --git a/src/pages/Catalogo.tsx b/src/pages/Catalogo.tsx
+index bb5ebc2..dfeb01a 100644
+--- a/src/pages/Catalogo.tsx
++++ b/src/pages/Catalogo.tsx
+@@ -1,202 +1,89 @@
+-import { useState, useEffect } from 'react';
++import { useEffect, useMemo, useState } from 'react';
+ import { useSearchParams } from 'react-router-dom';
+-import { useSearchMedia } from '../hooks/useTMDB';
+-import MediaCard from '../components/MediaCard';
+-import MediaDetailModal from '../components/MediaDetailModal';
+-import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
++import { Search, Film, Tv, Radio, LayoutGrid } from 'lucide-react';
++import { catalog } from '../data/catalog';
++import type { CatalogType } from '../data/catalog';
++import CatalogCard from '../components/CatalogCard';
+ import { useDocumentTitle } from '../hooks/useDocumentTitle';
+ 
+-const AUTO_QUERIES = [
+-  { term: 'UFO', title: 'OVNI / UAP' },
+-  { term: 'alien', title: 'Alienígenas' },
+-  { term: 'extraterrestrial', title: 'Extraterrestres' },
+-  { term: 'close encounters', title: 'Encuentros Cercanos' },
+-  { term: 'abduction', title: 'Abducciones' },
+-  { term: 'Area 51', title: 'Área 51' },
+-  { term: 'Roswell', title: 'Roswell' },
+-  { term: 'space mystery', title: 'Misterios Espaciales' },
+-  { term: 'government conspiracy', title: 'Conspiraciones Gubernamentales' },
+-  { term: 'documentary UFO', title: 'Documentales OVNI' },
++type Filter = 'todos' | CatalogType;
++
++const filters: { id: Filter; label: string; icon: typeof Film }[] = [
++  { id: 'todos', label: 'Todo', icon: LayoutGrid },
++  { id: 'pelicula', label: 'Películas', icon: Film },
++  { id: 'serie', label: 'Series', icon: Tv },
++  { id: 'documental', label: 'Documentales', icon: Radio },
+ ];
+ 
+ export default function Catalogo() {
+   useDocumentTitle('Catálogo');
+   const [searchParams, setSearchParams] = useSearchParams();
+-  const urlQuery = searchParams.get('q') || '';
+-  
+-  const [manualQuery, setManualQuery] = useState(urlQuery);
+-  const [page, setPage] = useState(1);
+-  const [selected, setSelected] = useState<{ id: number; type: 'movie' | 'tv' } | null>(null);
++  const [query, setQuery] = useState(searchParams.get('q') || '');
++  const [filter, setFilter] = useState<Filter>('todos');
+ 
+-  // Sincronizar con URL
+   useEffect(() => {
+-    setManualQuery(urlQuery);
+-    setPage(1);
+-  }, [urlQuery]);
+-
+-  const { data, isLoading, isError } = useSearchMedia(manualQuery, page);
+-  const results = data?.results.filter(r => r.media_type === 'movie' || r.media_type === 'tv') || [];
+-  const totalPages = data?.total_pages || 1;
+-  const totalResults = data?.total_results || 0;
++    setQuery(searchParams.get('q') || '');
++  }, [searchParams]);
+ 
+-  const handleSearch = (query: string) => {
+-    setManualQuery(query);
+-    setPage(1);
+-    if (query) {
+-      setSearchParams({ q: query });
+-    } else {
+-      setSearchParams({});
+-    }
++  const handleQuery = (value: string) => {
++    setQuery(value);
++    if (value) setSearchParams({ q: value }); else setSearchParams({});
+   };
+ 
++  const results = useMemo(() => {
++    const q = query.trim().toLowerCase();
++    return catalog.filter((item) => {
++      if (filter !== 'todos' && item.type !== filter) return false;
++      if (!q) return true;
++      return item.title.toLowerCase().includes(q) || item.director.toLowerCase().includes(q) || item.synopsis.toLowerCase().includes(q) || String(item.year).includes(q);
++    });
++  }, [query, filter]);
++
++  const counts = useMemo(() => ({
++    pelicula: catalog.filter((c) => c.type === 'pelicula').length,
++    serie: catalog.filter((c) => c.type === 'serie').length,
++    documental: catalog.filter((c) => c.type === 'documental').length,
++  }), []);
++
+   return (
+     <div className="min-h-screen px-4 py-12">
+       <div className="max-w-7xl mx-auto">
+-        <div className="mb-10 text-center">
+-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">
+-            Archivo <span className="text-aurora-cyan">Multimedia</span>
+-          </h1>
+-          {manualQuery ? (
+-            <p className="text-gray-400">
+-              {totalResults} títulos encontrados • Página {page} de {totalPages}
+-            </p>
+-          ) : (
+-            <p className="text-gray-400">
+-              Explora cientos de títulos sobre el fenómeno OVNI/UAP
+-            </p>
+-          )}
++        <div className="mb-8 text-center">
++          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Archivo Multimedia</span>
++          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Cine <span className="text-aurora-cyan">OVNI / UAP</span></h1>
++          <p className="text-gray-400">Selección curada de {catalog.length} títulos: {counts.pelicula} películas, {counts.serie} series y {counts.documental} documentales</p>
+         </div>
+ 
+-        {/* Buscador */}
+-        <div className="relative max-w-2xl mx-auto mb-12">
++        <div className="relative max-w-2xl mx-auto mb-6">
+           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+           <input
+             type="text"
+-            value={manualQuery}
+-            onChange={(e) => handleSearch(e.target.value)}
+-            placeholder="Buscar títulos..."
++            value={query}
++            onChange={(e) => handleQuery(e.target.value)}
++            placeholder="Buscar por título, director o año..."
+             className="w-full bg-aurora-charcoal border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-aurora-cyan/50"
+           />
+         </div>
+ 
+-        {/* Búsqueda activa */}
+-        {manualQuery && (
+-          <section className="mb-16">
+-            <h2 className="text-2xl font-display font-bold text-white mb-6">
+-              Resultados para "{manualQuery}"
+-            </h2>
+-            {isLoading ? (
+-              <div className="flex justify-center py-10">
+-                <div className="w-8 h-8 border-2 border-aurora-cyan border-t-transparent rounded-full animate-spin" />
+-              </div>
+-            ) : isError ? (
+-              <div className="text-center text-red-400 py-10">Error al buscar</div>
+-            ) : results.length > 0 ? (
+-              <>
+-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+-                  {results.map((m) => (
+-                    <MediaCard
+-                      key={`manual-${m.id}`}
+-                      media={m}
+-                      onClick={() => setSelected({ id: m.id, type: m.media_type })}
+-                    />
+-                  ))}
+-                </div>
+-
+-                {/* Paginación */}
+-                {totalPages > 1 && (
+-                  <div className="flex items-center justify-center gap-4 mt-12">
+-                    <button
+-                      onClick={() => setPage(p => Math.max(1, p - 1))}
+-                      disabled={page === 1}
+-                      className="flex items-center gap-2 px-4 py-2 bg-aurora-charcoal border border-white/10 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:border-aurora-cyan/50 transition-all"
+-                    >
+-                      <ChevronLeft className="w-4 h-4" /> Anterior
+-                    </button>
+-                    <span className="text-sm text-gray-400">Página {page} de {totalPages}</span>
+-                    <button
+-                      onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+-                      disabled={page === totalPages}
+-                      className="flex items-center gap-2 px-4 py-2 bg-aurora-charcoal border border-white/10 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:border-aurora-cyan/50 transition-all"
+-                    >
+-                      Siguiente <ChevronRight className="w-4 h-4" />
+-                    </button>
+-                  </div>
+-                )}
+-              </>
+-            ) : (
+-              <div className="text-center text-gray-500 py-10">
+-                No se encontraron títulos para "{manualQuery}"
+-              </div>
+-            )}
+-          </section>
+-        )}
++        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
++          {filters.map((f) => {
++            const Icon = f.icon;
++            return (
++              <button key={f.id} onClick={() => setFilter(f.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === f.id ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}>
++                <Icon className="w-4 h-4" /> {f.label}
++              </button>
++            );
++          })}
++        </div>
+ 
+-        {/* Secciones automáticas (solo si no hay búsqueda) */}
+-        {!manualQuery && (
+-          <div className="space-y-12">
+-            {AUTO_QUERIES.map((query) => (
+-              <AutoSearchSection
+-                key={query.term}
+-                query={query.term}
+-                title={query.title}
+-                onSelectMedia={setSelected}
+-              />
+-            ))}
++        {results.length === 0 ? (
++          <div className="text-center text-gray-500 py-16">No hay títulos que coincidan con "{query}".</div>
++        ) : (
++          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
++            {results.map((item) => <CatalogCard key={item.id} item={item} />)}
+           </div>
+         )}
+       </div>
+-
+-      {selected && (
+-        <MediaDetailModal
+-          mediaId={selected.id}
+-          mediaType={selected.type}
+-          onClose={() => setSelected(null)}
+-        />
+-      )}
+     </div>
+   );
+ }
+-
+-function AutoSearchSection({ 
+-  query, 
+-  title, 
+-  onSelectMedia 
+-}: { 
+-  query: string; 
+-  title: string; 
+-  onSelectMedia: (media: { id: number; type: 'movie' | 'tv' }) => void;
+-}) {
+-  const { data, isLoading } = useSearchMedia(query);
+-  const results = data?.results
+-    .filter(r => r.media_type === 'movie' || r.media_type === 'tv')
+-    .slice(0, 10) || [];
+-
+-  if (isLoading) {
+-    return (
+-      <section className="mb-12">
+-        <h2 className="text-2xl font-display font-bold text-white mb-6">{title}</h2>
+-        <div className="flex justify-center py-10">
+-          <div className="w-8 h-8 border-2 border-aurora-cyan border-t-transparent rounded-full animate-spin" />
+-        </div>
+-      </section>
+-    );
+-  }
+-
+-  if (results.length === 0) return null;
+-
+-  return (
+-    <section className="mb-12">
+-      <h2 className="text-2xl font-display font-bold text-white mb-6">{title}</h2>
+-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+-        {results.map((m) => (
+-          <MediaCard
+-            key={`${query}-${m.id}`}
+-            media={m}
+-            onClick={() => onSelectMedia({ id: m.id, type: m.media_type })}
+-          />
+-        ))}
+-      </div>
+-    </section>
+-  );
+-}
+\ No newline at end of file
+diff --git a/src/pages/Favoritos.tsx b/src/pages/Favoritos.tsx
+index 80af1ea..4f9f336 100644
+--- a/src/pages/Favoritos.tsx
++++ b/src/pages/Favoritos.tsx
+@@ -1,20 +1,14 @@
+-import { useState } from 'react';
+-import { Heart, Film, Tv, X } from 'lucide-react';
++import { Heart } from 'lucide-react';
+ import { useAuroraStore } from '../store/useStore';
+-import MediaDetailModal from '../components/MediaDetailModal';
++import { catalog } from '../data/catalog';
++import CatalogCard from '../components/CatalogCard';
+ import { useDocumentTitle } from '../hooks/useDocumentTitle';
+ 
+-interface FavoriteItem {
+-  id: string;
+-  title: string;
+-  type: string;
+-  poster?: string;
+-}
+-
+ export default function Favoritos() {
+   useDocumentTitle('Favoritos');
+-  const { favorites, toggleFavorite } = useAuroraStore();
+-  const [selected, setSelected] = useState<{ id: number; type: 'movie' | 'tv' } | null>(null);
++  const { favorites } = useAuroraStore();
++  const favIds = new Set(favorites.map((f: any) => f.id));
++  const items = catalog.filter((c) => favIds.has(c.id));
+ 
+   return (
+     <div className="min-h-screen px-4 py-12">
+@@ -22,51 +16,20 @@ export default function Favoritos() {
+         <div className="text-center mb-12">
+           <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Tu colección</span>
+           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Mis <span className="text-aurora-cyan">Favoritos</span></h1>
+-          <p className="text-gray-400">{favorites.length === 0 ? 'Todavía no marcaste ningún título' : `${favorites.length} título${favorites.length === 1 ? '' : 's'} guardado${favorites.length === 1 ? '' : 's'}`}</p>
++          <p className="text-gray-400">{items.length === 0 ? 'Todavía no marcaste ningún título' : `${items.length} título${items.length === 1 ? '' : 's'} guardado${items.length === 1 ? '' : 's'}`}</p>
+         </div>
+ 
+-        {favorites.length === 0 ? (
++        {items.length === 0 ? (
+           <div className="max-w-md mx-auto text-center py-16">
+             <Heart className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+-            <p className="text-gray-400">Marcá el corazón en cualquier película o serie del catálogo para verla acá.</p>
++            <p className="text-gray-400">Marcá el corazón en cualquier título del catálogo para verlo acá.</p>
+           </div>
+         ) : (
+           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+-            {favorites.map((f: FavoriteItem) => (
+-              <div key={f.id} className="group relative rounded-xl overflow-hidden bg-aurora-charcoal border border-white/5 hover:border-aurora-cyan/50 transition-all">
+-                <button
+-                  onClick={() => toggleFavorite(f)}
+-                  aria-label="Quitar de favoritos"
+-                  className="absolute top-2 right-2 z-10 p-1.5 rounded-md bg-black/60 border border-white/10 text-gray-300 hover:text-red-400 hover:border-red-400/40 opacity-0 group-hover:opacity-100 transition-opacity"
+-                >
+-                  <X className="w-3.5 h-3.5" />
+-                </button>
+-                <button
+-                  onClick={() => setSelected({ id: Number(f.id), type: f.type === 'tv' ? 'tv' : 'movie' })}
+-                  className="block w-full text-left"
+-                >
+-                  <div className="relative aspect-[2/3] overflow-hidden bg-white/5">
+-                    {f.poster ? (
+-                      <img src={`${import.meta.env.VITE_TMDB_IMAGE_BASE_URL}${f.poster}`} alt={f.title} className="w-full h-full object-cover transition-transform group-hover:scale-110" loading="lazy" />
+-                    ) : (
+-                      <div className="w-full h-full flex items-center justify-center text-gray-600">
+-                        {f.type === 'tv' ? <Tv className="w-8 h-8" /> : <Film className="w-8 h-8" />}
+-                      </div>
+-                    )}
+-                    <div className="absolute inset-0 bg-gradient-to-t from-aurora-black via-transparent to-transparent opacity-80" />
+-                  </div>
+-                  <div className="p-4">
+-                    <h3 className="text-white font-display font-semibold text-sm leading-tight mb-1 line-clamp-2 group-hover:text-aurora-cyan">{f.title}</h3>
+-                    <p className="text-xs text-gray-400">{f.type === 'tv' ? 'Serie' : 'Película'}</p>
+-                  </div>
+-                </button>
+-              </div>
+-            ))}
++            {items.map((item) => <CatalogCard key={item.id} item={item} />)}
+           </div>
+         )}
+       </div>
+-
+-      {selected && <MediaDetailModal mediaId={selected.id} mediaType={selected.type} onClose={() => setSelected(null)} />}
+     </div>
+   );
+ }
+diff --git a/src/services/tmdb.ts b/src/services/tmdb.ts
+deleted file mode 100644
+index a0ad795..0000000
+--- a/src/services/tmdb.ts
++++ /dev/null
+@@ -1,17 +0,0 @@
+-import type { TMDBSearchResponse, TMDBMediaDetail } from '../types/tmdb';
+-
+-const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+-const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL;
+-
+-export const tmdbService = {
+-  searchMedia: async (query: string, page = 1): Promise<TMDBSearchResponse> => {
+-    const res = await fetch(`${BASE_URL}/search/multi?query=${encodeURIComponent(query)}&page=${page}&include_adult=false&language=es-ES&api_key=${API_KEY}`);
+-    if (!res.ok) throw new Error('Error TMDB');
+-    return res.json();
+-  },
+-  getMediaDetails: async (id: number, type: 'movie' | 'tv'): Promise<TMDBMediaDetail> => {
+-    const res = await fetch(`${BASE_URL}/${type}/${id}?language=es-ES&append_to_response=credits,videos&api_key=${API_KEY}`);
+-    if (!res.ok) throw new Error('Error TMDB');
+-    return res.json();
+-  },
+-};
+\ No newline at end of file
+diff --git a/src/types/tmdb.ts b/src/types/tmdb.ts
+deleted file mode 100644
+index acb3a8c..0000000
+--- a/src/types/tmdb.ts
++++ /dev/null
+@@ -1,39 +0,0 @@
+-export interface TMDBMedia {
+-  id: number;
+-  title?: string;
+-  name?: string;
+-  overview: string;
+-  poster_path: string | null;
+-  backdrop_path: string | null;
+-  vote_average: number;
+-  vote_count: number;
+-  release_date?: string;
+-  first_air_date?: string;
+-  genre_ids: number[];
+-  media_type: 'movie' | 'tv';
+-}
+-
+-export interface TMDBMediaDetail extends TMDBMedia {
+-  runtime?: number;
+-  episode_run_time?: number[];
+-  genres: { id: number; name: string }[];
+-  credits: {
+-    cast: { id: number; name: string; character: string; profile_path: string | null }[];
+-    crew: { id: number; name: string; job: string }[];
+-  };
+-  videos: { results: { key: string; site: string; type: string }[] };
+-  watch_providers?: {
+-    results: {
+-      ES?: {
+-        flatrate?: { name: string; logo_path: string }[];
+-      };
+-    };
+-  };
+-}
+-
+-export interface TMDBSearchResponse {
+-  page: number;
+-  results: TMDBMedia[];
+-  total_pages: number;
+-  total_results: number;
+-}

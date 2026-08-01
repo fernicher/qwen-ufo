@@ -2,11 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, Film, MapPin, Command, ArrowRight, Book, Headphones, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useSearchMedia } from '../hooks/useTMDB';
 import { ufoCases } from '../data/cases';
 import { books } from '../data/books';
 import { podcasts } from '../data/podcasts';
 import { investigators } from '../data/investigators';
+import { catalog } from '../data/catalog';
 
 export default function GlobalSearch() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,8 +31,6 @@ export default function GlobalSearch() {
     if (!isOpen) setQuery('');
   }, [isOpen]);
 
-  const { data: tmdbData } = useSearchMedia(query);
-
   const results: any[] = [];
   if (query.length >= 2) {
     const q = query.toLowerCase();
@@ -49,9 +47,11 @@ export default function GlobalSearch() {
       results.push({ type: 'podcast', id: `podcast-${p.id}`, title: p.title, subtitle: p.host, libraryQuery: p.title });
     });
   }
-  if (tmdbData?.results) {
-    tmdbData.results.filter(r => r.media_type === 'movie' || r.media_type === 'tv').slice(0, 5).forEach(m => {
-      results.push({ type: 'media', id: `media-${m.id}`, title: m.title || m.name, subtitle: `${m.media_type === 'movie' ? 'Película' : 'Serie'}` });
+  if (query.length >= 2) {
+    const q = query.toLowerCase();
+    const typeLabel: Record<string, string> = { pelicula: 'Película', serie: 'Serie', documental: 'Documental' };
+    catalog.filter(m => m.title.toLowerCase().includes(q) || m.director.toLowerCase().includes(q)).slice(0, 5).forEach(m => {
+      results.push({ type: 'media', id: `media-${m.id}`, title: m.title, subtitle: `${typeLabel[m.type]} • ${m.year}`, mediaQuery: m.title });
     });
   }
 
@@ -68,6 +68,7 @@ export default function GlobalSearch() {
     if (r.caseId) return navigate(`/mapa?case=${r.caseId}`);
     if (r.investigatorId) return navigate(`/investigadores?highlight=${r.investigatorId}`);
     if (r.libraryQuery) return navigate(`/biblioteca?q=${encodeURIComponent(r.libraryQuery)}`);
+    if (r.mediaQuery) return navigate(`/catalogo?q=${encodeURIComponent(r.mediaQuery)}`);
     return navigate(`/catalogo?q=${encodeURIComponent(query)}`);
   };
 
