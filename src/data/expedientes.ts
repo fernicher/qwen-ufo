@@ -612,6 +612,27 @@ export const expedientes: Record<string, Expediente> = {
     investigationStatus: 'sin resolver',
     culturalImpact: 'Es uno de los casos de abducción más citados de la ufología argentina y uno de los pocos con seguimiento médico documentado a largo plazo.',
   }),
+
+  'iberah': buildExpediente('iberah', {
+    fullDescription: 'Iberah es, según la tradición esotérica argentina, una "ciudad intraterrena" ubicada en La Lobería (zona de Punta Bermeja), a unos 60 km de Viedma, sobre la costa atlántica de Río Negro. Pertenece a la misma familia de leyendas que Erks: el ovnílogo Alejandro Adolfo Di Noto, en su libro "Urbes subterráneas", menciona nueve ciudades bajo superficie —entre ellas Iberah (Río Negro), Erks (Uritorco, Córdoba) e Isidris (Mendoza)—, descritas como centros ubicados en una dimensión paralela con "entradas físicas" en la superficie. Según esta creencia, Iberah sería un "centro planetario" dedicado a la transmutación de la materia. No hay ninguna evidencia científica de su realidad física: se trata de un fenómeno de turismo energético y ufológico que en los últimos años generó incluso un "Iberah Fest" en La Lobería.',
+    witnesses: [
+      { name: 'Difusores del turismo místico local', role: 'Vecinos y guías de La Lobería', credibility: 'baja', testimony: 'Sostienen que en Punta Bermeja se encuentra un "centro planetario" dentro de la cadena de ciudades intraterrenas de América, y organizan meditaciones y vigilias de avistamiento en la zona.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'iberah-hyp-1', title: 'Fenómeno de turismo místico moderno', description: 'Al igual que Erks, Iberah funciona como una propuesta de turismo energético y ufológico centrada en La Lobería —meditaciones, vigilias de avistamiento y charlas—, sin sustento físico verificable y con difusión reciente (desde 2020).', evidence: ['La difusión pública arranca alrededor de 2020 mediante comunicados turísticos', 'La fuente principal es un único libro de un ovnílogo, no registros independientes', 'En 2021 se lanzó el "Iberah Fest" como evento turístico'], counterEvidence: [], probability: 'alta', source: 'Cobertura periodística de Río Negro (Más Río Negro)' },
+      { id: 'iberah-hyp-2', title: 'Ciudad intraterrena', description: 'La corriente esotérica sostiene que Iberah es un centro planetario intraterreno, parte de una red de ciudades ocultas de América conectada con Erks e Isidris.', evidence: ['Relatos de contactados locales'], counterEvidence: ['Ausencia total de evidencia física o geológica', 'Sin menciones documentadas anteriores a su difusión turística'], probability: 'descartada', source: 'Libro "Urbes subterráneas" (A. Di Noto) y sitios esotéricos' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '2020-04-06', event: 'La prensa de Río Negro difunde la existencia de la supuesta ciudad de Iberah en La Lobería.' },
+      { date: '2021-12-22', event: 'Se lanza la primera edición del "Iberah Fest" en La Lobería.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es la versión patagónica de Erks: convirtió a La Lobería en un punto de turismo místico y ufológico en Río Negro.',
+  }),
 };
 
 export const getExpediente = (id: string): Expediente | undefined => expedientes[id];

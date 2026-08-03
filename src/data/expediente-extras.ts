@@ -37,6 +37,7 @@ const raw: Record<string, { wiki?: string; ytTerms: string }> = {
   'uritorco-1986': { ytTerms: 'cerro Uritorco Capilla del Monte ovni 1986 Sierra del Pajarillo documental' },
   'erks-uritorco': { ytTerms: 'ciudad de Erks Uritorco leyenda documental' },
   'ingeniero-white-1975': { ytTerms: 'Carlos Díaz Ingeniero White ovni Bahía Blanca Constitución documental' },
+  'iberah': { ytTerms: 'Iberah ciudad intraterrena La Lobería Viedma Río Negro documental' },
 };
 
 export const expedienteExtras: Record<string, ExpedienteExtra> = Object.fromEntries(
