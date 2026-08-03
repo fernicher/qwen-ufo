@@ -32,49 +32,39 @@ body { background: #0a0a0c; color: white; font-family: 'Inter', sans-serif; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { scrollbar-width: none; }
 
-.hero-radar {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  overflow: hidden;
+.hero-ufo-float {
+  animation: hero-ufo-float 5s ease-in-out infinite;
+  transform-origin: center;
 }
-.hero-radar-ring {
-  position: absolute;
-  border-radius: 9999px;
-  border: 1px solid rgba(34, 211, 238, 0.12);
+@keyframes hero-ufo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
-.hero-radar-sweep {
-  position: absolute;
-  width: 800px;
-  height: 800px;
-  border-radius: 9999px;
-  background: conic-gradient(from 0deg, rgba(34, 211, 238, 0.12), rgba(34, 211, 238, 0.03) 12%, transparent 26%);
-  filter: blur(6px);
-  animation: radar-spin 12s linear infinite;
+.hero-beam {
+  animation: hero-beam-pulse 6s ease-in-out infinite;
 }
-@keyframes radar-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@keyframes hero-beam-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.9; }
 }
-.hero-grid {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 45vh;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(34, 211, 238, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34, 211, 238, 0.12) 1px, transparent 1px);
-  background-size: 60px 60px;
-  transform: perspective(400px) rotateX(60deg);
-  transform-origin: bottom;
-  mask-image: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+.hero-star {
+  animation-name: hero-star-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@keyframes hero-star-twinkle {
+  0%, 100% { opacity: var(--star-min, 0.2); }
+  50% { opacity: var(--star-max, 0.9); }
+}
+.hero-light {
+  animation-name: hero-light-flicker;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@keyframes hero-light-flicker {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-radar-sweep { animation: none; }
+  .hero-ufo-float, .hero-beam, .hero-star, .hero-light { animation: none; }
 }
