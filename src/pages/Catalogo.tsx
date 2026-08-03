@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Film, Tv, Radio, LayoutGrid } from 'lucide-react';
+import { Search, Film, Tv, Radio, LayoutGrid, X } from 'lucide-react';
 import { catalog } from '../data/catalog';
 import type { CatalogType } from '../data/catalog';
+import { collections } from '../data/collections';
 import CatalogCard from '../components/CatalogCard';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
@@ -19,7 +20,11 @@ export default function Catalogo() {
   useDocumentTitle('Catálogo');
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
-  const [filter, setFilter] = useState<Filter>('todos');
+  const [filter, setFilter] = useState<Filter>(() => {
+    const t = searchParams.get('tipo');
+    return t === 'pelicula' || t === 'serie' || t === 'documental' ? t : 'todos';
+  });
+  const [theme, setTheme] = useState<string | null>(() => searchParams.get('tema'));
 
   useEffect(() => {
     setQuery(searchParams.get('q') || '');
@@ -27,17 +32,23 @@ export default function Catalogo() {
 
   const handleQuery = (value: string) => {
     setQuery(value);
+    setTheme(null);
     if (value) setSearchParams({ q: value }); else setSearchParams({});
   };
+
+  const clearTheme = () => { setTheme(null); setSearchParams({}); };
+
+  const activeCollection = theme ? collections.find((c) => c.route === `/catalogo?tema=${theme}`) : null;
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     return catalog.filter((item) => {
       if (filter !== 'todos' && item.type !== filter) return false;
+      if (theme && !item.themes?.includes(theme as any)) return false;
       if (!q) return true;
       return item.title.toLowerCase().includes(q) || item.director.toLowerCase().includes(q) || item.synopsis.toLowerCase().includes(q) || String(item.year).includes(q);
     });
-  }, [query, filter]);
+  }, [query, filter, theme]);
 
   const counts = useMemo(() => ({
     pelicula: catalog.filter((c) => c.type === 'pelicula').length,
@@ -65,7 +76,7 @@ export default function Catalogo() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           {filters.map((f) => {
             const Icon = f.icon;
             return (
@@ -75,6 +86,14 @@ export default function Catalogo() {
             );
           })}
         </div>
+
+        {activeCollection && (
+          <div className="flex justify-center mb-10">
+            <button onClick={clearTheme} className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium bg-aurora-cyan/10 border border-aurora-cyan/30 text-aurora-cyan hover:bg-aurora-cyan/20">
+              <span>{activeCollection.icon}</span> Colección: {activeCollection.title} <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
         {results.length === 0 ? (
           <div className="text-center text-gray-500 py-16">No hay títulos que coincidan con "{query}".</div>

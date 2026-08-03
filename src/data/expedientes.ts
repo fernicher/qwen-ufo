@@ -537,6 +537,81 @@ export const expedientes: Record<string, Expediente> = {
     officialResponse: 'Es, hasta la fecha, el único avistamiento que las autoridades mexicanas han reconocido oficialmente, aunque el material original nunca fue entregado a la comunidad científica sino al periodista Jaime Maussan.',
     culturalImpact: 'Es el caso UAP más citado de México y un antecedente directo del debate sobre transparencia gubernamental en torno al fenómeno OVNI en el país.',
   }),
+
+  'uritorco-1986': buildExpediente('uritorco-1986', {
+    fullDescription: 'En el verano de 1986, apareció una marca ovalada de pasto quemado de unos 70 por 120 metros en la Sierra del Pajarillo, junto al cerro Uritorco, en Capilla del Monte, Córdoba. Testigos locales reportaron luces intensas y un objeto suspendido en el aire poco antes del hallazgo. La agencia estatal Télam difundió la noticia a todo el país, y ese episodio consolidó a Capilla del Monte como el epicentro ufológico de Argentina, con un fuerte impacto en el turismo local que se mantiene hasta hoy.',
+    witnesses: [
+      { name: 'Testigos locales de Capilla del Monte', role: 'Vecinos que reportaron luces y un objeto suspendido', credibility: 'baja', testimony: 'Describieron luces intensas y una forma suspendida en el aire sobre la Sierra del Pajarillo, poco antes de que se descubriera la marca circular en el pastizal.' },
+      { name: 'Exbombero de Capilla del Monte (identidad reservada)', role: 'Testigo que décadas después cuestionó el hallazgo', credibility: 'media', testimony: 'Declaró públicamente que la marca y otras evidencias de la época habrían sido exageradas o directamente escenificadas para atraer turismo a la zona.' },
+    ],
+    documents: [
+      { id: 'uritorco-doc-1', title: 'Cobertura de la agencia Télam', date: '1986-02-01', classification: 'Público', agency: 'Agencia Télam', pages: 1, summary: 'La agencia estatal de noticias difundió el hallazgo de la marca de la Sierra del Pajarillo a todo el país, lo que disparó el turismo ufológico en Capilla del Monte.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'uritorco-hyp-1', title: 'Puesta en escena para fomentar el turismo', description: 'Un exbombero de la zona sostuvo años después que la marca y parte de las evidencias fueron preparadas para posicionar a Capilla del Monte como destino turístico.', evidence: ['Declaración pública de un testigo con conocimiento directo de la zona'], counterEvidence: ['La cobertura y el hallazgo original de 1986 no muestran indicios de fraude en su momento'], probability: 'media', source: 'Declaraciones de un exbombero local recogidas por la prensa cordobesa' },
+      { id: 'uritorco-hyp-2', title: 'Descenso real de un objeto no identificado', description: 'La combinación de testimonios de luces, un objeto suspendido y la marca física en el pastizal alimentó la hipótesis de un aterrizaje real, reforzada por los reportes previos de actividad anómala en la zona.', evidence: ['Consistencia entre los testigos que reportaron luces esa misma noche', 'Difusión inmediata y masiva del hallazgo por un medio oficial'], counterEvidence: ['Nunca se realizó un peritaje científico independiente del terreno'], probability: 'baja', source: 'Literatura ufológica sobre el Uritorco' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1986-01-01', event: 'Testigos reportan luces y un objeto suspendido sobre la Sierra del Pajarillo.' },
+      { date: '1986-01-15', event: 'Se descubre la marca ovalada de pasto quemado de 70x120 metros.' },
+      { date: '1986-02-01', event: 'La agencia Télam difunde el caso a nivel nacional.' },
+      { date: '1990-01-01', event: 'Capilla del Monte se consolida como "capital ovni" de Argentina, con ferias y congresos de ufología.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Convirtió a Capilla del Monte en el principal destino turístico ufológico de Argentina, con hoteles, ferias esotéricas y congresos anuales de ufología que sostienen buena parte de la economía local.',
+  }),
+
+  'erks-uritorco': buildExpediente('erks-uritorco', {
+    fullDescription: 'Según la tradición local, bajo el cerro Uritorco existe Erks, una ciudad subterránea o multidimensional fundada por seres no humanos, cuyo nombre sería un acrónimo de "Encuentro de Remanentes Cósmicos Siderales". La leyenda, sin registro documental anterior a 1986, se popularizó en los meses posteriores a la aparición de la marca de la Sierra del Pajarillo, impulsada sobre todo por el investigador Guillermo Terrera, y convive desde entonces con reportes recurrentes de luces nocturnas —las llamadas "luces de Erks"— vistas por visitantes y peregrinos esotéricos que suben al cerro.',
+    witnesses: [
+      { name: 'Guillermo Terrera', role: 'Investigador y principal divulgador de la leyenda', credibility: 'baja', testimony: 'Sostuvo que Erks es un centro energético de alta concentración asentado sobre un campo de pirita magnética, y que funciona como un "vórtice" antes que como una ciudad física convencional.' },
+      { name: 'Visitantes y peregrinos esotéricos', role: 'Turistas que suben al cerro en busca de contacto', credibility: 'baja', testimony: 'Relatan luces nocturnas, sensaciones energéticas y, en algunos casos, encuentros o mensajes que atribuyen a los supuestos habitantes de Erks.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'erks-hyp-1', title: 'Construcción cultural posterior al caso Pajarillo', description: 'No existen menciones documentadas de "Erks" anteriores a 1986. La leyenda se consolidó en paralelo al auge del turismo esotérico en Capilla del Monte tras la marca de la Sierra del Pajarillo, por lo que buena parte de los investigadores la consideran una elaboración moderna más que una tradición ancestral.', evidence: ['Ausencia de referencias a "Erks" en fuentes previas a 1986', 'Coincidencia temporal exacta con el boom turístico posterior al caso Pajarillo'], counterEvidence: ['Sus divulgadores sostienen la existencia de una tradición oral previa no documentada'], probability: 'alta', source: 'Análisis periodístico y folklórico posterior' },
+      { id: 'erks-hyp-2', title: 'Anomalía geomagnética real por pirita', description: 'La zona del Uritorco presenta yacimientos de pirita magnética documentados geológicamente, lo que según los defensores de la leyenda explicaría percepciones alteradas, fallas de brújulas y el "magnetismo" atribuido al lugar.', evidence: ['Presencia geológica documentada de pirita en la zona'], counterEvidence: ['Ningún estudio geológico independiente confirmó efectos anómalos verificables sobre las personas'], probability: 'baja', source: 'Divulgación de Guillermo Terrera' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1986-01-15', event: 'La marca de la Sierra del Pajarillo dispara el interés ufológico y esotérico por el Uritorco.' },
+      { date: '1986-06-01', event: 'Guillermo Terrera y otros divulgadores popularizan el nombre "Erks" para la supuesta ciudad subterránea.' },
+      { date: '1990-01-01', event: 'La leyenda se consolida como parte central del imaginario turístico y esotérico de Capilla del Monte.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Convirtió al Uritorco en un centro de peregrinación esotérica, con encuentros de "contactados" y una identidad turística que combina ufología y espiritualidad new age.',
+  }),
+
+  'ingeniero-white-1975': buildExpediente('ingeniero-white-1975', {
+    fullDescription: 'En la madrugada del 5 de enero de 1975, el obrero ferroviario Carlos Díaz —que además trabajaba como mozo— terminó un turno en un casamiento en Ingeniero White, Bahía Blanca, cerca de las tres de la mañana, e intentó volver a su casa. Dieciocho minutos después apareció desorientado en el patio de una vivienda del barrio porteño de Constitución, a más de 650 kilómetros de distancia. Relató haber sido interceptado por un objeto volador y haber tenido contacto con seres de piel verdosa y sin manos que "levitaban". Es uno de los casos de abducción con mayor seguimiento médico de la ufología argentina.',
+    witnesses: [
+      { name: 'Carlos Díaz', role: 'Obrero ferroviario y testigo directo', credibility: 'media', testimony: 'Relató haber visto una luz intensa acercarse, perder la noción del tiempo y aparecer desorientado en Constitución sin recordar el trayecto ni cómo llegó hasta ahí.' },
+      { name: 'Andrea Pérez Simondini', role: 'Directora de CEFORA, comisión que estudió el caso', credibility: 'alta', testimony: 'Sostuvo que la historia clínica de Díaz respaldó su relato de pérdida total de vello corporal, y que fue sometido a exámenes psiquiátricos de los que salió sin patología alguna. Señaló además una marca en el abdomen sin cirugía previa y que su reloj se detuvo en el momento del hecho.' },
+    ],
+    documents: [
+      { id: 'white-doc-1', title: 'Historia clínica y exámenes psiquiátricos', date: '1975-02-01', classification: 'Citado por CEFORA', agency: 'CEFORA (Comisión de Estudio del Fenómeno OVNI)', pages: 1, summary: 'Registros médicos citados públicamente por la investigadora Andrea Pérez Simondini, que documentan la pérdida total de vello corporal de Díaz y una marca abdominal sin cirugía previa, además de exámenes psiquiátricos que no hallaron patología.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'white-hyp-1', title: 'Fuga disociativa o episodio psiquiátrico', description: 'Un cuadro de fuga disociativa podría explicar la desorientación y la aparición en un lugar distinto, aunque no resuelve por sí solo la distancia recorrida en tan poco tiempo ni los hallazgos físicos posteriores.', evidence: ['Es la explicación convencional más citada para relatos de este tipo'], counterEvidence: ['Los propios exámenes psiquiátricos de Díaz no hallaron ninguna patología'], probability: 'media', source: 'Literatura psiquiátrica sobre relatos de abducción' },
+      { id: 'white-hyp-2', title: 'Abducción con traslado no convencional', description: 'La combinación de la distancia —más de 650 km en dieciocho minutos—, la pérdida de vello corporal, la marca abdominal y el reloj detenido llevó a CEFORA a catalogarlo entre los casos argentinos con mayor respaldo médico documentado.', evidence: ['Respaldo de historia clínica citado por CEFORA', 'Imposibilidad de recorrer esa distancia por medios de transporte convencionales en ese lapso'], counterEvidence: ['No hay testigos independientes del momento exacto del traslado'], probability: 'baja', source: 'Andrea Pérez Simondini (CEFORA)' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1975-01-05', event: 'Carlos Díaz desaparece en Ingeniero White tras terminar su turno como mozo.' },
+      { date: '1975-01-05', event: 'Reaparece dieciocho minutos después en el barrio de Constitución, Buenos Aires, a más de 650 km.' },
+      { date: '1975-02-01', event: 'Es sometido a exámenes médicos y psiquiátricos que documentan la pérdida de vello corporal y descartan patología.' },
+      { date: '2023-08-01', event: 'El caso recobra notoriedad mediática nacional con nuevas entrevistas a Díaz y a la investigadora Andrea Pérez Simondini.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es uno de los casos de abducción más citados de la ufología argentina y uno de los pocos con seguimiento médico documentado a largo plazo.',
+  }),
 };
 
 export const getExpediente = (id: string): Expediente | undefined => expedientes[id];
