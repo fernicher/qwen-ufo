@@ -1,0 +1,54 @@
+diff --git a/src/data/cases.ts b/src/data/cases.ts
+index f246602..2c1aed7 100644
+--- a/src/data/cases.ts
++++ b/src/data/cases.ts
+@@ -40,4 +40,5 @@ export const ufoCases: UFOCase[] = [
+   { id: 'uritorco-1986', title: 'Marca del Pajarillo (Cerro Uritorco)', date: '1986-01-01', location: 'Sierra del Pajarillo, Capilla del Monte, Córdoba', country: 'Argentina', type: 'aterrizaje', credibility: 'C', description: 'Apareció una marca ovalada de pasto quemado de unos 70x120 metros junto al Uritorco. Convirtió a Capilla del Monte en el epicentro ufológico de Argentina, aunque un exbombero local afirmó después que fue escenificada.', coordinates: [-30.8500, -64.5100], tags: ['marca-de-aterrizaje', 'turismo', 'controvertido'] },
+   { id: 'erks-uritorco', title: 'La Ciudad de Erks', date: '1986-06-01', location: 'Cerro Uritorco, Capilla del Monte, Córdoba', country: 'Argentina', type: 'avistamiento', credibility: 'C', description: 'Leyenda de una ciudad subterránea o multidimensional bajo el Uritorco, fundada por seres no humanos y revelada solo a quienes están "espiritualmente preparados". Convive con reportes de luces nocturnas en la zona.', coordinates: [-30.8578, -64.5233], tags: ['leyenda', 'esoterismo', 'new-age'] },
+   { id: 'ingeniero-white-1975', title: 'Abducción de Carlos Díaz', date: '1975-01-05', location: 'Ingeniero White, Bahía Blanca, Buenos Aires', country: 'Argentina', type: 'contacto', credibility: 'B', description: 'Un obrero ferroviario denunció haber sido abducido y trasladado desde Bahía Blanca hasta Buenos Aires —unos 650 km— en apenas dieciocho minutos.', coordinates: [-38.7833, -62.2667], tags: ['abducción', 'teletransporte', 'caba'] },
++  { id: 'iberah', title: 'La Ciudad de Iberah', date: '2020-04-06', location: 'La Lobería (Punta Bermeja), cerca de Viedma, Río Negro', country: 'Argentina', type: 'avistamiento', credibility: 'C', description: 'La "Erks patagónica": una supuesta ciudad intraterrena en La Lobería, a 60 km de Viedma. Aparece junto a Erks (Uritorco) e Isidris (Mendoza) en el libro "Urbes subterráneas" del ovnílogo Alejandro Di Noto. Sin evidencia física, hoy es un polo de turismo energético y ufológico con su propio "Iberah Fest".', coordinates: [-41.1000, -62.8167], tags: ['río-negro', 'intraterrena', 'la-lobería', 'new-age'] },
+ ];
+diff --git a/src/data/expediente-extras.ts b/src/data/expediente-extras.ts
+index a4be4ae..b81db1a 100644
+--- a/src/data/expediente-extras.ts
++++ b/src/data/expediente-extras.ts
+@@ -37,6 +37,7 @@ const raw: Record<string, { wiki?: string; ytTerms: string }> = {
+   'uritorco-1986': { ytTerms: 'cerro Uritorco Capilla del Monte ovni 1986 Sierra del Pajarillo documental' },
+   'erks-uritorco': { ytTerms: 'ciudad de Erks Uritorco leyenda documental' },
+   'ingeniero-white-1975': { ytTerms: 'Carlos Díaz Ingeniero White ovni Bahía Blanca Constitución documental' },
++  'iberah': { ytTerms: 'Iberah ciudad intraterrena La Lobería Viedma Río Negro documental' },
+ };
+ 
+ export const expedienteExtras: Record<string, ExpedienteExtra> = Object.fromEntries(
+diff --git a/src/data/expedientes.ts b/src/data/expedientes.ts
+index 9cc1e2f..cfc1988 100644
+--- a/src/data/expedientes.ts
++++ b/src/data/expedientes.ts
+@@ -612,6 +612,27 @@ export const expedientes: Record<string, Expediente> = {
+     investigationStatus: 'sin resolver',
+     culturalImpact: 'Es uno de los casos de abducción más citados de la ufología argentina y uno de los pocos con seguimiento médico documentado a largo plazo.',
+   }),
++
++  'iberah': buildExpediente('iberah', {
++    fullDescription: 'Iberah es, según la tradición esotérica argentina, una "ciudad intraterrena" ubicada en La Lobería (zona de Punta Bermeja), a unos 60 km de Viedma, sobre la costa atlántica de Río Negro. Pertenece a la misma familia de leyendas que Erks: el ovnílogo Alejandro Adolfo Di Noto, en su libro "Urbes subterráneas", menciona nueve ciudades bajo superficie —entre ellas Iberah (Río Negro), Erks (Uritorco, Córdoba) e Isidris (Mendoza)—, descritas como centros ubicados en una dimensión paralela con "entradas físicas" en la superficie. Según esta creencia, Iberah sería un "centro planetario" dedicado a la transmutación de la materia. No hay ninguna evidencia científica de su realidad física: se trata de un fenómeno de turismo energético y ufológico que en los últimos años generó incluso un "Iberah Fest" en La Lobería.',
++    witnesses: [
++      { name: 'Difusores del turismo místico local', role: 'Vecinos y guías de La Lobería', credibility: 'baja', testimony: 'Sostienen que en Punta Bermeja se encuentra un "centro planetario" dentro de la cadena de ciudades intraterrenas de América, y organizan meditaciones y vigilias de avistamiento en la zona.' },
++    ],
++    documents: [],
++    photos: [],
++    hypotheses: [
++      { id: 'iberah-hyp-1', title: 'Fenómeno de turismo místico moderno', description: 'Al igual que Erks, Iberah funciona como una propuesta de turismo energético y ufológico centrada en La Lobería —meditaciones, vigilias de avistamiento y charlas—, sin sustento físico verificable y con difusión reciente (desde 2020).', evidence: ['La difusión pública arranca alrededor de 2020 mediante comunicados turísticos', 'La fuente principal es un único libro de un ovnílogo, no registros independientes', 'En 2021 se lanzó el "Iberah Fest" como evento turístico'], counterEvidence: [], probability: 'alta', source: 'Cobertura periodística de Río Negro (Más Río Negro)' },
++      { id: 'iberah-hyp-2', title: 'Ciudad intraterrena', description: 'La corriente esotérica sostiene que Iberah es un centro planetario intraterreno, parte de una red de ciudades ocultas de América conectada con Erks e Isidris.', evidence: ['Relatos de contactados locales'], counterEvidence: ['Ausencia total de evidencia física o geológica', 'Sin menciones documentadas anteriores a su difusión turística'], probability: 'descartada', source: 'Libro "Urbes subterráneas" (A. Di Noto) y sitios esotéricos' },
++    ],
++    relatedMedia: [],
++    relatedInvestigators: [],
++    timeline: [
++      { date: '2020-04-06', event: 'La prensa de Río Negro difunde la existencia de la supuesta ciudad de Iberah en La Lobería.' },
++      { date: '2021-12-22', event: 'Se lanza la primera edición del "Iberah Fest" en La Lobería.' },
++    ],
++    investigationStatus: 'sin resolver',
++    culturalImpact: 'Es la versión patagónica de Erks: convirtió a La Lobería en un punto de turismo místico y ufológico en Río Negro.',
++  }),
+ };
+ 
+ export const getExpediente = (id: string): Expediente | undefined => expedientes[id];
