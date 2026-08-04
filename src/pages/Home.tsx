@@ -1,4 +1,6 @@
 import Hero from '../components/Hero';
+import NewsFeed from '../components/NewsFeed';
+import VisitorStats from '../components/VisitorStats';
 import CollectionCarousel from '../components/CollectionCarousel';
 import TimelinePreview from '../components/TimelinePreview';
 import InvestigatorsPreview from '../components/InvestigatorsPreview';
@@ -11,9 +13,11 @@ export default function Home() {
     <div>
       <Hero />
       <CollectionCarousel collections={featuredCollections} title="Colecciones Destacadas" />
+      <NewsFeed />
       <CollectionCarousel collections={collections.filter((c) => !c.featured)} title="Explorar por Temática" />
       <TimelinePreview />
       <InvestigatorsPreview />
+      <VisitorStats />
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="bg-aurora-charcoal/60 border border-white/10 rounded-3xl p-10 md:p-16">
