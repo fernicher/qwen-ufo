@@ -633,6 +633,236 @@ export const expedientes: Record<string, Expediente> = {
     investigationStatus: 'sin resolver',
     culturalImpact: 'Es la versión patagónica de Erks: convirtió a La Lobería en un punto de turismo místico y ufológico en Río Negro.',
   }),
+
+  'hill-1961': buildExpediente('hill-1961', {
+    fullDescription: 'La noche del 19 de septiembre de 1961, Betty y Barney Hill regresaban en auto a New Hampshire cuando reportaron ser seguidos por una luz. Bajo hipnosis relataron por separado un episodio de abducción y examen a bordo, incluido el célebre "mapa estelar" que Betty asoció luego al sistema Zeta Reticuli. El caso, narrado en el libro The Interrupted Journey, fijó el molde de casi todos los relatos de abducción posteriores.',
+    witnesses: [
+      { name: 'Betty y Barney Hill', role: 'Matrimonio protagonista del caso', credibility: 'media', testimony: 'Relataron por separado, bajo hipnosis regresiva, un encuentro y un examen a bordo de una nave, con lagunas de memoria coincidentes en el tiempo del trayecto.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'hill-hyp-1', title: 'Falsos recuerdos inducidos por hipnosis', description: 'La narración detallada surgió recién bajo hipnosis años después, técnica hoy cuestionada por generar confabulaciones.', evidence: ['El relato se construyó en sesiones de hipnosis posteriores', 'Betty había tenido pesadillas recurrentes antes de las sesiones'], counterEvidence: ['La coincidencia entre ambos relatos, obtenidos por separado', 'La pérdida de tiempo en el trayecto quedó registrada'], probability: 'alta', source: 'Análisis psicológico posterior' },
+      { id: 'hill-hyp-2', title: 'Abducción real', description: 'La consistencia entre los dos testimonios y el "mapa estelar" se interpretan como evidencia de un episodio real.', evidence: ['Testimonios independientes coincidentes', 'El mapa estelar asociado a Zeta Reticuli'], counterEvidence: ['La correspondencia del mapa con Zeta Reticuli es estadísticamente débil'], probability: 'baja', source: 'The Interrupted Journey (John G. Fuller)' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1961-09-19', event: 'El matrimonio Hill reporta ser seguido por una luz en la ruta 3 de New Hampshire.' },
+      { date: '1964-01-01', event: 'Bajo hipnosis del Dr. Benjamin Simon relatan el episodio de abducción.' },
+      { date: '1966-01-01', event: 'Se publica The Interrupted Journey y el caso se vuelve mundialmente conocido.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es el arquetipo del relato moderno de abducción: mapa estelar, "grises" y pérdida de tiempo pasaron a la cultura popular a partir de este caso.',
+  }),
+
+  'villas-boas-1957': buildExpediente('villas-boas-1957', {
+    fullDescription: 'El 16 de octubre de 1957, el joven agricultor Antônio Villas Boas afirmó haber sido llevado a bordo de una nave mientras araba de noche en Minas Gerais, y sometido a un examen. Es el caso de abducción con repercusión más antiguo que se conozca, anterior incluso al de los Hill.',
+    witnesses: [
+      { name: 'Antônio Villas Boas', role: 'Agricultor, único testigo', credibility: 'baja', testimony: 'Relató haber sido inmovilizado y llevado a bordo; tras el episodio presentó lesiones en la piel y síntomas atribuidos por un médico a exposición a radiación.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'villas-hyp-1', title: 'Relato individual sin corroboración', description: 'Al tratarse de un único testigo sin pruebas físicas independientes verificables, buena parte de los investigadores lo consideran no comprobable.', evidence: ['No hay testigos adicionales', 'La difusión llegó años después del hecho'], counterEvidence: ['El examen médico posterior documentó lesiones dérmicas'], probability: 'media', source: 'Investigación de Olavo Fontes' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1957-10-16', event: 'Villas Boas reporta el episodio mientras araba de noche.' },
+      { date: '1958-01-01', event: 'El médico Olavo Fontes lo examina y documenta lesiones compatibles con radiación.' },
+    ],
+    investigationStatus: 'sin resolver',
+  }),
+
+  'pascagoula-1973': buildExpediente('pascagoula-1973', {
+    fullDescription: 'La noche del 11 de octubre de 1973, los pescadores Charles Hickson y Calvin Parker afirmaron haber sido abducidos por seres con pinzas mientras pescaban en el río Pascagoula, Mississippi. El caso volvió a la actualidad en 2019 cuando aparecieron testigos independientes que dijeron haber visto algo esa misma noche.',
+    witnesses: [
+      { name: 'Charles Hickson y Calvin Parker', role: 'Pescadores protagonistas', credibility: 'media', testimony: 'Describieron tres seres con piel arrugada y pinzas que los llevaron flotando al interior de un objeto, donde fueron examinados.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'pascagoula-hyp-1', title: 'Encuentro genuino no explicado', description: 'La consistencia de ambos testigos a lo largo de décadas y la aparición de testigos externos en 2019 dan sustento al relato.', evidence: ['Ambos mantuvieron el relato sin lucrar con él', 'Testigos independientes surgieron en 2019'], counterEvidence: ['No hay evidencia física del objeto'], probability: 'media', source: 'Investigación de J. Allen Hynek y reportes de 2019' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['hynek'],
+    timeline: [
+      { date: '1973-10-11', event: 'Hickson y Parker reportan la abducción mientras pescaban.' },
+      { date: '2019-01-01', event: 'Aparecen testigos independientes que corroboran haber visto algo esa noche.' },
+    ],
+    investigationStatus: 'sin resolver',
+  }),
+
+  'allagash-1976': buildExpediente('allagash-1976', {
+    fullDescription: 'En agosto de 1976, cuatro campistas —los gemelos Jack y Jim Weiner junto a dos amigos— relataron haber sido abducidos durante una excursión de pesca en la reserva de Allagash, Maine. Los recuerdos emergieron años después bajo hipnosis y fueron documentados por el investigador Raymond Fowler.',
+    witnesses: [
+      { name: 'Los cuatro campistas de Allagash', role: 'Testigos protagonistas', credibility: 'baja', testimony: 'Relataron bajo hipnosis un examen a bordo tras ser atraídos por una esfera de luz mientras pescaban de noche en canoa.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'allagash-hyp-1', title: 'Recuerdos recuperados por hipnosis', description: 'Como en otros casos, los detalles surgieron por hipnosis regresiva, lo que arroja dudas sobre su fiabilidad.', evidence: ['El relato se reconstruyó años después mediante hipnosis'], counterEvidence: ['Los cuatro testigos coincidieron en elementos centrales'], probability: 'media', source: 'The Allagash Abductions (Raymond Fowler)' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1976-08-20', event: 'Los campistas reportan una esfera de luz sobre el lago Eagle.' },
+      { date: '1988-01-01', event: 'Bajo hipnosis emergen los relatos de abducción documentados por Fowler.' },
+    ],
+    investigationStatus: 'sin resolver',
+  }),
+
+  'walton-1975': buildExpediente('walton-1975', {
+    fullDescription: 'El 5 de noviembre de 1975, el leñador Travis Walton desapareció durante cinco días tras recibir un haz de luz de un objeto frente a su cuadrilla en un bosque de Arizona. Sus compañeros pasaron el polígrafo, y el caso se convirtió en la base de la película Fire in the Sky.',
+    witnesses: [
+      { name: 'Travis Walton', role: 'Leñador abducido', credibility: 'media', testimony: 'Afirmó despertar dentro de un objeto rodeado de seres antes de reaparecer cinco días después, desorientado.' },
+      { name: 'Cuadrilla de leñadores', role: 'Seis compañeros de trabajo', credibility: 'media', testimony: 'Declararon haber visto el haz de luz golpear a Walton y huir del lugar; varios pasaron pruebas de polígrafo.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'walton-hyp-1', title: 'Encuentro corroborado por múltiples testigos', description: 'A diferencia de otras abducciones, hubo seis testigos del momento inicial y una desaparición real de cinco días.', evidence: ['Seis testigos del haz de luz', 'La desaparición fue objeto de una búsqueda policial real', 'Varios pasaron el polígrafo'], counterEvidence: ['El polígrafo no es prueba concluyente', 'No hay evidencia física del objeto'], probability: 'media', source: 'The Walton Experience (Travis Walton)' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1975-11-05', event: 'Walton recibe el haz de luz frente a su cuadrilla y desaparece.' },
+      { date: '1975-11-10', event: 'Reaparece a cinco días, desorientado, a las afueras de un pueblo cercano.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Inspiró la película Fire in the Sky (1993), uno de los relatos de abducción más difundidos del cine.',
+  }),
+
+  'kelly-hopkinsville-1955': buildExpediente('kelly-hopkinsville-1955', {
+    fullDescription: 'La noche del 21 de agosto de 1955, la familia Sutton afirmó haber pasado horas disparando contra pequeñas criaturas de aspecto metálico que rodeaban su granja cerca de Kelly, Kentucky. Investigado por J. Allen Hynek, el caso es un clásico de encuentro con ocupantes y origen del cliché de los "hombrecitos verdes".',
+    witnesses: [
+      { name: 'Familia Sutton', role: 'Habitantes de la granja', credibility: 'media', testimony: 'Describieron varias criaturas pequeñas de brazos largos y ojos grandes que reaparecían pese a los disparos, hasta que la familia huyó a la comisaría.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'kelly-hyp-1', title: 'Confusión con fauna nocturna', description: 'Una hipótesis escéptica atribuye el episodio a búhos reales agrandados por el miedo y la oscuridad.', evidence: ['Los búhos reales tienen ojos grandes y son territoriales', 'La familia estaba muy alterada'], counterEvidence: ['El relato describe criaturas erguidas y coordinadas', 'Varios adultos coincidieron en la descripción'], probability: 'media', source: 'Análisis escéptico posterior' },
+      { id: 'kelly-hyp-2', title: 'Encuentro con ocupantes', description: 'La cantidad de testigos y la coherencia del relato sostienen la versión de un encuentro real con entidades.', evidence: ['Múltiples testigos adultos', 'Intervención policial la misma noche'], counterEvidence: ['Ausencia total de evidencia física'], probability: 'baja', source: 'Investigación de J. Allen Hynek' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['hynek'],
+    timeline: [
+      { date: '1955-08-21', event: 'La familia Sutton reporta el asedio de las criaturas y acude a la policía.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Popularizó la imagen del "hombrecito verde" como sinónimo de extraterrestre en la cultura anglosajona.',
+  }),
+
+  'flatwoods-1952': buildExpediente('flatwoods-1952', {
+    fullDescription: 'El 12 de septiembre de 1952, tras ver caer un objeto luminoso, un grupo de vecinos de Flatwoods, Virginia Occidental, describió una entidad enorme y brillante en una colina. El "monstruo de Flatwoods" combina un efecto físico (el objeto en llamas) con la aparición de un ser.',
+    witnesses: [
+      { name: 'Grupo de Flatwoods', role: 'Vecinos y niños que subieron la colina', credibility: 'baja', testimony: 'Describieron una figura de varios metros con una "capucha" y un resplandor, además de un olor penetrante que les provocó náuseas.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'flatwoods-hyp-1', title: 'Meteoro más lechuza', description: 'La explicación convencional combina un meteoro esa noche con una lechuza posada que, con el miedo, se percibió como una criatura gigante.', evidence: ['Se registró un meteoro sobre la región esa noche', 'Las lechuzas de granero coinciden con la "cara" descrita'], counterEvidence: ['El grupo describió movimiento y gran tamaño', 'Reportaron un olor que les causó malestar físico'], probability: 'alta', source: 'Análisis escéptico posterior' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1952-09-12', event: 'Vecinos ven caer un objeto y describen la entidad en la colina.' },
+    ],
+    investigationStatus: 'cerrado',
+    culturalImpact: 'El "monstruo de Flatwoods" es un ícono del folclore de Virginia Occidental, con festival y estatuas propias.',
+  }),
+
+  'valensole-1965': buildExpediente('valensole-1965', {
+    fullDescription: 'El 1 de julio de 1965, el agricultor Maurice Masse vio a dos seres pequeños junto a una nave posada en su lavandal de Valensole, Provenza. Tras el episodio, el cultivo dejó de crecer en el sitio exacto del aterrizaje. Es uno de los casos con ocupantes y efecto físico más sólidos de Francia.',
+    witnesses: [
+      { name: 'Maurice Masse', role: 'Agricultor, testigo directo', credibility: 'media', testimony: 'Relató acercarse a lo que creyó vándalos y encontrar dos seres junto a un objeto ovoide; quedó momentáneamente paralizado antes de que la nave despegara.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'valensole-hyp-1', title: 'Encuentro con efecto físico', description: 'La marca del terreno y la esterilidad posterior del cultivo aportan un elemento físico poco común entre los casos de ocupantes.', evidence: ['El lavandal dejó de crecer en el punto señalado', 'La gendarmería documentó marcas en el suelo'], counterEvidence: ['Un único testigo directo del encuentro'], probability: 'media', source: 'Investigación de la gendarmería francesa y de Aimé Michel' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['vallee'],
+    timeline: [
+      { date: '1965-07-01', event: 'Masse reporta el encuentro; la gendarmería documenta marcas en el terreno.' },
+    ],
+    investigationStatus: 'sin resolver',
+  }),
+
+  'voronezh-1989': buildExpediente('voronezh-1989', {
+    fullDescription: 'El 27 de septiembre de 1989, decenas de personas —muchas de ellas niños— reportaron el aterrizaje de un objeto y la aparición de seres altos en un parque de Vorónezh. Lo insólito fue que la agencia oficial soviética TASS difundió la noticia, algo inédito en la URSS.',
+    witnesses: [
+      { name: 'Testigos del parque de Vorónezh', role: 'Vecinos y niños', credibility: 'baja', testimony: 'Describieron un objeto esférico y uno o varios seres de gran altura acompañados de un "robot", vistos a plena luz en un parque concurrido.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'voronezh-hyp-1', title: 'Histeria colectiva infantil', description: 'La mayoría de los testigos eran niños y el relato varió mucho entre versiones, lo que sugiere una construcción colectiva amplificada por la prensa.', evidence: ['Predominio de testigos infantiles', 'Discrepancias entre las versiones'], counterEvidence: ['La difusión provino de la agencia oficial TASS'], probability: 'alta', source: 'Análisis de prensa y escéptico posterior' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1989-09-27', event: 'Se reporta el avistamiento con seres en el parque de Vorónezh.' },
+      { date: '1989-10-09', event: 'La agencia soviética TASS difunde el caso a la prensa internacional.' },
+    ],
+    investigationStatus: 'sin resolver',
+  }),
+
+  'ariel-school-1994': buildExpediente('ariel-school-1994', {
+    fullDescription: 'El 16 de septiembre de 1994, alrededor de 62 alumnos de la escuela Ariel, en Ruwa (Zimbabue), afirmaron ver una nave posada y uno o más seres que los observaban durante el recreo. El caso fue investigado por el psiquiatra de Harvard John Mack y sigue siendo citado por la coincidencia entre los relatos infantiles.',
+    witnesses: [
+      { name: 'Alumnos de la Escuela Ariel', role: 'Unos 62 niños de entre 6 y 12 años', credibility: 'media', testimony: 'Describieron de forma coincidente un objeto plateado posado en la maleza y un ser de ojos grandes que se comunicó con algunos por sensación o mirada.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'ariel-hyp-1', title: 'Encuentro colectivo genuino', description: 'La coincidencia entre decenas de dibujos y relatos infantiles independientes es difícil de explicar por mera sugestión.', evidence: ['Dibujos coincidentes hechos por separado', 'Entrevistas filmadas poco después del hecho'], counterEvidence: ['La influencia entre compañeros no puede descartarse'], probability: 'media', source: 'Investigación de John Mack y Cynthia Hind' },
+      { id: 'ariel-hyp-2', title: 'Sugestión y contagio social', description: 'Un primer relato pudo propagarse entre los niños durante el recreo, generando una memoria compartida.', evidence: ['Los niños estaban juntos y conversaron antes de las entrevistas'], counterEvidence: ['La consistencia de detalles específicos entre relatos independientes'], probability: 'media', source: 'Análisis escéptico posterior' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1994-09-16', event: 'Los alumnos reportan el encuentro durante el recreo en Ruwa.' },
+      { date: '1994-12-01', event: 'John Mack viaja a Zimbabue y entrevista a los niños.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es el caso de encuentro con ocupantes con más testigos infantiles simultáneos documentado, y protagonizó documentales recientes.',
+  }),
+
+  'isidris-mendoza': buildExpediente('isidris-mendoza', {
+    fullDescription: 'Isidris es, según la tradición esotérica, la tercera ciudad intraterrena argentina, mencionada junto a Erks e Iberah en el libro "Urbes subterráneas" del ovnílogo Alejandro Di Noto. Su ubicación en la cordillera mendocina es imprecisa y no hay ninguna evidencia física: se trata de una leyenda.',
+    witnesses: [],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'isidris-hyp-1', title: 'Leyenda esotérica moderna', description: 'Isidris aparece únicamente en literatura New Age reciente, sin registros independientes ni evidencia geológica.', evidence: ['La única fuente es el libro de Di Noto', 'No existen coordenadas ni pruebas físicas'], counterEvidence: [], probability: 'alta', source: 'Libro "Urbes subterráneas" (A. Di Noto)' },
+      { id: 'isidris-hyp-2', title: 'Ciudad intraterrena real', description: 'La corriente esotérica la considera un centro intraterreno parte de una red junto a Erks e Iberah.', evidence: ['Relatos de contactados'], counterEvidence: ['Ausencia total de evidencia', 'Ubicación imprecisa'], probability: 'descartada', source: 'Sitios esotéricos' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Completa, junto a Erks e Iberah, la tríada de "ciudades intraterrenas" argentinas del imaginario New Age local.',
+  }),
+
+  'telos-shasta': buildExpediente('telos-shasta', {
+    fullDescription: 'Telos es la ciudad intraterrena más famosa del mundo: una supuesta urbe lemuriana oculta bajo el Monte Shasta, en California, popularizada por la literatura teosófica y New Age del siglo XX. No tiene ninguna evidencia y funciona como el referente internacional de leyendas como Erks e Iberah.',
+    witnesses: [],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'telos-hyp-1', title: 'Folclore New Age', description: 'La ciudad de Telos proviene de obras teosóficas y New Age, sin ningún sustento físico ni geológico.', evidence: ['Origen en literatura esotérica del siglo XX', 'El Monte Shasta es un volcán sin cavidades urbanas conocidas'], counterEvidence: [], probability: 'alta', source: 'Literatura teosófica y New Age' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1934-01-01', event: 'La obra "Unveiled Mysteries" de Guy Ballard populariza la ciudad oculta bajo el Monte Shasta.' },
+    ],
+    investigationStatus: 'cerrado',
+    culturalImpact: 'Es el arquetipo internacional de la ciudad intraterrena, referencia obligada para las versiones argentinas Erks e Iberah.',
+  }),
 };
 
 export const getExpediente = (id: string): Expediente | undefined => expedientes[id];
