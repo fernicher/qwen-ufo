@@ -5,6 +5,7 @@ import { investigators } from '../data/investigators';
 import { ufoCases } from '../data/cases';
 import { books } from '../data/books';
 import { getExtra } from '../data/expediente-extras';
+import { hynekMeta } from '../data/hynek';
 import CaseTypeIcon from '../components/CaseTypeIcon';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
@@ -82,12 +83,22 @@ export default function ExpedienteDetail() {
             <span className={`text-xs font-bold px-3 py-1.5 rounded border ${credColors[exp.credibility]}`}><Shield className="w-3 h-3 inline mr-1" /> Evidencia {exp.credibility}</span>
             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{statusLabels[exp.investigationStatus]}</span>
             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{typeLabels[exp.type]}</span>
+            {exp.hynek && (
+              <span
+                className="text-xs font-bold px-3 py-1.5 rounded border inline-flex items-center gap-1.5"
+                style={{ color: hynekMeta[exp.hynek].color, borderColor: `${hynekMeta[exp.hynek].color}55`, background: `${hynekMeta[exp.hynek].color}1a` }}
+                title={hynekMeta[exp.hynek].description}
+              >
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: hynekMeta[exp.hynek].color }} />
+                {hynekMeta[exp.hynek].label} · {hynekMeta[exp.hynek].name}
+              </span>
+            )}
           </div>
           <CaseHero exp={exp} wiki={extra.wiki} />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
             <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-aurora-cyan" />{parseLocalDate(exp.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-            <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" />{exp.location}, {exp.country}</span>
+            <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-aurora-cyan" />{exp.city ? [exp.city, exp.region, exp.country].filter(Boolean).join(', ') : `${exp.location}, ${exp.country}`}</span>
           </div>
           <p className="text-lg text-gray-300 leading-relaxed max-w-4xl">{exp.fullDescription}</p>
         </div>

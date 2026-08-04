@@ -33,11 +33,26 @@ const raw: Record<string, { wiki?: string; ytTerms: string }> = {
   'penas-1976': { ytTerms: 'caso Cañas 1976 ovni' },
   'guadalupe-2004': { ytTerms: 'ovni Guadalupe 2004' },
   'san-jose-1979': { ytTerms: 'caso San José 1979 ovni' },
-  'mapendulo-1995': { ytTerms: 'Ariel School Ruwa 1994 UFO children documentary' },
+  'mapendulo-1995': { ytTerms: 'caso Mapendulo Papúa Indonesia contacto ovni' },
   'uritorco-1986': { ytTerms: 'cerro Uritorco Capilla del Monte ovni 1986 Sierra del Pajarillo documental' },
   'erks-uritorco': { ytTerms: 'ciudad de Erks Uritorco leyenda documental' },
   'ingeniero-white-1975': { ytTerms: 'Carlos Díaz Ingeniero White ovni Bahía Blanca Constitución documental' },
   'iberah': { ytTerms: 'Iberah ciudad intraterrena La Lobería Viedma Río Negro documental' },
+  // Abducciones (CE4)
+  'hill-1961': { wiki: 'Barney_and_Betty_Hill_incident', ytTerms: 'Betty Barney Hill abduction 1961 documental' },
+  'villas-boas-1957': { ytTerms: 'Antônio Villas Boas 1957 abdução ovni documentário' },
+  'pascagoula-1973': { wiki: 'Pascagoula_Abduction', ytTerms: 'Pascagoula abduction 1973 documentary' },
+  'allagash-1976': { ytTerms: 'Allagash abductions 1976 documentary' },
+  'walton-1975': { wiki: 'Travis_Walton_UFO_incident', ytTerms: 'Travis Walton Fire in the Sky abduction documentary' },
+  // Encuentros del 3er tipo (CE3)
+  'kelly-hopkinsville-1955': { wiki: 'Kelly–Hopkinsville_encounter', ytTerms: 'Kelly Hopkinsville goblins 1955 encounter documentary' },
+  'flatwoods-1952': { wiki: 'Flatwoods_monster', ytTerms: 'Flatwoods monster 1952 documentary' },
+  'valensole-1965': { ytTerms: 'Valensole 1965 Maurice Masse ovni documentaire' },
+  'voronezh-1989': { ytTerms: 'Voronezh 1989 UFO landing TASS documentary' },
+  'ariel-school-1994': { ytTerms: 'Ariel School Ruwa 1994 UFO children John Mack documentary' },
+  // Ciudades intraterrenas
+  'isidris-mendoza': { ytTerms: 'ciudad de Isidris Mendoza intraterrena Di Noto documental' },
+  'telos-shasta': { ytTerms: 'Telos Mount Shasta Lemuria intraterrestrial city documentary' },
 };
 
 export const expedienteExtras: Record<string, ExpedienteExtra> = Object.fromEntries(

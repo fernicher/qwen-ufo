@@ -3,7 +3,8 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { List, MapPin, Filter, X } from 'lucide-react';
 import InteractiveMap from '../components/Map/InteractiveMap';
 import { ufoCases } from '../data/cases';
-import type { CaseType, Credibility } from '../data/cases';
+import type { CaseType, Credibility, HynekScale } from '../data/cases';
+import { hynekMeta, HYNEK_ORDER } from '../data/hynek';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const typeLabels: Record<CaseType, string> = {
@@ -24,6 +25,7 @@ export default function Mapa() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<CaseType[]>([]);
   const [credFilter, setCredFilter] = useState<Credibility[]>([]);
+  const [hynekFilter, setHynekFilter] = useState<HynekScale[]>([]);
   const [countryFilter, setCountryFilter] = useState<string>('todos');
 
   useEffect(() => {
@@ -37,15 +39,17 @@ export default function Mapa() {
     return ufoCases.filter((c) => {
       if (typeFilter.length > 0 && !typeFilter.includes(c.type)) return false;
       if (credFilter.length > 0 && !credFilter.includes(c.credibility)) return false;
+      if (hynekFilter.length > 0 && (!c.hynek || !hynekFilter.includes(c.hynek))) return false;
       if (countryFilter !== 'todos' && c.country !== countryFilter) return false;
       return true;
     });
-  }, [typeFilter, credFilter, countryFilter]);
+  }, [typeFilter, credFilter, hynekFilter, countryFilter]);
 
   const toggleType = (t: CaseType) => setTypeFilter((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
   const toggleCred = (c: Credibility) => setCredFilter((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
-  const activeFilterCount = typeFilter.length + credFilter.length + (countryFilter !== 'todos' ? 1 : 0);
-  const clearFilters = () => { setTypeFilter([]); setCredFilter([]); setCountryFilter('todos'); };
+  const toggleHynek = (h: HynekScale) => setHynekFilter((prev) => (prev.includes(h) ? prev.filter((x) => x !== h) : [...prev, h]));
+  const activeFilterCount = typeFilter.length + credFilter.length + hynekFilter.length + (countryFilter !== 'todos' ? 1 : 0);
+  const clearFilters = () => { setTypeFilter([]); setCredFilter([]); setHynekFilter([]); setCountryFilter('todos'); };
 
   return (
     <div className="relative h-screen w-full bg-aurora-black overflow-hidden">
@@ -92,6 +96,35 @@ export default function Mapa() {
                     </button>
                   ))}
                 </div>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Escala de Hynek</p>
+                <div className="flex flex-wrap gap-2">
+                  {HYNEK_ORDER.map((h) => {
+                    const meta = hynekMeta[h];
+                    const active = hynekFilter.includes(h);
+                    return (
+                      <button
+                        key={h}
+                        onClick={() => toggleHynek(h)}
+                        title={meta.description}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border ${active ? 'text-aurora-black' : 'bg-white/5 text-gray-300 hover:border-white/25'}`}
+                        style={active ? { background: meta.color, borderColor: meta.color } : { borderColor: `${meta.color}66` }}
+                      >
+                        <span className="w-2 h-2 rounded-full" style={{ background: active ? '#0a0a0c' : meta.color }} />
+                        {meta.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <ul className="mt-3 space-y-1">
+                  {HYNEK_ORDER.map((h) => (
+                    <li key={h} className="flex items-start gap-2 text-[11px] text-gray-400">
+                      <span className="mt-1 w-2 h-2 rounded-full shrink-0" style={{ background: hynekMeta[h].color }} />
+                      <span><span className="text-gray-200 font-semibold">{hynekMeta[h].label}</span> — {hynekMeta[h].description}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">País</p>
