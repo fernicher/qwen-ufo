@@ -53,6 +53,7 @@ const raw: Record<string, { wiki?: string; ytTerms: string }> = {
   // Ciudades intraterrenas
   'isidris-mendoza': { ytTerms: 'ciudad de Isidris Mendoza intraterrena Di Noto documental' },
   'telos-shasta': { ytTerms: 'Telos Mount Shasta Lemuria intraterrestrial city documentary' },
+  'juan-perez-1978': { ytTerms: 'Testigo de otro mundo documental Juan Pérez Alan Stivelman Jacques Vallée gaucho ovni' },
 };
 
 export const expedienteExtras: Record<string, ExpedienteExtra> = Object.fromEntries(
