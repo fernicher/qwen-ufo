@@ -1,69 +1,10 @@
 import { useState } from 'react';
-import { RadioTower, MessageCircle, Newspaper, Cloud, Play, ArrowUpRight, Flame, MessageSquare, Clock, RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { RadioTower, RefreshCw, ArrowRight } from 'lucide-react';
 import { useNews } from '../hooks/useNews';
-import type { NewsItem, NewsSource } from '../hooks/useNews';
-
-const sourceMeta: Record<NewsSource, { label: string; color: string; Icon: typeof Newspaper }> = {
-  reddit: { label: 'Reddit', color: '#ff4500', Icon: MessageCircle },
-  news: { label: 'Prensa', color: '#22d3ee', Icon: Newspaper },
-  bluesky: { label: 'Bluesky', color: '#0a7aff', Icon: Cloud },
-  youtube: { label: 'YouTube', color: '#ff0000', Icon: Play },
-};
-
-function timeAgo(iso: string): string {
-  const secs = (Date.now() - new Date(iso).getTime()) / 1000;
-  if (!isFinite(secs) || secs < 0) return '';
-  if (secs < 60) return 'recién';
-  if (secs < 3600) return `hace ${Math.floor(secs / 60)} min`;
-  if (secs < 86400) return `hace ${Math.floor(secs / 3600)} h`;
-  const days = Math.floor(secs / 86400);
-  if (days < 30) return `hace ${days} d`;
-  return new Date(iso).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' });
-}
-
-function NewsCard({ item }: { item: NewsItem }) {
-  const meta = sourceMeta[item.source];
-  const Icon = meta.Icon;
-  return (
-    <a
-      href={item.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex flex-col bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-4 hover:border-aurora-cyan/30 transition-all"
-    >
-      <div className="flex items-center justify-between gap-2 mb-3">
-        <span
-          className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded border"
-          style={{ color: meta.color, borderColor: `${meta.color}55`, background: `${meta.color}1a` }}
-        >
-          <Icon className="w-3 h-3" /> {meta.label}
-        </span>
-        <span className="flex items-center gap-1 text-[11px] text-gray-500 shrink-0">
-          <Clock className="w-3 h-3" /> {timeAgo(item.date)}
-        </span>
-      </div>
-      <h3 className="font-display font-semibold text-white text-sm leading-snug line-clamp-3 group-hover:text-aurora-cyan transition-colors">
-        {item.title}
-      </h3>
-      {item.excerpt && <p className="text-xs text-gray-400 line-clamp-2 mt-2">{item.excerpt}</p>}
-      <div className="mt-auto pt-3 flex items-center justify-between gap-2 text-[11px] text-gray-500">
-        <span className="truncate">{item.author}</span>
-        <span className="flex items-center gap-3 shrink-0">
-          {typeof item.meta.score === 'number' && (
-            <span className="flex items-center gap-1"><Flame className="w-3 h-3" />{item.meta.score}</span>
-          )}
-          {typeof item.meta.comments === 'number' && (
-            <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" />{item.meta.comments}</span>
-          )}
-          {typeof item.meta.likes === 'number' && (
-            <span className="flex items-center gap-1"><Flame className="w-3 h-3" />{item.meta.likes}</span>
-          )}
-          <ArrowUpRight className="w-3.5 h-3.5 text-gray-600 group-hover:text-aurora-cyan transition-colors" />
-        </span>
-      </div>
-    </a>
-  );
-}
+import type { NewsSource } from '../hooks/useNews';
+import NewsCard from './NewsCard';
+import { sourceMeta } from './newsMeta';
 
 function Skeleton() {
   return (
@@ -85,7 +26,7 @@ export default function NewsFeed() {
 
   const items = data?.items ?? [];
   const available = Array.from(new Set(items.map((i) => i.source)));
-  const shown = (filter === 'all' ? items : items.filter((i) => i.source === filter)).slice(0, 12);
+  const shown = (filter === 'all' ? items : items.filter((i) => i.source === filter)).slice(0, 6);
 
   return (
     <section className="py-16">
@@ -153,9 +94,19 @@ export default function NewsFeed() {
         )}
 
         {shown.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {shown.map((item) => <NewsCard key={item.id} item={item} />)}
-          </div>
+          <>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {shown.map((item) => <NewsCard key={item.id} item={item} />)}
+            </div>
+            <div className="mt-8 text-center">
+              <Link
+                to="/noticias"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white/5 text-white font-display font-semibold rounded-xl border border-white/10 hover:border-aurora-cyan/50 transition-colors"
+              >
+                Ver todas las noticias <ArrowRight className="w-4 h-4 text-aurora-cyan" />
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </section>

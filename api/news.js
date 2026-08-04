@@ -17,8 +17,11 @@ function stripHtml(s = '') {
     .trim();
 }
 
+// Varios subreddits del tema en una sola llamada.
+const SUBREDDITS = 'UFOs+HighStrangeness+aliens+UFOB+UAP';
+
 async function fromReddit() {
-  const r = await fetch('https://www.reddit.com/r/UFOs/hot.json?limit=20&raw_json=1', {
+  const r = await fetch(`https://www.reddit.com/r/${SUBREDDITS}/hot.json?limit=30&raw_json=1`, {
     headers: { 'User-Agent': UA, Accept: 'application/json' },
   });
   if (!r.ok) throw new Error('reddit ' + r.status);
@@ -145,6 +148,14 @@ async function fromYouTube(key) {
     }));
 }
 
+// Detección simple de español para priorizar ese contenido en el orden.
+function isSpanish(item) {
+  if (item.source === 'news') return true; // Google News ya viene filtrado en español
+  const t = (item.title + ' ' + (item.excerpt || '')).toLowerCase();
+  if (/[áéíóúñ¿¡]/.test(t)) return true;
+  return /\b(ovni|ovnis|avistamiento|nave|extraterrestre|fenómeno|según|desclasificad)\b/.test(t);
+}
+
 export default async function handler(_req, res) {
   const names = ['reddit', 'news', 'bluesky'];
   const tasks = [fromReddit(), fromGoogleNews(), fromBluesky()];
@@ -166,11 +177,15 @@ export default async function handler(_req, res) {
     }
   });
 
+  // Ordena por frescura, pero el contenido en español pesa como ~8 h más nuevo.
+  const ES_BOOST = 8 * 3600 * 1000;
   const seen = new Set();
   items = items
     .filter((it) => it.url && it.title && !seen.has(it.url) && seen.add(it.url))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 30);
+    .map((it) => ({ it, rank: new Date(it.date).getTime() + (isSpanish(it) ? ES_BOOST : 0) }))
+    .sort((a, b) => b.rank - a.rank)
+    .slice(0, 40)
+    .map((x) => x.it);
 
   res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate=1800');
   res.status(200).json({ updatedAt: new Date().toISOString(), sources, items });
