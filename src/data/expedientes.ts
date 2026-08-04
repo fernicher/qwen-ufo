@@ -863,6 +863,27 @@ export const expedientes: Record<string, Expediente> = {
     investigationStatus: 'cerrado',
     culturalImpact: 'Es el arquetipo internacional de la ciudad intraterrena, referencia obligada para las versiones argentinas Erks e Iberah.',
   }),
+
+  'juan-perez-1978': buildExpediente('juan-perez-1978', {
+    fullDescription: 'El 6 de septiembre de 1978, con apenas 12 años, Juan Pérez —un gaucho de Venado Tuerto, Santa Fe— relató haber visto un objeto en el campo al amanecer, haber subido a bordo y mantenido contacto con sus ocupantes. La experiencia lo marcó de por vida y lo llevó a una existencia solitaria. Décadas después, el cineasta Alan Stivelman y el astrofísico Jacques Vallée lo acompañaron a reelaborar el episodio en el documental "Testigo de otro mundo" (2018).',
+    witnesses: [
+      { name: 'Juan Pérez', role: 'Gaucho, testigo directo', credibility: 'media', testimony: 'Relató que, siendo niño, se topó con un objeto y sus ocupantes mientras se disponía a arriar caballos al amanecer; describió el contacto como una experiencia que cambió su vida para siempre.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'juanperez-hyp-1', title: 'Experiencia de contacto genuina', description: 'La consistencia del relato de Juan a lo largo de más de tres décadas y el interés de investigadores como Jacques Vallée sostienen la seriedad del testimonio, más allá de su interpretación.', evidence: ['Juan mantuvo el mismo relato durante décadas', 'Vallée conoció el caso y lo siguió desde los años 80'], counterEvidence: ['Testigo único, sin evidencia física'], probability: 'media', source: 'Documental "Testigo de otro mundo" (Alan Stivelman, 2018)' },
+      { id: 'juanperez-hyp-2', title: 'Lectura psicológica y espiritual', description: 'El propio documental aborda el caso más desde lo espiritual y lo psicológico que desde lo material, con la participación de chamanes guaraníes que ayudan a Juan a resignificar la experiencia.', evidence: ['El film se centra en la sanación y el sentido del episodio', 'Participan chamanes guaraníes junto a Vallée'], counterEvidence: [], probability: 'media', source: 'Testigo de otro mundo (2018)' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['vallee'],
+    timeline: [
+      { date: '1978-09-06', event: 'Juan Pérez, de 12 años, reporta el encuentro en un campo de Venado Tuerto.' },
+      { date: '2018-01-01', event: 'Se estrena el documental "Testigo de otro mundo", de Alan Stivelman, con Jacques Vallée.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'El documental "Testigo de otro mundo" (Witness of Another World) llevó el caso a plataformas internacionales y lo convirtió en uno de los relatos de contacto argentinos más conocidos fuera del país.',
+  }),
 };
 
 export const getExpediente = (id: string): Expediente | undefined => expedientes[id];
