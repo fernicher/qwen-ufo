@@ -25,8 +25,8 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">El archivo crece cada día</h2>
             <p className="text-gray-400 max-w-xl mx-auto mb-8">Nuevos casos, documentales y avistamientos se añaden continuamente.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/catalogo" className="px-8 py-4 bg-aurora-cyan text-aurora-black font-display font-bold rounded-xl hover:bg-aurora-cyanGlow flex items-center gap-2">Explorar Catálogo <ArrowRight className="w-4 h-4" /></Link>
-              <Link to="/mapa" className="px-8 py-4 bg-white/5 text-white font-display font-semibold rounded-xl border border-white/10 hover:border-aurora-cyan/50">Ver Mapa Global</Link>
+              <Link to="/catalogo" className="px-8 py-4 bg-gradient-to-r from-aurora-cyan to-blue-500 text-aurora-black font-display font-bold rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.3)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2">Explorar Catálogo <ArrowRight className="w-4 h-4" /></Link>
+              <Link to="/mapa" className="px-8 py-4 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-display font-bold rounded-xl shadow-[0_0_25px_rgba(168,85,247,0.3)] hover:brightness-110 active:scale-95 transition-all">Ver Mapa Global</Link>
             </div>
           </div>
         </div>
