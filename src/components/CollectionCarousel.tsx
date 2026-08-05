@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function CollectionCarousel({ collections, title }: { collections: any[]; title: string }) {
+export default function CollectionCarousel({ collections, title, accent = '#22d3ee' }: { collections: any[]; title: string; accent?: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (dir: 'left' | 'right') => {
     if (!scrollRef.current) return;
@@ -12,7 +12,10 @@ export default function CollectionCarousel({ collections, title }: { collections
     <section className="py-12">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-end justify-between mb-8">
-          <h2 className="text-2xl md:text-3xl font-display font-bold text-white">{title}</h2>
+          <h2 className="flex items-center gap-3 text-2xl md:text-3xl font-display font-bold text-white">
+            <span className="w-1.5 h-7 rounded-full shrink-0" style={{ background: accent }} />
+            {title}
+          </h2>
           <div className="hidden md:flex items-center gap-2">
             <button onClick={() => scroll('left')} className="p-2 rounded-lg bg-white/5 border border-white/10 hover:border-aurora-cyan/50 text-gray-400 hover:text-aurora-cyan"><ChevronLeft className="w-4 h-4" /></button>
             <button onClick={() => scroll('right')} className="p-2 rounded-lg bg-white/5 border border-white/10 hover:border-aurora-cyan/50 text-gray-400 hover:text-aurora-cyan"><ChevronRight className="w-4 h-4" /></button>

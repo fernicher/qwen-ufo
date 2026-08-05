@@ -46,6 +46,12 @@ export default function Mapa() {
     });
   }, [typeFilter, credFilter, hynekFilter, countryFilter]);
 
+  const typeCounts = useMemo(() => {
+    const counts: Record<CaseType, number> = { avistamiento: 0, aterrizaje: 0, contacto: 0, radar: 0, fotografico: 0 };
+    ufoCases.forEach((c) => { counts[c.type]++; });
+    return counts;
+  }, []);
+
   const toggleType = (t: CaseType) => setTypeFilter((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
   const toggleCred = (c: Credibility) => setCredFilter((prev) => (prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c]));
   const toggleHynek = (h: HynekScale) => setHynekFilter((prev) => (prev.includes(h) ? prev.filter((x) => x !== h) : [...prev, h]));
@@ -60,6 +66,24 @@ export default function Mapa() {
             <span className="inline-block px-3 py-1 mb-2 text-[10px] font-bold tracking-widest text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Archivo Geográfico</span>
             <h1 className="text-3xl md:text-4xl font-display font-bold text-white">Mapa Global de <span className="text-aurora-cyan">Avistamientos</span></h1>
             <p className="text-sm text-gray-400 mt-1">{filteredCases.length} de {ufoCases.length} casos {activeFilterCount > 0 ? 'filtrados' : 'documentados'}</p>
+            <div className="pointer-events-auto flex flex-wrap gap-2 mt-3">
+              {(Object.keys(typeLabels) as CaseType[]).map((t) => {
+                const active = typeFilter.includes(t);
+                const color = caseTypeMeta[t].color;
+                return (
+                  <button
+                    key={t}
+                    onClick={() => toggleType(t)}
+                    title={`${typeLabels[t]}: ${typeCounts[t]} casos`}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border transition-colors"
+                    style={active ? { background: color, borderColor: color, color: '#0a0a0c' } : { borderColor: `${color}55`, color: '#e5e7eb', background: `${color}14` }}
+                  >
+                    <span className="w-2 h-2 rounded-full" style={{ background: active ? '#0a0a0c' : color }} />
+                    {caseTypeMeta[t].label} <span className="opacity-70">{typeCounts[t]}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
           <div className="pointer-events-auto flex items-center gap-2">
             <button onClick={() => setFiltersOpen(!filtersOpen)} className={`flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium ${activeFilterCount > 0 ? 'bg-aurora-cyan/10 border-aurora-cyan/50 text-aurora-cyan' : 'bg-aurora-charcoal/90 border-white/10 hover:border-aurora-cyan/50 text-white'}`}>

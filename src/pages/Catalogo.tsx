@@ -9,11 +9,11 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 type Filter = 'todos' | CatalogType;
 
-const filters: { id: Filter; label: string; icon: typeof Film }[] = [
-  { id: 'todos', label: 'Todo', icon: LayoutGrid },
-  { id: 'pelicula', label: 'Películas', icon: Film },
-  { id: 'serie', label: 'Series', icon: Tv },
-  { id: 'documental', label: 'Documentales', icon: Radio },
+const filters: { id: Filter; label: string; icon: typeof Film; color: string }[] = [
+  { id: 'todos', label: 'Todo', icon: LayoutGrid, color: '#e5e7eb' },
+  { id: 'pelicula', label: 'Películas', icon: Film, color: '#22d3ee' },
+  { id: 'serie', label: 'Series', icon: Tv, color: '#c084fc' },
+  { id: 'documental', label: 'Documentales', icon: Radio, color: '#fbbf24' },
 ];
 
 export default function Catalogo() {
@@ -79,8 +79,14 @@ export default function Catalogo() {
         <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           {filters.map((f) => {
             const Icon = f.icon;
+            const active = filter === f.id;
             return (
-              <button key={f.id} onClick={() => setFilter(f.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === f.id ? 'bg-aurora-cyan text-aurora-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}>
+              <button
+                key={f.id}
+                onClick={() => setFilter(f.id)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border transition-colors"
+                style={active ? { background: f.color, borderColor: f.color, color: '#0a0a0c' } : { borderColor: `${f.color}44`, color: '#9ca3af', background: `${f.color}12` }}
+              >
                 <Icon className="w-4 h-4" /> {f.label}
               </button>
             );

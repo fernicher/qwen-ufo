@@ -34,8 +34,8 @@ export default function NewsFeed() {
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <span className="p-2 rounded-xl bg-aurora-cyan/10 border border-aurora-cyan/20">
-                <RadioTower className="w-5 h-5 text-aurora-cyan" />
+              <span className="p-2 rounded-xl" style={{ background: '#f472b61a', border: '1px solid #f472b633' }}>
+                <RadioTower className="w-5 h-5" style={{ color: '#f472b6' }} />
               </span>
               <h2 className="text-3xl md:text-4xl font-display font-bold text-white">Radar de señales</h2>
             </div>
