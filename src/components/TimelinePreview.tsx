@@ -18,7 +18,7 @@ export default function TimelinePreview() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Línea Temporal</span>
+            <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] uppercase border rounded-full" style={{ color: '#38bdf8', borderColor: '#38bdf84d', background: '#38bdf80d' }}>Línea Temporal</span>
             <h2 className="text-2xl md:text-3xl font-display font-bold text-white">70 Años de Fenómeno</h2>
           </div>
           <div className="hidden md:flex items-center gap-3">

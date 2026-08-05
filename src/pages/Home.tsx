@@ -12,9 +12,9 @@ export default function Home() {
   return (
     <div>
       <Hero />
-      <CollectionCarousel collections={featuredCollections} title="Colecciones Destacadas" />
+      <CollectionCarousel collections={featuredCollections} title="Colecciones Destacadas" accent="#22d3ee" />
       <NewsFeed />
-      <CollectionCarousel collections={collections.filter((c) => !c.featured)} title="Explorar por Temática" />
+      <CollectionCarousel collections={collections.filter((c) => !c.featured)} title="Explorar por Temática" accent="#a78bfa" />
       <TimelinePreview />
       <InvestigatorsPreview />
       <VisitorStats />

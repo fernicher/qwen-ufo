@@ -16,7 +16,7 @@ export default function InvestigatorsPreview() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Mentes Detrás del Fenómeno</span>
+            <span className="inline-block px-3 py-1 mb-3 text-[10px] font-bold tracking-[0.2em] uppercase border rounded-full" style={{ color: '#60a5fa', borderColor: '#60a5fa4d', background: '#60a5fa0d' }}>Mentes Detrás del Fenómeno</span>
             <h2 className="text-2xl md:text-3xl font-display font-bold text-white">Investigadores Destacados</h2>
           </div>
           <Link to="/investigadores" className="hidden sm:flex items-center gap-1 text-sm font-semibold text-aurora-cyan hover:text-aurora-cyanGlow">Ver todos <ArrowRight className="w-4 h-4" /></Link>

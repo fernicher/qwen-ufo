@@ -20,6 +20,7 @@ export default function CatalogCard({ item }: { item: CatalogItem }) {
 
   return (
     <div className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-aurora-cyan/30 transition-all flex flex-col">
+      <div className="h-1 w-full shrink-0" style={{ background: meta.accent }} />
       <div className={`relative aspect-[2/3] overflow-hidden bg-gradient-to-br ${meta.grad}`}>
         {poster ? (
           <img src={poster} alt={item.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
