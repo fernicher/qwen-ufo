@@ -3,19 +3,26 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart, Radio } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 
-const primaryNavItems = [
-  { to: '/', label: 'Inicio', icon: Home },
-  { to: '/noticias', label: 'Noticias', icon: Radio },
-  { to: '/catalogo', label: 'Catálogo', icon: Film },
-  { to: '/mapa', label: 'Mapa', icon: Map },
-  { to: '/expedientes', label: 'Expedientes', icon: Compass },
-  { to: '/biblioteca', label: 'Biblioteca', icon: Book },
+interface NavItem {
+  to: string;
+  label: string;
+  icon: typeof Home;
+  color: string;
+}
+
+const primaryNavItems: NavItem[] = [
+  { to: '/', label: 'Inicio', icon: Home, color: '#22d3ee' },
+  { to: '/noticias', label: 'Noticias', icon: Radio, color: '#f472b6' },
+  { to: '/catalogo', label: 'Catálogo', icon: Film, color: '#a78bfa' },
+  { to: '/mapa', label: 'Mapa', icon: Map, color: '#34d399' },
+  { to: '/expedientes', label: 'Expedientes', icon: Compass, color: '#fbbf24' },
+  { to: '/biblioteca', label: 'Biblioteca', icon: Book, color: '#fb7185' },
 ];
 
-const moreNavItems = [
-  { to: '/investigadores', label: 'Investigadores', icon: Users },
-  { to: '/timeline', label: 'Línea de tiempo', icon: Clock },
-  { to: '/favoritos', label: 'Favoritos', icon: Heart },
+const moreNavItems: NavItem[] = [
+  { to: '/investigadores', label: 'Investigadores', icon: Users, color: '#60a5fa' },
+  { to: '/timeline', label: 'Línea de tiempo', icon: Clock, color: '#38bdf8' },
+  { to: '/favoritos', label: 'Favoritos', icon: Heart, color: '#f43f5e' },
 ];
 
 const allNavItems = [...primaryNavItems, ...moreNavItems];
@@ -44,8 +51,13 @@ export default function Layout() {
               const Icon = item.icon;
               const isActive = location.pathname === item.to;
               return (
-                <Link key={item.to} to={item.to} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-400 hover:text-white'}`}>
-                  <Icon className="w-4 h-4" /> {item.label}
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? '' : 'text-gray-400 hover:text-white'}`}
+                  style={isActive ? { color: item.color, backgroundColor: `${item.color}1a` } : undefined}
+                >
+                  <Icon className="w-4 h-4" style={{ color: item.color }} /> {item.label}
                 </Link>
               );
             })}
@@ -60,8 +72,13 @@ export default function Layout() {
                       const Icon = item.icon;
                       const isActive = location.pathname === item.to;
                       return (
-                        <Link key={item.to} to={item.to} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${isActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}>
-                          <Icon className="w-4 h-4" /> {item.label}
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${isActive ? '' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}
+                          style={isActive ? { color: item.color, backgroundColor: `${item.color}1a` } : undefined}
+                        >
+                          <Icon className="w-4 h-4" style={{ color: item.color }} /> {item.label}
                         </Link>
                       );
                     })}
@@ -94,9 +111,14 @@ export default function Layout() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive ? 'text-aurora-cyan bg-aurora-cyan/10' : 'text-gray-300 bg-white/5 hover:text-white'}`}
+                  className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold border transition-all active:scale-95"
+                  style={{
+                    color: isActive ? item.color : '#e5e7eb',
+                    backgroundColor: `${item.color}${isActive ? '2e' : '14'}`,
+                    borderColor: `${item.color}${isActive ? '99' : '3d'}`,
+                  }}
                 >
-                  <Icon className="w-4 h-4" /> {item.label}
+                  <Icon className="w-4 h-4" style={{ color: item.color }} /> {item.label}
                 </Link>
               );
             })}
