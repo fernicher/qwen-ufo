@@ -145,11 +145,11 @@ export default function Hero() {
         </h1>
         <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto">La plataforma multimedia definitiva en español dedicada al fenómeno OVNI/UAP.</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-          <Link to="/catalogo" className="px-8 py-4 bg-aurora-cyan text-aurora-black font-display font-bold rounded-xl hover:bg-aurora-cyanGlow transition-all shadow-[0_0_30px_rgba(6,182,212,0.3)] flex items-center gap-3">
+          <Link to="/catalogo" className="px-8 py-4 bg-gradient-to-r from-aurora-cyan to-blue-500 text-aurora-black font-display font-bold rounded-xl shadow-[0_0_30px_rgba(6,182,212,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-3">
             Explorar Archivo <ArrowRight className="w-5 h-5" />
           </Link>
-          <Link to="/mapa" className="px-8 py-4 bg-white/5 text-white font-display font-semibold rounded-xl border border-white/10 hover:border-aurora-cyan/50 flex items-center gap-3">
-            <Play className="w-4 h-4 text-aurora-cyan" /> Mapa Global
+          <Link to="/mapa" className="px-8 py-4 bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white font-display font-bold rounded-xl shadow-[0_0_30px_rgba(168,85,247,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-3">
+            <Play className="w-4 h-4" /> Mapa Global
           </Link>
         </div>
         <div className="flex items-center justify-center gap-8 sm:gap-14 flex-wrap">

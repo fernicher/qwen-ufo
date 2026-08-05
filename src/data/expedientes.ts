@@ -884,6 +884,51 @@ export const expedientes: Record<string, Expediente> = {
     investigationStatus: 'sin resolver',
     culturalImpact: 'El documental "Testigo de otro mundo" (Witness of Another World) llevó el caso a plataformas internacionales y lo convirtió en uno de los relatos de contacto argentinos más conocidos fuera del país.',
   }),
+
+  'friendship-1984': buildExpediente('friendship-1984', {
+    fullDescription: 'El Caso Friendship es uno de los enigmas más famosos y debatidos de la ufología chilena. A partir de 1983, el ingeniero Ernesto de la Fuente Gandarillas afirmó haber establecido contacto por radio (banda de 11 metros) con una comunidad instalada en una isla del sur de Chile —el archipiélago de las Guaitecas o los Chonos— que se hacía llamar "Friendship". De la Fuente sostuvo que esa comunidad lo curó de un cáncer de pulmón. El caso estalló en 1984, cuando el radioaficionado Octavio Ortiz captó un extraño SOS de la nave "Mytilus II", cuyo capitán reportaba un objeto luminoso, y se masificó con el programa OVNI de TVN.',
+    witnesses: [
+      { name: 'Ernesto de la Fuente Gandarillas', role: 'Ingeniero y radioaficionado, protagonista', credibility: 'media', testimony: 'Sostuvo durante décadas haber mantenido comunicación por radio con la comunidad de la isla y haber sido operado y curado de un cáncer, viviendo muchos años más de lo previsto.' },
+    ],
+    documents: [],
+    photos: [],
+    hypotheses: [
+      { id: 'friendship-hyp-1', title: 'Base o comunidad clandestina real', description: 'Algunas versiones sostienen que en la isla funcionaba una comunidad o base real —posiblemente vinculada a intereses de la época de la dictadura— cuyas comunicaciones se malinterpretaron como extraterrestres.', evidence: ['Las comunicaciones de radio fueron escuchadas por varios radioaficionados', 'El contexto de la dictadura alimenta la hipótesis de una instalación secreta'], counterEvidence: ['Nunca se ubicó ni documentó físicamente la isla ni la comunidad'], probability: 'media', source: 'Investigaciones periodísticas y el documental Isla Alien' },
+      { id: 'friendship-hyp-2', title: 'Construcción mítica', description: 'La ausencia total de pruebas físicas y la ubicación siempre imprecisa llevan a muchos investigadores a tratarlo como un mito construido a partir de comunicaciones de radio inconexas.', evidence: ['No hay coordenadas verificables', 'El relato depende casi por completo del testimonio de De la Fuente'], counterEvidence: ['La coherencia que mantuvo De la Fuente durante toda su vida'], probability: 'media', source: 'Ufología escéptica chilena' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '1983-01-01', event: 'Ernesto de la Fuente dice iniciar contacto por radio con la comunidad de la isla.' },
+      { date: '1984-01-01', event: 'El radioaficionado Octavio Ortiz capta un SOS de la nave "Mytilus II"; el caso se hace público.' },
+      { date: '1999-01-01', event: 'El programa OVNI de TVN, con Patricio Bañados, masifica el caso.' },
+      { date: '2019-11-01', event: 'Fallece Ernesto de la Fuente, protagonista del caso.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es probablemente el caso ufológico chileno más famoso; inspiró documentales como "Isla Alien" y fue pieza central del programa OVNI de TVN.',
+  }),
+
+  'el-bosque-2010': buildExpediente('el-bosque-2010', {
+    fullDescription: 'Durante una ceremonia de la Fuerza Aérea de Chile en la base aérea El Bosque, en Santiago (2010), varios asistentes filmaron el desfile con sus celulares. Ninguno notó nada en el momento, pero al menos tres descubrieron después que habían captado un objeto elipsoidal que cruzaba a gran velocidad frente a los aviones, sin sonido. La CEFAA (el organismo oficial chileno de estudio de fenómenos aéreos anómalos) analizó el material.',
+    witnesses: [
+      { name: 'Asistentes a la ceremonia', role: 'Público que filmó con celulares', credibility: 'media', testimony: 'No percibieron el objeto en vivo; recién al revisar los videos notaron un cuerpo elipsoidal que pasaba a gran velocidad entre los aviones del desfile.' },
+    ],
+    documents: [
+      { id: 'elbosque-doc-1', title: 'Informe CEFAA — Caso El Bosque', date: '2012-03-13', classification: 'Público', agency: 'CEFAA (DGAC Chile)', pages: 1, summary: 'Análisis oficial que descartó avión, ave, meteoro, cometa y reentrada de basura espacial, concluyendo que se trataba de un objeto sólido que se movía a alta velocidad.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'elbosque-hyp-1', title: 'Objeto sólido no identificado', description: 'El asesor astronómico de la CEFAA concluyó que se trataba de un objeto sólido que reflejaba la luz solar y se movía a una velocidad que ninguna aeronave conocida podría alcanzar.', evidence: ['La policía de investigaciones confirmó que las luces existían en los videos', 'La CEFAA descartó las explicaciones convencionales'], counterEvidence: ['Podría tratarse de un insecto o ave cercano al lente magnificado por la perspectiva'], probability: 'media', source: 'Informe de la CEFAA (2012)' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '2010-11-04', event: 'Se filma el objeto durante la ceremonia en la base aérea El Bosque.' },
+      { date: '2012-03-13', event: 'La CEFAA presenta públicamente el análisis del caso.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es uno de los casos chilenos más citados por haber sido analizado oficialmente por la CEFAA y difundido internacionalmente.',
+  }),
 };
 
 export const getExpediente = (id: string): Expediente | undefined => expedientes[id];
