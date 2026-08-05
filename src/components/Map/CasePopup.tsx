@@ -1,6 +1,7 @@
 import { Calendar, MapPin, Shield } from 'lucide-react';
 import type { UFOCase } from '../../data/cases';
 import { hynekMeta } from '../../data/hynek';
+import { caseTypeMeta } from '../../data/caseTypes';
 
 export default function CasePopup({ caseData }: { caseData: UFOCase }) {
   const cred: any = { A: 'text-cyan-400 border-cyan-400/40', B: 'text-blue-400 border-blue-400/40', C: 'text-purple-400 border-purple-400/40' };
@@ -19,7 +20,7 @@ export default function CasePopup({ caseData }: { caseData: UFOCase }) {
         <div className="flex flex-wrap gap-3 text-xs text-gray-400 mb-3">
           <span className="flex items-center gap-1"><Calendar className="w-3 h-3 text-aurora-cyan" />{caseData.date.split('-')[0]}</span>
           <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-aurora-cyan" />{place}</span>
-          <span className="flex items-center gap-1"><Shield className="w-3 h-3 text-aurora-cyan" />{caseData.type}</span>
+          <span className="flex items-center gap-1" style={{ color: caseTypeMeta[caseData.type].color }}><Shield className="w-3 h-3" />{caseTypeMeta[caseData.type].label}</span>
         </div>
         {hynek && (
           <span

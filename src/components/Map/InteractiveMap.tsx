@@ -34,7 +34,7 @@ export default function InteractiveMap({ cases, selectedCaseId, onSelectCase }: 
       <ZoomWatcher onZoom={setZoom} />
       <MapController selectedCaseId={selectedCaseId} cases={cases} />
       {cases.map((c) => (
-        <Marker key={c.id} position={c.coordinates} icon={createCaseIcon(c.type, c.credibility)} eventHandlers={{ click: () => onSelectCase(c.id) }}>
+        <Marker key={c.id} position={c.coordinates} icon={createCaseIcon(c.type)} eventHandlers={{ click: () => onSelectCase(c.id) }}>
           <Tooltip
             key={showLabels ? 'perm' : 'hover'}
             className="aurora-tip"

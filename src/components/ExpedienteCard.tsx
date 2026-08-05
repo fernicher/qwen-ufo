@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Calendar, Shield } from 'lucide-react';
 import CaseTypeIcon from './CaseTypeIcon';
 import { getExtra } from '../data/expediente-extras';
+import { caseTypeMeta } from '../data/caseTypes';
 import { useWikiPoster } from '../hooks/useWikiPoster';
 
 const credColors: Record<string, string> = {
@@ -9,14 +10,10 @@ const credColors: Record<string, string> = {
   B: 'text-blue-400 border-blue-400/40 bg-blue-400/10',
   C: 'text-purple-400 border-purple-400/40 bg-purple-400/10',
 };
-const credHex: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
-const typeLabels: Record<string, string> = {
-  avistamiento: 'Avistamiento', aterrizaje: 'Aterrizaje', contacto: 'Contacto',
-  radar: 'Detección por radar', fotografico: 'Registro fotográfico',
-};
 
 export default function ExpedienteCard({ c }: { c: any }) {
-  const hex = credHex[c.credibility];
+  const hex = caseTypeMeta[c.type as keyof typeof caseTypeMeta].color;
+  const typeLabel = caseTypeMeta[c.type as keyof typeof caseTypeMeta].longLabel;
   const extra = getExtra(c.id);
   const { poster } = useWikiPoster(extra.wiki || '');
 
@@ -44,7 +41,7 @@ export default function ExpedienteCard({ c }: { c: any }) {
         <div className="absolute top-4 right-4 z-10">
           <span className={`text-xs font-bold px-2 py-1 rounded border ${credColors[c.credibility]}`}><Shield className="w-3 h-3 inline mr-1" />{c.credibility}</span>
         </div>
-        <span className="absolute bottom-3 left-4 z-10 text-[10px] uppercase tracking-wider text-gray-300">{typeLabels[c.type]}</span>
+        <span className="absolute bottom-3 left-4 z-10 text-[10px] font-semibold uppercase tracking-wider" style={{ color: hex }}>{typeLabel}</span>
       </div>
       <div className="p-6">
         <h3 className="font-display font-bold text-xl text-white mb-2 group-hover:text-aurora-cyan">{c.title}</h3>

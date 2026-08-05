@@ -4,6 +4,7 @@ import { List, MapPin, Filter, X } from 'lucide-react';
 import InteractiveMap from '../components/Map/InteractiveMap';
 import { ufoCases } from '../data/cases';
 import type { CaseType, Credibility, HynekScale } from '../data/cases';
+import { caseTypeMeta } from '../data/caseTypes';
 import { hynekMeta, HYNEK_ORDER } from '../data/hynek';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
@@ -80,11 +81,21 @@ export default function Mapa() {
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2">Tipo</p>
                 <div className="flex flex-wrap gap-2">
-                  {(Object.keys(typeLabels) as CaseType[]).map((t) => (
-                    <button key={t} onClick={() => toggleType(t)} className={`px-3 py-1.5 rounded-lg text-xs font-medium border ${typeFilter.includes(t) ? 'bg-aurora-cyan text-aurora-black border-aurora-cyan' : 'bg-white/5 text-gray-300 border-white/10 hover:border-aurora-cyan/40'}`}>
-                      {typeLabels[t]}
-                    </button>
-                  ))}
+                  {(Object.keys(typeLabels) as CaseType[]).map((t) => {
+                    const active = typeFilter.includes(t);
+                    const color = caseTypeMeta[t].color;
+                    return (
+                      <button
+                        key={t}
+                        onClick={() => toggleType(t)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors"
+                        style={active ? { background: color, borderColor: color, color: '#0a0a0c' } : { borderColor: `${color}66`, color: '#d1d5db' }}
+                      >
+                        <span className="w-2 h-2 rounded-full" style={{ background: active ? '#0a0a0c' : color }} />
+                        {typeLabels[t]}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
               <div>
