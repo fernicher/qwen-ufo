@@ -6,6 +6,7 @@ import { ufoCases } from '../data/cases';
 import { books } from '../data/books';
 import { getExtra } from '../data/expediente-extras';
 import { hynekMeta } from '../data/hynek';
+import { caseTypeMeta } from '../data/caseTypes';
 import CaseTypeIcon from '../components/CaseTypeIcon';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
@@ -29,8 +30,6 @@ const probColors: Record<string, string> = {
   baja: 'text-orange-400 border-orange-400/30 bg-orange-400/10',
   descartada: 'text-gray-500 border-gray-500/30 bg-gray-500/10',
 };
-
-const credHex: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
 
 /** Parsea 'YYYY-MM-DD' como fecha local para evitar que timezones detrás de UTC muestren el día anterior. */
 const parseLocalDate = (dateStr: string) => new Date(`${dateStr}T00:00:00`);
@@ -82,7 +81,7 @@ export default function ExpedienteDetail() {
           <div className="flex flex-wrap items-center gap-3 mb-6">
             <span className={`text-xs font-bold px-3 py-1.5 rounded border ${credColors[exp.credibility]}`}><Shield className="w-3 h-3 inline mr-1" /> Evidencia {exp.credibility}</span>
             <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{statusLabels[exp.investigationStatus]}</span>
-            <span className="text-xs font-bold px-3 py-1.5 rounded border border-white/10 bg-white/5 text-gray-300">{typeLabels[exp.type]}</span>
+            <span className="text-xs font-bold px-3 py-1.5 rounded border inline-flex items-center gap-1.5" style={{ color: caseTypeMeta[exp.type as keyof typeof caseTypeMeta].color, borderColor: `${caseTypeMeta[exp.type as keyof typeof caseTypeMeta].color}55`, background: `${caseTypeMeta[exp.type as keyof typeof caseTypeMeta].color}1a` }}><span className="w-1.5 h-1.5 rounded-full" style={{ background: caseTypeMeta[exp.type as keyof typeof caseTypeMeta].color }} />{typeLabels[exp.type]}</span>
             {exp.hynek && (
               <span
                 className="text-xs font-bold px-3 py-1.5 rounded border inline-flex items-center gap-1.5"
@@ -263,7 +262,7 @@ export default function ExpedienteDetail() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {relatedCases.map((c) => (
                 <Link key={c.id} to={`/expedientes/${c.id}`} className="flex items-center gap-3 bg-aurora-charcoal/60 border border-white/5 rounded-xl p-4 hover:border-aurora-cyan/30 transition-all">
-                  <CaseTypeIcon type={c.type} color={credHex[c.credibility]} size={36} />
+                  <CaseTypeIcon type={c.type} color={caseTypeMeta[c.type as keyof typeof caseTypeMeta].color} size={36} />
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-white truncate">{c.title}</p>
                     <p className="text-xs text-gray-500">{c.date.split('-')[0]} • {c.country}</p>
@@ -280,8 +279,7 @@ export default function ExpedienteDetail() {
 
 function CaseHero({ exp, wiki }: { exp: any; wiki?: string }) {
   const { poster } = useWikiPoster(wiki || '');
-  const credHexMap: Record<string, string> = { A: '#22d3ee', B: '#60a5fa', C: '#c084fc' };
-  const hex = credHexMap[exp.credibility];
+  const hex = caseTypeMeta[exp.type as keyof typeof caseTypeMeta].color;
   if (poster) {
     return (
       <div className="relative w-full h-56 sm:h-72 rounded-2xl overflow-hidden mb-6 border border-white/10">
