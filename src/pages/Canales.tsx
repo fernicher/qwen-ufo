@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, MonitorPlay } from 'lucide-react';
-import { channels } from '../data/channels';
+import { channels, channelAvatarKey } from '../data/channels';
 import { useChannelAvatars } from '../hooks/useChannelAvatars';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import ChannelCard from '../components/ChannelCard';
@@ -40,7 +40,7 @@ export default function Canales() {
 
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((c) => <ChannelCard key={c.id} c={c} avatar={c.ytChannel ? channelAvatars?.[c.ytChannel] : undefined} />)}
+            {filtered.map((c) => { const k = channelAvatarKey(c); return <ChannelCard key={c.id} c={c} avatar={k ? channelAvatars?.[k] : undefined} />; })}
           </div>
         ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>}
       </div>

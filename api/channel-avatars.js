@@ -18,21 +18,24 @@ export default async function handler(req, res) {
     .filter(Boolean)
     .slice(0, 20);
 
+  const pickThumb = (item) => {
+    const th = item && item.snippet && item.snippet.thumbnails;
+    return (th && ((th.high && th.high.url) || (th.medium && th.medium.url) || (th.default && th.default.url))) || null;
+  };
+
   const entries = await Promise.all(
     names.map(async (name) => {
       try {
-        const url =
-          'https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q=' +
-          encodeURIComponent(name) +
-          '&key=' +
-          key;
+        // Si empieza con '@' es un handle exacto -> channels.list?forHandle (1 unidad, preciso).
+        // Si no, es un nombre -> search.list?type=channel (búsqueda aproximada).
+        const url = name.startsWith('@')
+          ? 'https://www.googleapis.com/youtube/v3/channels?part=snippet&forHandle=' + encodeURIComponent(name.slice(1)) + '&key=' + key
+          : 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q=' + encodeURIComponent(name) + '&key=' + key;
         const r = await fetch(url);
         if (!r.ok) throw new Error(String(r.status));
         const j = await r.json();
         const item = j.items && j.items[0];
-        const th = item && item.snippet && item.snippet.thumbnails;
-        const avatar = th && ((th.high && th.high.url) || (th.medium && th.medium.url) || (th.default && th.default.url));
-        return [name, avatar || null];
+        return [name, pickThumb(item)];
       } catch {
         return [name, null];
       }

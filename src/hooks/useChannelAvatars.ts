@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { channels } from '../data/channels';
+import { channels, channelAvatarKey } from '../data/channels';
 
 /**
  * Trae los avatares oficiales de los canales de YouTube desde /api/channel-avatars.
@@ -10,7 +10,7 @@ export function useChannelAvatars() {
   return useQuery<Record<string, string>>({
     queryKey: ['channel-avatars'],
     queryFn: async () => {
-      const names = Array.from(new Set(channels.map((c) => c.ytChannel).filter(Boolean))) as string[];
+      const names = Array.from(new Set(channels.map(channelAvatarKey).filter(Boolean))) as string[];
       if (names.length === 0) return {};
       const r = await fetch('/api/channel-avatars?names=' + encodeURIComponent(names.join('|')));
       const ct = r.headers.get('content-type') || '';
