@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart, Radio } from 'lucide-react';
+import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart, Radio, MonitorPlay } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 
 interface NavItem {
@@ -16,6 +16,7 @@ const primaryNavItems: NavItem[] = [
   { to: '/catalogo', label: 'Catálogo', icon: Film, color: '#a78bfa' },
   { to: '/mapa', label: 'Mapa', icon: Map, color: '#34d399' },
   { to: '/expedientes', label: 'Expedientes', icon: Compass, color: '#fbbf24' },
+  { to: '/canales', label: 'Canales', icon: MonitorPlay, color: '#ef4444' },
   { to: '/biblioteca', label: 'Biblioteca', icon: Book, color: '#fb7185' },
 ];
 
