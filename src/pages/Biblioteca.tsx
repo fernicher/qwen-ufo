@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Book, Headphones, Search, Star, ExternalLink, MonitorPlay, Users, Globe, Lock, Landmark } from 'lucide-react';
+import { Book, Headphones, Search, Star, ExternalLink, MonitorPlay, Play, Users, Globe, Lock, Landmark } from 'lucide-react';
 import { books } from '../data/books';
 import { podcasts } from '../data/podcasts';
 import { channels } from '../data/channels';
@@ -25,6 +25,78 @@ const tagLabels: Record<string, string> = {
   divulgador: 'Divulgador', periodista: 'Periodista', militar: 'Ex militar / inteligencia',
   científico: 'Científico', testigo: 'Testigo', controvertido: 'Controvertido',
 };
+
+// Paleta para dar un color propio a cada canal/podcast de forma determinista.
+const palette = ['#22d3ee', '#f472b6', '#a78bfa', '#34d399', '#fbbf24', '#60a5fa', '#fb7185', '#38bdf8'];
+const colorFor = (seed: string) => palette[[...seed].reduce((a, c) => a + c.charCodeAt(0), 0) % palette.length];
+const monogram = (name: string) =>
+  name
+    .replace(/\(.*?\)/g, '')
+    .replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ ]/g, '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+function ChannelCard({ c }: { c: any }) {
+  const color = colorFor(c.id);
+  return (
+    <a href={c.query} target="_blank" rel="noopener noreferrer" className="group flex flex-col bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-red-500/40 transition-all">
+      {/* Banner tipo canal, con color propio */}
+      <div className="relative h-24" style={{ background: `linear-gradient(135deg, ${color}59, ${color}12)` }}>
+        <span className="absolute left-3 top-3 text-[10px] font-bold px-2 py-1 rounded bg-black/40 backdrop-blur-sm text-white/90 uppercase tracking-wider">{c.lang === 'es' ? 'Español' : 'Inglés'}</span>
+        <span className="absolute right-3 bottom-3 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-red-600 text-white"><Play className="w-2.5 h-2.5 fill-white" /> YouTube</span>
+        <MonitorPlay className="absolute right-3 top-3 w-5 h-5 text-white/25" />
+      </div>
+      {/* Avatar circular con iniciales, superpuesto al banner */}
+      <div className="relative px-5 pb-5">
+        <div className="absolute -top-7 left-5 w-14 h-14 rounded-full border-4 border-aurora-charcoal flex items-center justify-center font-display font-bold text-lg shadow-lg" style={{ background: color, color: '#0a0a0c' }}>
+          {monogram(c.name)}
+        </div>
+        <div className="pt-9">
+          <h3 className="font-display font-bold text-white group-hover:text-red-400 leading-tight">{c.name}</h3>
+          <p className="text-sm text-gray-400 mt-1 line-clamp-3">{c.description}</p>
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-red-400 mt-3">Abrir en YouTube <ExternalLink className="w-3 h-3" /></span>
+        </div>
+      </div>
+    </a>
+  );
+}
+
+function PodcastCard({ p }: { p: any }) {
+  const color = colorFor(p.id);
+  return (
+    <div className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all">
+      <div className="flex items-start gap-4 mb-3">
+        <div className="w-14 h-14 shrink-0 rounded-xl flex items-center justify-center" style={{ background: `${color}1a`, border: `1px solid ${color}40` }}>
+          <Headphones className="w-6 h-6" style={{ color }} />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-display font-bold text-white group-hover:text-amber-400 leading-tight">{p.title}</h3>
+            {p.essential && <Star className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />}
+          </div>
+          <p className="text-xs text-gray-500 mt-0.5">{p.host}</p>
+          {p.rating && <div className="flex items-center gap-1 mt-1"><Star className="w-3 h-3 text-amber-400 fill-amber-400" /><span className="text-xs font-semibold">{p.rating}/10</span></div>}
+        </div>
+      </div>
+      <p className="text-sm text-gray-300 line-clamp-3 mb-3">{p.description}</p>
+      <div className="flex items-center gap-2 text-xs text-gray-400 mb-4"><span>{p.frequency}</span>{p.episodes && <span>• {p.episodes} episodios</span>}</div>
+      {p.platforms && p.platforms.length > 0 && (
+        <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
+          {p.platforms.map((pl: any) => (
+            <a key={pl.name} href={pl.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 hover:bg-amber-400/20">
+              {pl.name} <ExternalLink className="w-3 h-3" />
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function DivulgadorCard({ d }: { d: any }) {
   const { poster } = useWikiPoster(d.wiki);
@@ -116,27 +188,7 @@ export default function Biblioteca() {
         {tab === 'podcasts' && (
           fPodcasts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {fPodcasts.map((p) => (
-                <div key={p.id} className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-display font-bold text-white group-hover:text-amber-400">{p.title}</h3>
-                    {p.essential && <Star className="w-4 h-4 text-amber-400 fill-amber-400 flex-shrink-0" />}
-                  </div>
-                  <p className="text-xs text-gray-500 mb-2">{p.host}</p>
-                  {p.rating && <div className="flex items-center gap-1 mb-3"><Star className="w-3 h-3 text-amber-400 fill-amber-400" /><span className="text-xs font-semibold">{p.rating}/10</span></div>}
-                  <p className="text-sm text-gray-300 line-clamp-3 mb-3">{p.description}</p>
-                  <div className="flex items-center gap-2 text-xs text-gray-400 mb-4"><span>{p.frequency}</span>{p.episodes && <span>• {p.episodes} episodios</span>}</div>
-                  {p.platforms && p.platforms.length > 0 && (
-                    <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
-                      {p.platforms.map((pl: any) => (
-                        <a key={pl.name} href={pl.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 hover:bg-amber-400/20">
-                          {pl.name} <ExternalLink className="w-3 h-3" />
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+              {fPodcasts.map((p) => <PodcastCard key={p.id} p={p} />)}
             </div>
           ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
         )}
@@ -144,17 +196,7 @@ export default function Biblioteca() {
         {tab === 'canales' && (
           fChannels.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {fChannels.map((c) => (
-                <a key={c.id} href={c.query} target="_blank" rel="noopener noreferrer" className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-red-500/30 transition-all block">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center"><MonitorPlay className="w-5 h-5 text-red-500" /></div>
-                    <span className="text-[10px] font-bold px-2 py-1 rounded border border-white/10 bg-white/5 text-gray-400 uppercase">{c.lang === 'es' ? 'Español' : 'Inglés'}</span>
-                  </div>
-                  <h3 className="font-display font-bold text-white group-hover:text-red-400 mb-1">{c.name}</h3>
-                  <p className="text-sm text-gray-400">{c.description}</p>
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-red-400 mt-3">Abrir en YouTube <ExternalLink className="w-3 h-3" /></span>
-                </a>
-              ))}
+              {fChannels.map((c) => <ChannelCard key={c.id} c={c} />)}
             </div>
           ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
         )}
