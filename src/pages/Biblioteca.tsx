@@ -8,6 +8,7 @@ import { divulgadores } from '../data/divulgadores';
 import { declassifications } from '../data/declassifications';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
+import { useChannelAvatars } from '../hooks/useChannelAvatars';
 import BookCard from '../components/BookCard';
 
 type Tab = 'libros' | 'podcasts' | 'canales' | 'divulgadores' | 'desclasificaciones';
@@ -41,7 +42,7 @@ const monogram = (name: string) =>
     .join('')
     .toUpperCase();
 
-function ChannelCard({ c }: { c: any }) {
+function ChannelCard({ c, avatar }: { c: any; avatar?: string }) {
   const color = colorFor(c.id);
   return (
     <a href={c.query} target="_blank" rel="noopener noreferrer" className="group flex flex-col bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-red-500/40 transition-all">
@@ -51,10 +52,10 @@ function ChannelCard({ c }: { c: any }) {
         <span className="absolute right-3 bottom-3 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-red-600 text-white"><Play className="w-2.5 h-2.5 fill-white" /> YouTube</span>
         <MonitorPlay className="absolute right-3 top-3 w-5 h-5 text-white/25" />
       </div>
-      {/* Avatar circular con iniciales, superpuesto al banner */}
+      {/* Avatar circular: foto real del canal si está disponible, si no las iniciales */}
       <div className="relative px-5 pb-5">
-        <div className="absolute -top-7 left-5 w-14 h-14 rounded-full border-4 border-aurora-charcoal flex items-center justify-center font-display font-bold text-lg shadow-lg" style={{ background: color, color: '#0a0a0c' }}>
-          {monogram(c.name)}
+        <div className="absolute -top-7 left-5 w-14 h-14 rounded-full border-4 border-aurora-charcoal overflow-hidden flex items-center justify-center font-display font-bold text-lg shadow-lg" style={{ background: color, color: '#0a0a0c' }}>
+          {avatar ? <img src={avatar} alt={c.name} loading="lazy" className="w-full h-full object-cover" /> : monogram(c.name)}
         </div>
         <div className="pt-9">
           <h3 className="font-display font-bold text-white group-hover:text-red-400 leading-tight">{c.name}</h3>
@@ -129,6 +130,7 @@ export default function Biblioteca() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState<Tab>('libros');
   const [query, setQuery] = useState(searchParams.get('q') || '');
+  const { data: channelAvatars } = useChannelAvatars();
 
   useEffect(() => { setQuery(searchParams.get('q') || ''); }, [searchParams]);
 
@@ -196,7 +198,7 @@ export default function Biblioteca() {
         {tab === 'canales' && (
           fChannels.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {fChannels.map((c) => <ChannelCard key={c.id} c={c} />)}
+              {fChannels.map((c) => <ChannelCard key={c.id} c={c} avatar={c.ytChannel ? channelAvatars?.[c.ytChannel] : undefined} />)}
             </div>
           ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
         )}
