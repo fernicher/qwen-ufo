@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Book, Headphones, Search, Star, ExternalLink, MonitorPlay, Play, Users, Globe, Lock, Landmark } from 'lucide-react';
+import { Book, Headphones, Search, Star, ExternalLink, MonitorPlay, Users, Globe, Lock, Landmark } from 'lucide-react';
 import { books } from '../data/books';
 import { podcasts } from '../data/podcasts';
-import { channels } from '../data/channels';
 import { divulgadores } from '../data/divulgadores';
 import { declassifications } from '../data/declassifications';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
-import { useChannelAvatars } from '../hooks/useChannelAvatars';
+import { colorFor } from '../lib/visual';
 import BookCard from '../components/BookCard';
 
-type Tab = 'libros' | 'podcasts' | 'canales' | 'divulgadores' | 'desclasificaciones';
+type Tab = 'libros' | 'podcasts' | 'divulgadores' | 'desclasificaciones';
 
 const tags: Record<string, string> = {
   divulgador: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
@@ -26,46 +25,6 @@ const tagLabels: Record<string, string> = {
   divulgador: 'Divulgador', periodista: 'Periodista', militar: 'Ex militar / inteligencia',
   científico: 'Científico', testigo: 'Testigo', controvertido: 'Controvertido',
 };
-
-// Paleta para dar un color propio a cada canal/podcast de forma determinista.
-const palette = ['#22d3ee', '#f472b6', '#a78bfa', '#34d399', '#fbbf24', '#60a5fa', '#fb7185', '#38bdf8'];
-const colorFor = (seed: string) => palette[[...seed].reduce((a, c) => a + c.charCodeAt(0), 0) % palette.length];
-const monogram = (name: string) =>
-  name
-    .replace(/\(.*?\)/g, '')
-    .replace(/[^A-Za-zÁÉÍÓÚÑáéíóúñ ]/g, '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-
-function ChannelCard({ c, avatar }: { c: any; avatar?: string }) {
-  const color = colorFor(c.id);
-  return (
-    <a href={c.query} target="_blank" rel="noopener noreferrer" className="group flex flex-col bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-red-500/40 transition-all">
-      {/* Banner tipo canal, con color propio */}
-      <div className="relative h-24" style={{ background: `linear-gradient(135deg, ${color}59, ${color}12)` }}>
-        <span className="absolute left-3 top-3 text-[10px] font-bold px-2 py-1 rounded bg-black/40 backdrop-blur-sm text-white/90 uppercase tracking-wider">{c.lang === 'es' ? 'Español' : 'Inglés'}</span>
-        <span className="absolute right-3 bottom-3 inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-red-600 text-white"><Play className="w-2.5 h-2.5 fill-white" /> YouTube</span>
-        <MonitorPlay className="absolute right-3 top-3 w-5 h-5 text-white/25" />
-      </div>
-      {/* Avatar circular: foto real del canal si está disponible, si no las iniciales */}
-      <div className="relative px-5 pb-5">
-        <div className="absolute -top-7 left-5 w-14 h-14 rounded-full border-4 border-aurora-charcoal overflow-hidden flex items-center justify-center font-display font-bold text-lg shadow-lg" style={{ background: color, color: '#0a0a0c' }}>
-          {avatar ? <img src={avatar} alt={c.name} loading="lazy" className="w-full h-full object-cover" /> : monogram(c.name)}
-        </div>
-        <div className="pt-9">
-          <h3 className="font-display font-bold text-white group-hover:text-red-400 leading-tight">{c.name}</h3>
-          <p className="text-sm text-gray-400 mt-1 line-clamp-3">{c.description}</p>
-          <span className="inline-flex items-center gap-1 text-xs font-medium text-red-400 mt-3">Abrir en YouTube <ExternalLink className="w-3 h-3" /></span>
-        </div>
-      </div>
-    </a>
-  );
-}
 
 function PodcastCard({ p }: { p: any }) {
   const color = colorFor(p.id);
@@ -130,7 +89,6 @@ export default function Biblioteca() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState<Tab>('libros');
   const [query, setQuery] = useState(searchParams.get('q') || '');
-  const { data: channelAvatars } = useChannelAvatars();
 
   useEffect(() => { setQuery(searchParams.get('q') || ''); }, [searchParams]);
 
@@ -142,14 +100,12 @@ export default function Biblioteca() {
   const q = query.toLowerCase();
   const fBooks = books.filter((b) => b.title.toLowerCase().includes(q) || b.authors.some((a: string) => a.toLowerCase().includes(q)));
   const fPodcasts = podcasts.filter((p) => p.title.toLowerCase().includes(q) || p.host.toLowerCase().includes(q));
-  const fChannels = channels.filter((c) => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
   const fDivulgadores = divulgadores.filter((d) => d.name.toLowerCase().includes(q) || d.role.toLowerCase().includes(q));
   const fDeclassifications = declassifications.filter((d) => d.country.toLowerCase().includes(q) || d.title.toLowerCase().includes(q) || d.agency.toLowerCase().includes(q));
 
   const tabsDef = [
     { id: 'libros' as Tab, label: 'Libros', icon: Book, count: books.length },
     { id: 'podcasts' as Tab, label: 'Podcasts', icon: Headphones, count: podcasts.length },
-    { id: 'canales' as Tab, label: 'Canales', icon: MonitorPlay, count: channels.length },
     { id: 'divulgadores' as Tab, label: 'Divulgadores', icon: Users, count: divulgadores.length },
     { id: 'desclasificaciones' as Tab, label: 'Desclasificaciones', icon: Lock, count: declassifications.length },
   ];
@@ -160,7 +116,7 @@ export default function Biblioteca() {
         <div className="text-center mb-10">
           <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-amber-400 uppercase border border-amber-400/30 rounded-full bg-amber-400/5">Biblioteca de Conocimiento</span>
           <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Fuentes y <span className="text-amber-400">Referentes</span></h1>
-          <p className="text-gray-400">Libros, podcasts, canales y las figuras clave del fenómeno OVNI/UAP</p>
+          <p className="text-gray-400">Libros, podcasts y las figuras clave del fenómeno OVNI/UAP</p>
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
@@ -191,14 +147,6 @@ export default function Biblioteca() {
           fPodcasts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {fPodcasts.map((p) => <PodcastCard key={p.id} p={p} />)}
-            </div>
-          ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
-        )}
-
-        {tab === 'canales' && (
-          fChannels.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {fChannels.map((c) => <ChannelCard key={c.id} c={c} avatar={c.ytChannel ? channelAvatars?.[c.ytChannel] : undefined} />)}
             </div>
           ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
         )}

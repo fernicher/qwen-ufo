@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Noticias from './pages/Noticias';
+import Canales from './pages/Canales';
 import Catalogo from './pages/Catalogo';
 import Mapa from './pages/Mapa';
 import Expedientes from './pages/Expedientes';
@@ -23,6 +24,7 @@ function App() {
           <Route path="/expedientes" element={<Expedientes />} />
           <Route path="/expedientes/:id" element={<ExpedienteDetail />} />
           <Route path="/biblioteca" element={<Biblioteca />} />
+          <Route path="/canales" element={<Canales />} />
           <Route path="/investigadores" element={<Investigadores />} />
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/favoritos" element={<Favoritos />} />
