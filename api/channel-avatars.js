@@ -26,11 +26,16 @@ export default async function handler(req, res) {
   const entries = await Promise.all(
     names.map(async (name) => {
       try {
-        // Si empieza con '@' es un handle exacto -> channels.list?forHandle (1 unidad, preciso).
-        // Si no, es un nombre -> search.list?type=channel (búsqueda aproximada).
-        const url = name.startsWith('@')
-          ? 'https://www.googleapis.com/youtube/v3/channels?part=snippet&forHandle=' + encodeURIComponent(name.slice(1)) + '&key=' + key
-          : 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q=' + encodeURIComponent(name) + '&key=' + key;
+        // 'id:UC…' -> channels.list?id (exacto). '@handle' -> channels.list?forHandle (exacto).
+        // Cualquier otra cosa -> search.list?type=channel (búsqueda aproximada por nombre).
+        let url;
+        if (name.startsWith('id:')) {
+          url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet&id=' + encodeURIComponent(name.slice(3)) + '&key=' + key;
+        } else if (name.startsWith('@')) {
+          url = 'https://www.googleapis.com/youtube/v3/channels?part=snippet&forHandle=' + encodeURIComponent(name.slice(1)) + '&key=' + key;
+        } else {
+          url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&maxResults=1&q=' + encodeURIComponent(name) + '&key=' + key;
+        }
         const r = await fetch(url);
         if (!r.ok) throw new Error(String(r.status));
         const j = await r.json();
