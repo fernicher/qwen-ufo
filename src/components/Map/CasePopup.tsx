@@ -1,4 +1,5 @@
-import { Calendar, MapPin, Shield } from 'lucide-react';
+import { Calendar, MapPin, Shield, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { UFOCase } from '../../data/cases';
 import { hynekMeta } from '../../data/hynek';
 import { caseTypeMeta } from '../../data/caseTypes';
@@ -33,6 +34,12 @@ export default function CasePopup({ caseData }: { caseData: UFOCase }) {
           </span>
         )}
         <p className="text-xs text-gray-300 line-clamp-4">{caseData.description}</p>
+        <Link
+          to={`/expedientes/${caseData.id}`}
+          className="mt-3 flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-aurora-cyan/15 border border-aurora-cyan/40 text-aurora-cyan text-xs font-semibold hover:bg-aurora-cyan/25 transition-colors"
+        >
+          Ver expediente completo <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
     </div>
   );
