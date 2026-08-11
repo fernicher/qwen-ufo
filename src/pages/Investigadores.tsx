@@ -4,6 +4,9 @@ import { Globe, BookOpen, Award, FileText } from 'lucide-react';
 import { investigators } from '../data/investigators';
 import { expedientes } from '../data/expedientes';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import PageHero from '../components/PageHero';
+import { useWikiPoster } from '../hooks/useWikiPoster';
+import type { Investigator } from '../data/investigators';
 
 const credStyles: Record<string, string> = {
   referente: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
@@ -18,6 +21,21 @@ const credLabels: Record<string, string> = {
   histórico: 'Figura Histórica',
   controvertido: 'Controvertido',
 };
+
+/** Retrato desde Wikipedia; si no hay artículo o foto, cae al monograma de siempre. */
+function InvestigatorAvatar({ inv }: { inv: Investigator }) {
+  const { poster } = useWikiPoster(inv.wiki || '');
+  const initials = inv.name.split(' ').map((n) => n[0]).join('').slice(0, 2);
+  return (
+    <div className="w-14 h-14 shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-aurora-cyan/20 to-blue-600/20 border border-aurora-cyan/20 flex items-center justify-center">
+      {poster ? (
+        <img src={poster} alt={inv.name} loading="lazy" className="w-full h-full object-cover" />
+      ) : (
+        <span className="text-xl font-display font-bold text-aurora-cyan">{initials}</span>
+      )}
+    </div>
+  );
+}
 
 export default function Investigadores() {
   useDocumentTitle('Investigadores');
@@ -51,13 +69,16 @@ export default function Investigadores() {
   }, [highlightId]);
 
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen">
+      <PageHero
+        scene="investigadores"
+        accent="#60a5fa"
+        badge="Mentes Detrás del Fenómeno"
+        title="Investigadores"
+        subtitle="Las figuras que documentaron, analizaron o divulgaron el fenómeno OVNI/UAP"
+      />
+      <div className="px-4 pb-12 pt-10">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Mentes Detrás del Fenómeno</span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Investigadores</h1>
-          <p className="text-gray-400">Las figuras que documentaron, analizaron o divulgaron el fenómeno OVNI/UAP</p>
-        </div>
 
         <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
           {countries.map((c) => (
@@ -84,9 +105,7 @@ export default function Investigadores() {
                 className={`bg-aurora-charcoal/60 border rounded-2xl p-6 transition-all ${isHighlighted ? 'border-aurora-cyan/60 ring-1 ring-aurora-cyan/40' : 'border-white/5 hover:border-aurora-cyan/30'}`}
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-14 h-14 shrink-0 rounded-xl bg-gradient-to-br from-aurora-cyan/20 to-blue-600/20 border border-aurora-cyan/20 flex items-center justify-center">
-                    <span className="text-xl font-display font-bold text-aurora-cyan">{inv.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}</span>
-                  </div>
+                  <InvestigatorAvatar inv={inv} />
                   <div>
                     <h2 className="font-display font-bold text-lg text-white">{inv.name}</h2>
                     <div className="flex items-center gap-2 text-xs text-gray-400"><Globe className="w-3 h-3" />{inv.country}</div>
@@ -120,6 +139,7 @@ export default function Investigadores() {
             );
           })}
         </div>
+      </div>
       </div>
     </div>
   );
