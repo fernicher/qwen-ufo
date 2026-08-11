@@ -929,6 +929,79 @@ export const expedientes: Record<string, Expediente> = {
     investigationStatus: 'sin resolver',
     culturalImpact: 'Es uno de los casos chilenos más citados por haber sido analizado oficialmente por la CEFAA y difundido internacionalmente.',
   }),
+
+  'manises-1979': buildExpediente('manises-1979', {
+    fullDescription: 'La noche del 11 de noviembre de 1979, un Supercaravelle de la compañía TAE que cubría la ruta Palma de Mallorca-Tenerife con 109 personas a bordo se desvió y aterrizó de emergencia en el aeropuerto de Manises, en Valencia. Su comandante había reportado unas luces rojas que se le acercaban y que se mantuvieron a su altura durante varios minutos. El Ejército del Aire ordenó despegar un Mirage F1 desde la base de Los Llanos, en Albacete, para identificarlas. Ni la tripulación civil ni el piloto militar consiguieron determinar qué eran, y el episodio pasó a la historia como "el expediente Manises": el caso que más empujó a España a desclasificar sus archivos OVNI.',
+    witnesses: [
+      { name: 'Francisco Javier Lerdo de Tejada', role: 'Comandante del vuelo de TAE', credibility: 'alta', testimony: 'Reportó luces rojas que se aproximaban a su aeronave y que acompañaron su trayectoria, y decidió desviarse a Manises al considerar que existía riesgo de colisión.' },
+      { name: 'Fernando Cámara', role: 'Capitán del Ejército del Aire, piloto del Mirage F1 enviado a interceptar', credibility: 'alta', testimony: 'Describió haber perseguido una luz que cambiaba de posición y no logró aproximarse lo suficiente para identificarla antes de regresar por combustible.' },
+    ],
+    documents: [
+      { id: 'manises-doc-1', title: 'Expediente del Ejército del Aire sobre el incidente', date: '1979-11-11', classification: 'Desclasificado', agency: 'Ejército del Aire (España)', pages: 0, summary: 'Informe militar del suceso, incluido en el lote de expedientes OVNI que el Ejército del Aire desclasificó durante los años noventa. Recoge las comunicaciones con el vuelo civil y el parte de la interceptación.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'manises-hyp-1', title: 'Antorchas de plataformas petrolíferas', description: 'Las luces corresponderían a las llamas de quema de gas de instalaciones petrolíferas del Mediterráneo, cuya apariencia a distancia y sobre el mar puede confundirse con luces en vuelo.', evidence: ['Existencia de instalaciones con antorcha activa en la zona', 'La percepción de distancia y velocidad sobre el mar de noche es poco fiable'], counterEvidence: ['No explica que las luces parecieran seguir la trayectoria del avión', 'El piloto del Mirage tampoco las identificó en la aproximación'], probability: 'media', source: 'Análisis del expediente desclasificado' },
+      { id: 'manises-hyp-2', title: 'Objeto no identificado', description: 'La coincidencia entre una tripulación civil experimentada y un piloto militar enviado expresamente a identificarlo apunta a un fenómeno real que ninguna de las dos partes pudo explicar.', evidence: ['Dos observaciones independientes y profesionales la misma noche', 'La decisión de aterrizar de emergencia implica que el comandante percibió riesgo real'], counterEvidence: ['No se conservó registro instrumental concluyente del objeto'], probability: 'media', source: 'Testimonios de la tripulación y del piloto interceptor' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['ribas', 'clemente'],
+    timeline: [
+      { date: '1979-11-11', event: 'El vuelo de TAE reporta luces no identificadas sobre el Mediterráneo y se desvía a Manises.' },
+      { date: '1979-11-11', event: 'Despega un Mirage F1 desde la base de Los Llanos para intentar identificarlas.' },
+      { date: '1992-01-01', event: 'El Ejército del Aire inicia el proceso de desclasificación de sus expedientes OVNI.' },
+    ],
+    investigationStatus: 'sin resolver',
+    officialResponse: 'El caso forma parte de los expedientes que el Ejército del Aire desclasificó en los años noventa. La versión oficial no identifica el origen de las luces.',
+    culturalImpact: 'Es el caso OVNI más conocido de España y el argumento más citado a favor de la desclasificación de los archivos militares españoles.',
+  }),
+
+  'aguadilla-2013': buildExpediente('aguadilla-2013', {
+    fullDescription: 'La noche del 25 de abril de 2013, una aeronave del servicio de aduanas y protección fronteriza de Estados Unidos que patrullaba la costa noroeste de Puerto Rico grabó con su cámara térmica un objeto pequeño y sin alas visibles volando a baja altura sobre Aguadilla. La grabación, de más de tres minutos, muestra al objeto sobrevolar la pista del aeropuerto Rafael Hernández, adentrarse en el mar sin frenar y continuar bajo el agua antes de reaparecer. En un tramo del video parece dividirse en dos. Es uno de los registros de un fenómeno transmedio —que pasa del aire al agua— con mejor procedencia documental.',
+    witnesses: [
+      { name: 'Tripulación de la aeronave de vigilancia', role: 'Operadores del sistema térmico', credibility: 'alta', testimony: 'Siguieron el objeto con la cámara sin lograr identificarlo y sin que hubiera tráfico declarado en la zona en ese momento.' },
+    ],
+    documents: [
+      { id: 'aguadilla-doc-1', title: 'Análisis técnico del video de Aguadilla', date: '2015-01-01', classification: 'Público', agency: 'Scientific Coalition for UAP Studies', pages: 0, summary: 'Estudio independiente que reconstruye trayectoria, velocidad y tamaño a partir de los metadatos del video y descarta las explicaciones convencionales más habituales.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'aguadilla-hyp-1', title: 'Globo o linterna a la deriva', description: 'Un objeto ligero arrastrado por el viento explicaría la trayectoria errática y la escasa firma térmica.', evidence: ['La zona registra lanzamientos de globos y linternas festivas', 'La cámara térmica no permite estimar el tamaño real sin referencias'], counterEvidence: ['La velocidad estimada supera con mucho la del viento registrado esa noche', 'Un globo no continúa su trayectoria tras entrar en el agua'], probability: 'baja', source: 'Hipótesis convencional evaluada en el análisis independiente' },
+      { id: 'aguadilla-hyp-2', title: 'Objeto transmedio no identificado', description: 'El objeto mantiene velocidad y rumbo al pasar del aire al agua, un comportamiento que no corresponde a ninguna aeronave o vehículo conocido de ese tamaño.', evidence: ['Transición aire-agua sin pérdida aparente de velocidad', 'Registro instrumental continuo y con metadatos verificables'], counterEvidence: ['La cámara térmica puede generar artefactos que confundan la lectura de la escena'], probability: 'media', source: 'Scientific Coalition for UAP Studies' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: [],
+    timeline: [
+      { date: '2013-04-25', event: 'La cámara térmica de una aeronave de vigilancia graba el objeto sobre Aguadilla.' },
+      { date: '2015-01-01', event: 'Se publica el análisis técnico independiente del video.' },
+    ],
+    investigationStatus: 'sin resolver',
+    culturalImpact: 'Es el caso más citado al hablar de fenómenos transmedio y uno de los pocos con registro instrumental de una agencia gubernamental fuera del ámbito militar.',
+  }),
+
+  'omaha-2019': buildExpediente('omaha-2019', {
+    fullDescription: 'El 15 de julio de 2019, frente a la costa de San Diego, la tripulación del buque de combate litoral USS Omaha filmó desde su centro de información de combate un objeto esférico que sobrevolaba la zona donde la Armada realizaba ejercicios. La grabación termina con el objeto descendiendo hasta el agua y desapareciendo bajo la superficie. Un submarino desplegado en la zona no encontró restos. El episodio se enmarca en una serie de incursiones de objetos no identificados sobre buques estadounidenses durante el verano de 2019, y el Departamento de Defensa confirmó posteriormente que el video era auténtico.',
+    witnesses: [
+      { name: 'Tripulación del USS Omaha', role: 'Personal del centro de información de combate', credibility: 'alta', testimony: 'Registró el objeto con equipo de a bordo mientras se seguía su trayectoria; en el audio del video se oye a la propia tripulación describir la entrada al agua.' },
+    ],
+    documents: [
+      { id: 'omaha-doc-1', title: 'Confirmación de autenticidad del video', date: '2021-05-01', classification: 'Público', agency: 'Departamento de Defensa de EE.UU.', pages: 0, summary: 'El Pentágono reconoce que la grabación fue tomada por personal de la Armada y que el objeto sigue sin identificar, sin ofrecer una explicación alternativa.' },
+    ],
+    photos: [],
+    hypotheses: [
+      { id: 'omaha-hyp-1', title: 'Dron de origen terrestre', description: 'Un dron lanzado desde una embarcación cercana explicaría la presencia del objeto sobre una zona de ejercicios navales y su posterior caída al agua.', evidence: ['El tráfico marítimo civil en la zona permite el lanzamiento de drones', 'Las incursiones de drones sobre buques son un problema documentado'], counterEvidence: ['No se recuperó ningún resto pese a la búsqueda posterior', 'La autonomía y el alcance necesarios exceden a los drones comerciales habituales'], probability: 'media', source: 'Hipótesis convencional planteada tras la difusión del video' },
+      { id: 'omaha-hyp-2', title: 'Objeto transmedio no identificado', description: 'La entrada al agua sin fragmentación ni restos apunta a un objeto diseñado para operar en ambos medios, comportamiento que ninguna tecnología conocida de ese tamaño reproduce.', evidence: ['Ausencia total de restos tras el rastreo', 'Registro realizado por personal militar con equipo de a bordo'], counterEvidence: ['La calidad del video no permite determinar tamaño ni distancia con precisión'], probability: 'media', source: 'Análisis posteriores a la desclasificación del material' },
+    ],
+    relatedMedia: [],
+    relatedInvestigators: ['kean'],
+    timeline: [
+      { date: '2019-07-15', event: 'El USS Omaha graba el objeto esférico y su descenso al agua.' },
+      { date: '2021-05-01', event: 'El Departamento de Defensa confirma la autenticidad del video.' },
+    ],
+    investigationStatus: 'sin resolver',
+    officialResponse: 'El Pentágono confirmó que el material es auténtico y que el objeto permanece sin identificar.',
+    culturalImpact: 'Junto con los videos de la Armada de 2004 y 2015, es una de las piezas que sostuvieron el giro institucional estadounidense hacia el estudio abierto de los UAP.',
+  }),
 };
 
 export const getExpediente = (id: string): Expediente | undefined => expedientes[id];
