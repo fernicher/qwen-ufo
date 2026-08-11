@@ -1,32 +1,53 @@
-# React + TypeScript + Vite
+# Project Aurora
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Archivo multimedia en español sobre el fenómeno OVNI / UAP: expedientes de casos,
+mapa global de avistamientos, catálogo de cine y series, biblioteca de libros y
+divulgadores, canales de YouTube y un radar de noticias en tiempo casi real.
 
-Currently, two official plugins are available:
+React 19 + TypeScript + Vite + Tailwind, desplegado en Vercel.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Desarrollo
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev      # servidor local
+npm run build    # comprueba tipos y compila a dist/
+npm run lint     # oxlint
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+El feed de noticias y el contador de visitas se sirven desde funciones
+serverless (`api/`), así que en local necesitan `vercel dev` en lugar de
+`npm run dev`. Sin ellas el sitio funciona igual: el radar aparece vacío y el
+contador queda oculto.
+
+## Variables de entorno
+
+Todas son opcionales; están documentadas en `.env.example`. La única que conviene
+fijar antes de publicar es `SITE_URL`, el dominio público: de ahí salen las URLs
+absolutas de las etiquetas Open Graph, el canonical, el `sitemap.xml` y el
+`robots.txt`. Si no se define, el build usa `https://qwen-ufo.vercel.app`.
+
+## De dónde salen las imágenes
+
+No se almacena ninguna fotografía en el repositorio. Las carátulas y los retratos
+se piden en el momento a APIs públicas sin clave:
+
+- **Wikipedia** (`useWikiPoster`) para películas, casos, divulgadores e
+  investigadores. Acepta `Titulo`, que busca en inglés y reintenta en español, o
+  un prefijo explícito `es:` / `en:`.
+- **Open Library** (`useBookData`) para las portadas de los libros.
+- **YouTube Data API** para los avatares de los canales, vía `api/channel-avatars`.
+  Necesita `YOUTUBE_API_KEY`; sin ella las tarjetas usan el monograma.
+
+Si una petición falla, la tarjeta cae a su icono ilustrado. Los casos sin
+artículo propio pueden declarar `wikiPlace`: se muestra la foto del lugar, y
+siempre con una etiqueta que aclara que es la ubicación y no el suceso.
+
+## Ilustraciones
+
+La portada y las cabeceras de sección (`PageHero`) son SVG dibujado a mano y
+animado con CSS, sin dependencias ni imágenes externas. Toda animación se
+desactiva con `prefers-reduced-motion`.
+
+`public/og.jpg` es la vista previa al compartir el enlace: se genera capturando
+la portada a 1200×630.

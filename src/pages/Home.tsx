@@ -7,8 +7,11 @@ import InvestigatorsPreview from '../components/InvestigatorsPreview';
 import { collections, featuredCollections } from '../data/collections';
 import { ArrowRight, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export default function Home() {
+  useDocumentTitle('Project Aurora — Archivo Desclasificado UAP');
+
   return (
     <div>
       <Hero />

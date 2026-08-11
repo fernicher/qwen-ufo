@@ -1,6 +1,10 @@
+import { Suspense, lazy } from 'react';
 import { Globe2, Users } from 'lucide-react';
 import { useVisitorStats } from '../hooks/useVisitorStats';
-import VisitorMap from './VisitorMap';
+
+// Leaflet pesa más que el resto de la portada junta: se carga sólo cuando esta
+// sección llega a renderizarse, no en el paquete inicial.
+const VisitorMap = lazy(() => import('./VisitorMap'));
 
 const regionNames = (() => {
   try {
@@ -56,7 +60,9 @@ export default function VisitorStats() {
           <div className="grid md:grid-cols-[1.5fr_1fr] gap-6">
             {/* Mapa de visitantes */}
             <div className="h-72 md:h-80 rounded-2xl overflow-hidden border border-white/10">
-              <VisitorMap countries={data.countries} />
+              <Suspense fallback={<div className="w-full h-full bg-white/5" />}>
+                <VisitorMap countries={data.countries} />
+              </Suspense>
             </div>
 
             {/* Top países */}
