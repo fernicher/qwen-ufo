@@ -63,6 +63,10 @@ const raw: Record<string, { wiki?: string; wikiPlace?: string; placeLabel?: stri
   'juan-perez-1978': { ytTerms: 'Testigo de otro mundo documental Juan Pérez Alan Stivelman Jacques Vallée gaucho ovni' },
   'friendship-1984': { wikiPlace: 'es:Archipiélago_de_las_Guaitecas', placeLabel: 'Archipiélago de las Guaitecas', ytTerms: 'caso Isla Friendship Ernesto de la Fuente OVNI TVN Patricio Bañados documental' },
   'el-bosque-2010': { ytTerms: 'caso OVNI El Bosque 2010 CEFAA Chile video base aérea' },
+  // Era moderna y España
+  'manises-1979': { wiki: 'es:Caso_Manises', ytTerms: 'caso Manises 1979 OVNI expediente Ejército del Aire documental' },
+  'aguadilla-2013': { wikiPlace: 'es:Aguadilla', placeLabel: 'Aguadilla', ytTerms: 'Aguadilla 2013 UAP thermal video Puerto Rico SCU analysis' },
+  'omaha-2019': { wikiPlace: 'USS_Omaha_(LCS-12)', placeLabel: 'USS Omaha (LCS-12)', ytTerms: 'USS Omaha 2019 spherical UAP video Pentagon transmedium' },
 };
 
 export const expedienteExtras: Record<string, ExpedienteExtra> = Object.fromEntries(

@@ -10,4 +10,7 @@ export const timelineEvents = [
   { year: 2017, title: 'NY Times destapa AATIP', description: 'Leslie Kean revela programa secreto.', category: 'desclasificacion' },
   { year: 2020, title: 'Pentágono confirma videos', description: 'Se desclasifican FLIR1, Gimbal y GoFast.', category: 'desclasificacion' },
   { year: 2023, title: 'Audiencia de David Grusch', description: 'Testifica sobre "programas de recuperación".', category: 'hito' },
+  { year: 1979, title: 'Caso Manises', description: 'Un vuelo comercial aterriza de emergencia en Valencia y España despega un caza para interceptar.', category: 'caso', caseId: 'manises-1979' },
+  { year: 2021, title: 'Informe preliminar de la ODNI', description: 'El primer informe público del gobierno de EE.UU. sobre UAP: 144 reportes, uno solo explicado.', category: 'desclasificacion' },
+  { year: 2024, title: 'Informe histórico de AARO', description: 'La oficina UAP del Pentágono revisa 80 años de archivos y no halla pruebas de tecnología no humana.', category: 'desclasificacion' },
 ];
