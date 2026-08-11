@@ -48,21 +48,89 @@ body { background: #0a0a0c; color: white; font-family: 'Inter', sans-serif; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { scrollbar-width: none; }
 
-.hero-ufo-float {
-  animation: hero-ufo-float 5s ease-in-out infinite;
+/* ── Hero scene ─────────────────────────────────────────────── */
+
+/* Mothership */
+.hero-ship {
+  animation: hero-ship-hover 9s ease-in-out infinite;
+}
+@keyframes hero-ship-hover {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(0.35deg); }
+}
+.hero-ring-chase {
+  animation: hero-ring-chase 2.4s linear infinite;
+}
+@keyframes hero-ring-chase {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -70; }
+}
+.hero-rim-light {
+  animation: hero-rim-light 2.6s ease-in-out infinite;
+}
+@keyframes hero-rim-light {
+  0%, 100% { opacity: 0.2; }
+  12% { opacity: 1; }
+  40% { opacity: 0.3; }
+}
+.hero-core {
+  transform-box: fill-box;
   transform-origin: center;
+  animation: hero-core-pulse 3.4s ease-in-out infinite;
 }
-@keyframes hero-ufo-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+@keyframes hero-core-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.14); }
 }
+.hero-dome-cells {
+  animation: hero-dome-cells 4.5s ease-in-out infinite;
+}
+@keyframes hero-dome-cells {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+/* Abduction beam */
 .hero-beam {
   animation: hero-beam-pulse 6s ease-in-out infinite;
 }
 @keyframes hero-beam-pulse {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 0.9; }
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
+.hero-scan {
+  transform-origin: 720px 248px;
+  animation: hero-scan 5.2s linear infinite;
+}
+@keyframes hero-scan {
+  0% { transform: scale(0.6); opacity: 0; }
+  15% { opacity: 0.4; }
+  100% { transform: scale(9); opacity: 0; }
+}
+.hero-mote {
+  animation-name: hero-mote-rise;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0;
+}
+@keyframes hero-mote-rise {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 0.85; }
+  80% { opacity: 0.5; }
+  100% { transform: translateY(-320px); opacity: 0; }
+}
+.hero-ripple {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hero-ripple 4.8s ease-out infinite;
+  opacity: 0;
+}
+@keyframes hero-ripple {
+  0% { transform: scale(0.4); opacity: 0.65; }
+  100% { transform: scale(6); opacity: 0; }
+}
+
+/* Sky */
 .hero-star {
   animation-name: hero-star-twinkle;
   animation-timing-function: ease-in-out;
@@ -81,6 +149,110 @@ body { background: #0a0a0c; color: white; font-family: 'Inter', sans-serif; }
   0%, 100% { opacity: 0.35; }
   50% { opacity: 1; }
 }
+.hero-shoot {
+  animation: hero-shoot 12s ease-in infinite;
+  opacity: 0;
+}
+@keyframes hero-shoot {
+  0% { transform: translate(0, 0); opacity: 0; }
+  3% { opacity: 1; }
+  11% { transform: translate(380px, 170px); opacity: 0; }
+  100% { transform: translate(380px, 170px); opacity: 0; }
+}
+.hero-scout {
+  animation: hero-scout 30s linear infinite;
+  opacity: 0;
+}
+@keyframes hero-scout {
+  0% { transform: translate(-140px, 0); opacity: 0; }
+  10% { opacity: 0.85; }
+  85% { opacity: 0.85; }
+  100% { transform: translate(1600px, -60px); opacity: 0; }
+}
+
+/* Aliens — position/scale lives here so it can adapt per breakpoint */
+.hero-alien {
+  transform-origin: 0 0;
+}
+/* The scene is drawn on a 1440x900 canvas with `slice`, so a viewport narrower
+   than 16:10 crops the sides. Each step below pulls the giant foreground greys
+   back into frame as the visible slice gets narrower. */
+.hero-alien-l { transform: translate(-14px, 392px) scale(1.42); }
+.hero-alien-r { transform: translate(1454px, 392px) scale(-1.42, 1.42); }
+.hero-alien-far-l { transform: translate(372px, 604px) scale(0.48); }
+.hero-alien-far-r { transform: translate(1094px, 618px) scale(-0.43, 0.43); }
+@media (max-aspect-ratio: 8/5) and (min-width: 768px) {
+  .hero-alien-l { transform: translate(150px, 400px) scale(1.34); }
+  .hero-alien-r { transform: translate(1290px, 400px) scale(-1.34, 1.34); }
+}
+@media (max-aspect-ratio: 1/1) and (min-width: 768px) {
+  .hero-alien-l { transform: translate(336px, 560px) scale(1.05); }
+  .hero-alien-r { transform: translate(1104px, 560px) scale(-1.05, 1.05); }
+  .hero-alien-far-l { transform: translate(470px, 636px) scale(0.36); }
+  .hero-alien-far-r { transform: translate(986px, 646px) scale(-0.33, 0.33); }
+}
+@media (max-width: 767px) {
+  /* Phones have no room to spare: sink the pair into the mist behind the copy */
+  .hero-alien-l { transform: translate(486px, 706px) scale(0.78); opacity: 0.6; }
+  .hero-alien-r { transform: translate(954px, 706px) scale(-0.78, 0.78); opacity: 0.6; }
+  .hero-alien-far-l { transform: translate(618px, 700px) scale(0.26); }
+  .hero-alien-far-r { transform: translate(832px, 704px) scale(-0.24, 0.24); }
+}
+.hero-alien-breathe {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: hero-alien-breathe 6s ease-in-out infinite;
+}
+@keyframes hero-alien-breathe {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-7px) scaleY(1.012); }
+}
+.hero-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hero-blink 7s ease-in-out infinite;
+}
+@keyframes hero-blink {
+  0%, 91%, 100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.06); }
+  97% { transform: scaleY(1); }
+}
+.hero-eye-glow {
+  animation: hero-eye-glow 3.2s ease-in-out infinite;
+}
+@keyframes hero-eye-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* Copy — the padding pushes the block clear of the mothership. The hero is
+   vertically centred, so short viewports need less of it or the stats fall
+   below the fold. */
+.hero-copy { padding-top: 11rem; }
+@media (max-width: 767px) { .hero-copy { padding-top: 10rem; } }
+@media (max-height: 800px) { .hero-copy { padding-top: 7rem; } }
+@media (max-height: 680px) { .hero-copy { padding-top: 4.5rem; } }
+
+.hero-title-sheen {
+  background-size: 220% auto;
+  animation: hero-title-sheen 7s ease-in-out infinite;
+}
+@keyframes hero-title-sheen {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+.hero-scroll-cue {
+  animation: hero-scroll-cue 2.2s ease-in-out infinite;
+}
+@keyframes hero-scroll-cue {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-ufo-float, .hero-beam, .hero-star, .hero-light { animation: none; }
+  .hero-ship, .hero-ring-chase, .hero-rim-light, .hero-core, .hero-dome-cells,
+  .hero-beam, .hero-scan, .hero-mote, .hero-ripple, .hero-star, .hero-light,
+  .hero-shoot, .hero-scout, .hero-alien-breathe, .hero-blink, .hero-eye-glow,
+  .hero-title-sheen, .hero-scroll-cue { animation: none; }
+  .hero-mote, .hero-ripple, .hero-shoot, .hero-scout { opacity: 0.55; }
 }
