@@ -44,7 +44,7 @@ const raw: Record<string, { wiki?: string; wikiPlace?: string; placeLabel?: stri
   'uritorco-1986': { wikiPlace: 'es:Cerro_Uritorco', placeLabel: 'Cerro Uritorco', ytTerms: 'cerro Uritorco Capilla del Monte ovni 1986 Sierra del Pajarillo documental' },
   'erks-uritorco': { wikiPlace: 'es:Cerro_Uritorco', placeLabel: 'Cerro Uritorco', ytTerms: 'ciudad de Erks Uritorco leyenda documental' },
   'ingeniero-white-1975': { wikiPlace: 'es:Ingeniero_White', placeLabel: 'Ingeniero White', ytTerms: 'Carlos Díaz Ingeniero White ovni Bahía Blanca Constitución documental' },
-  'iberah': { wikiPlace: 'es:Esteros_del_Iberá', placeLabel: 'Esteros del Iberá', ytTerms: 'Iberah ciudad intraterrena La Lobería Viedma Río Negro documental' },
+  'iberah': { ytTerms: 'Iberah ciudad intraterrena La Lobería Viedma Río Negro documental' },
   // Abducciones (CE4)
   'hill-1961': { wiki: 'Barney_and_Betty_Hill_incident', ytTerms: 'Betty Barney Hill abduction 1961 documental' },
   'villas-boas-1957': { wiki: 'Antônio_Vilas-Boas', ytTerms: 'Antônio Villas Boas 1957 abdução ovni documentário' },
@@ -61,7 +61,7 @@ const raw: Record<string, { wiki?: string; wikiPlace?: string; placeLabel?: stri
   'isidris-mendoza': { ytTerms: 'ciudad de Isidris Mendoza intraterrena Di Noto documental' },
   'telos-shasta': { wikiPlace: 'Mount_Shasta', placeLabel: 'Monte Shasta', ytTerms: 'Telos Mount Shasta Lemuria intraterrestrial city documentary' },
   'juan-perez-1978': { ytTerms: 'Testigo de otro mundo documental Juan Pérez Alan Stivelman Jacques Vallée gaucho ovni' },
-  'friendship-1984': { wikiPlace: 'es:Isla_Friendship', placeLabel: 'Isla Friendship', ytTerms: 'caso Isla Friendship Ernesto de la Fuente OVNI TVN Patricio Bañados documental' },
+  'friendship-1984': { wikiPlace: 'es:Archipiélago_de_las_Guaitecas', placeLabel: 'Archipiélago de las Guaitecas', ytTerms: 'caso Isla Friendship Ernesto de la Fuente OVNI TVN Patricio Bañados documental' },
   'el-bosque-2010': { ytTerms: 'caso OVNI El Bosque 2010 CEFAA Chile video base aérea' },
 };
 
