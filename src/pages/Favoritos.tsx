@@ -3,6 +3,7 @@ import { useAuroraStore } from '../store/useStore';
 import { catalog } from '../data/catalog';
 import CatalogCard from '../components/CatalogCard';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import PageHero from '../components/PageHero';
 
 export default function Favoritos() {
   useDocumentTitle('Favoritos');
@@ -11,13 +12,16 @@ export default function Favoritos() {
   const items = catalog.filter((c) => favIds.has(c.id));
 
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen">
+      <PageHero
+        scene="favoritos"
+        accent="#f43f5e"
+        badge="Tu colección"
+        title={<>Mis <span className="text-[#f43f5e]">Favoritos</span></>}
+        subtitle={items.length === 0 ? 'Todavía no marcaste ningún título' : `${items.length} título${items.length === 1 ? '' : 's'} guardado${items.length === 1 ? '' : 's'}`}
+      />
+      <div className="px-4 pb-12 pt-10">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Tu colección</span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Mis <span className="text-aurora-cyan">Favoritos</span></h1>
-          <p className="text-gray-400">{items.length === 0 ? 'Todavía no marcaste ningún título' : `${items.length} título${items.length === 1 ? '' : 's'} guardado${items.length === 1 ? '' : 's'}`}</p>
-        </div>
 
         {items.length === 0 ? (
           <div className="max-w-md mx-auto text-center py-16">
@@ -29,6 +33,7 @@ export default function Favoritos() {
             {items.map((item) => <CatalogCard key={item.id} item={item} />)}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

@@ -93,7 +93,7 @@ export default function ExpedienteDetail() {
               </span>
             )}
           </div>
-          <CaseHero exp={exp} wiki={extra.wiki} />
+          <CaseHero exp={exp} wiki={extra.wiki} wikiPlace={extra.wikiPlace} placeLabel={extra.placeLabel} />
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-6">{exp.title}</h1>
           <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
             <span className="flex items-center gap-2"><Calendar className="w-4 h-4 text-aurora-cyan" />{parseLocalDate(exp.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
@@ -277,14 +277,21 @@ export default function ExpedienteDetail() {
   );
 }
 
-function CaseHero({ exp, wiki }: { exp: any; wiki?: string }) {
-  const { poster } = useWikiPoster(wiki || '');
+function CaseHero({ exp, wiki, wikiPlace, placeLabel }: { exp: any; wiki?: string; wikiPlace?: string; placeLabel?: string }) {
+  // Sin artículo propio del caso, se usa la foto del lugar y se dice que lo es
+  const isPlace = !wiki && !!wikiPlace;
+  const { poster } = useWikiPoster(wiki || wikiPlace || '');
   const hex = caseTypeMeta[exp.type as keyof typeof caseTypeMeta].color;
   if (poster) {
     return (
       <div className="relative w-full h-56 sm:h-72 rounded-2xl overflow-hidden mb-6 border border-white/10">
-        <img src={poster} alt={exp.title} className="w-full h-full object-cover" />
+        <img src={poster} alt={isPlace ? `${placeLabel}, lugar del caso` : exp.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-aurora-black via-aurora-black/40 to-transparent" />
+        {isPlace && placeLabel && (
+          <span className="absolute bottom-3 right-4 flex items-center gap-1.5 text-xs text-gray-300 bg-aurora-black/70 backdrop-blur-sm px-2.5 py-1 rounded-full">
+            <MapPin className="w-3 h-3" /> {placeLabel} — lugar del caso
+          </span>
+        )}
       </div>
     );
   }

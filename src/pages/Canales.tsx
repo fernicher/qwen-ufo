@@ -5,6 +5,7 @@ import { channels, channelAvatarKey } from '../data/channels';
 import { useChannelAvatars } from '../hooks/useChannelAvatars';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import ChannelCard from '../components/ChannelCard';
+import PageHero from '../components/PageHero';
 
 export default function Canales() {
   useDocumentTitle('Canales de YouTube');
@@ -23,15 +24,16 @@ export default function Canales() {
   const filtered = channels.filter((c) => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
 
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen">
+      <PageHero
+        scene="canales"
+        accent="#ef4444"
+        badge={<><MonitorPlay className="w-3.5 h-3.5" /> Canales de YouTube</>}
+        title={<>Canales <span style={{ color: '#ef4444' }}>recomendados</span></>}
+        subtitle="Los mejores canales de YouTube sobre el fenómeno OVNI/UAP, en español e inglés"
+      />
+      <div className="px-4 pb-12 pt-10">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] uppercase border rounded-full" style={{ color: '#ef4444', borderColor: '#ef44444d', background: '#ef44440d' }}>
-            <MonitorPlay className="w-3.5 h-3.5" /> Canales de YouTube
-          </span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Canales <span style={{ color: '#ef4444' }}>recomendados</span></h1>
-          <p className="text-gray-400">Los mejores canales de YouTube sobre el fenómeno OVNI/UAP, en español e inglés</p>
-        </div>
 
         <div className="relative max-w-2xl mx-auto mb-10">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
@@ -43,6 +45,7 @@ export default function Canales() {
             {filtered.map((c) => { const k = channelAvatarKey(c); return <ChannelCard key={c.id} c={c} avatar={k ? channelAvatars?.[k] : undefined} />; })}
           </div>
         ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>}
+      </div>
       </div>
     </div>
   );

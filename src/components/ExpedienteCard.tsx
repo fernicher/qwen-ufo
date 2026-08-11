@@ -15,7 +15,9 @@ export default function ExpedienteCard({ c }: { c: any }) {
   const hex = caseTypeMeta[c.type as keyof typeof caseTypeMeta].color;
   const typeLabel = caseTypeMeta[c.type as keyof typeof caseTypeMeta].longLabel;
   const extra = getExtra(c.id);
-  const { poster } = useWikiPoster(extra.wiki || '');
+  // Si el caso no tiene artículo propio, se recurre a la foto del lugar, etiquetada como tal
+  const isPlace = !extra.wiki && !!extra.wikiPlace;
+  const { poster } = useWikiPoster(extra.wiki || extra.wikiPlace || '');
 
   return (
     <Link to={`/expedientes/${c.id}`} className="group block bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-aurora-cyan/30 transition-all">
@@ -42,6 +44,11 @@ export default function ExpedienteCard({ c }: { c: any }) {
           <span className={`text-xs font-bold px-2 py-1 rounded border ${credColors[c.credibility]}`}><Shield className="w-3 h-3 inline mr-1" />{c.credibility}</span>
         </div>
         <span className="absolute bottom-3 left-4 z-10 text-[10px] font-semibold uppercase tracking-wider" style={{ color: hex }}>{typeLabel}</span>
+        {poster && isPlace && extra.placeLabel && (
+          <span className="absolute bottom-3 right-4 z-10 flex items-center gap-1 text-[10px] text-gray-300 bg-aurora-black/70 backdrop-blur-sm px-2 py-0.5 rounded-full">
+            <MapPin className="w-2.5 h-2.5" /> {extra.placeLabel}
+          </span>
+        )}
       </div>
       <div className="p-6">
         <h3 className="font-display font-bold text-xl text-white mb-2 group-hover:text-aurora-cyan">{c.title}</h3>

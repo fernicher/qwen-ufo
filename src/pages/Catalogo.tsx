@@ -6,6 +6,7 @@ import type { CatalogType } from '../data/catalog';
 import { collections } from '../data/collections';
 import CatalogCard from '../components/CatalogCard';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import PageHero from '../components/PageHero';
 
 type Filter = 'todos' | CatalogType;
 
@@ -57,13 +58,16 @@ export default function Catalogo() {
   }), []);
 
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen">
+      <PageHero
+        scene="catalogo"
+        accent="#a78bfa"
+        badge="Archivo Multimedia"
+        title={<>Cine <span className="text-[#a78bfa]">OVNI / UAP</span></>}
+        subtitle={`Selección curada de ${catalog.length} títulos: ${counts.pelicula} películas, ${counts.serie} series y ${counts.documental} documentales`}
+      />
+      <div className="px-4 pb-12 pt-10">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8 text-center">
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-aurora-cyan uppercase border border-aurora-cyan/30 rounded-full bg-aurora-cyan/5">Archivo Multimedia</span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Cine <span className="text-aurora-cyan">OVNI / UAP</span></h1>
-          <p className="text-gray-400">Selección curada de {catalog.length} títulos: {counts.pelicula} películas, {counts.serie} series y {counts.documental} documentales</p>
-        </div>
 
         <div className="relative max-w-2xl mx-auto mb-6">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
@@ -108,6 +112,7 @@ export default function Catalogo() {
             {results.map((item) => <CatalogCard key={item.id} item={item} />)}
           </div>
         )}
+      </div>
       </div>
     </div>
   );

@@ -225,6 +225,63 @@ body { background: #0a0a0c; color: white; font-family: 'Inter', sans-serif; }
   50% { opacity: 1; }
 }
 
+/* ── Cabeceras de sección (PageHero) ────────────────────────── */
+.ph-sweep {
+  transform-box: fill-box;
+  transform-origin: 0 0;
+  animation: ph-sweep 4.5s linear infinite;
+}
+@keyframes ph-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.ph-blip {
+  animation: ph-blip 3.2s ease-in-out infinite;
+}
+@keyframes ph-blip {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+.ph-wave {
+  animation: ph-wave 3.3s ease-out infinite;
+  opacity: 0;
+}
+@keyframes ph-wave {
+  0% { transform: scale(0.35); opacity: 0; }
+  25% { opacity: 0.55; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.ph-drift {
+  animation: ph-drift 9s ease-in-out infinite;
+}
+@keyframes ph-drift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.ph-flicker {
+  animation: ph-flicker 5s ease-in-out infinite;
+}
+@keyframes ph-flicker {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.ph-stamp {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ph-stamp 7s ease-in-out infinite;
+}
+@keyframes ph-stamp {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+.ph-trace {
+  animation: ph-trace 12s linear infinite;
+}
+@keyframes ph-trace {
+  from { stroke-dashoffset: 1200; }
+  to { stroke-dashoffset: 0; }
+}
+
 /* Copy — the padding pushes the block clear of the mothership. The hero is
    vertically centred, so short viewports need less of it or the stats fall
    below the fold. */
@@ -253,6 +310,8 @@ body { background: #0a0a0c; color: white; font-family: 'Inter', sans-serif; }
   .hero-ship, .hero-ring-chase, .hero-rim-light, .hero-core, .hero-dome-cells,
   .hero-beam, .hero-scan, .hero-mote, .hero-ripple, .hero-star, .hero-light,
   .hero-shoot, .hero-scout, .hero-alien-breathe, .hero-blink, .hero-eye-glow,
-  .hero-title-sheen, .hero-scroll-cue { animation: none; }
+  .hero-title-sheen, .hero-scroll-cue,
+  .ph-sweep, .ph-blip, .ph-wave, .ph-drift, .ph-flicker, .ph-stamp, .ph-trace { animation: none; }
+  .ph-wave { opacity: 0.3; }
   .hero-mote, .hero-ripple, .hero-shoot, .hero-scout { opacity: 0.55; }
 }

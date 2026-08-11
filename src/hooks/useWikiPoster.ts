@@ -14,17 +14,35 @@ function notify(wiki: string) {
   listeners.get(wiki)?.forEach((cb) => cb());
 }
 
+/** Devuelve la imagen del artículo, o null si el artículo no existe o no tiene foto. */
+async function imageFrom(lang: string, title: string): Promise<string | null> {
+  try {
+    const res = await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.thumbnail?.source || data?.originalimage?.source || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Acepta `Titulo` (busca en inglés y, si no hay foto, reintenta el mismo título
+ * en español) o un prefijo explícito `es:Titulo` / `en:Titulo` cuando el
+ * artículo sólo existe en un idioma o se llama distinto en cada uno.
+ */
 async function fetchPoster(wiki: string) {
   cache.set(wiki, { status: 'loading', url: null });
-  try {
-    const res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wiki)}`);
-    if (!res.ok) throw new Error(String(res.status));
-    const data = await res.json();
-    const url: string | null = data?.thumbnail?.source || data?.originalimage?.source || null;
-    cache.set(wiki, { status: 'done', url });
-  } catch {
-    cache.set(wiki, { status: 'done', url: null });
+
+  const prefix = wiki.match(/^(es|en):(.+)$/);
+  let url: string | null;
+  if (prefix) {
+    url = await imageFrom(prefix[1], prefix[2]);
+  } else {
+    url = (await imageFrom('en', wiki)) ?? (await imageFrom('es', wiki));
   }
+
+  cache.set(wiki, { status: 'done', url });
   notify(wiki);
 }
 

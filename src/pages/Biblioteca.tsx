@@ -9,6 +9,7 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
 import { colorFor } from '../lib/visual';
 import BookCard from '../components/BookCard';
+import PageHero from '../components/PageHero';
 
 type Tab = 'libros' | 'podcasts' | 'divulgadores' | 'desclasificaciones';
 
@@ -111,13 +112,16 @@ export default function Biblioteca() {
   ];
 
   return (
-    <div className="min-h-screen px-4 py-12">
+    <div className="min-h-screen">
+      <PageHero
+        scene="biblioteca"
+        accent="#fb7185"
+        badge="Biblioteca de Conocimiento"
+        title={<>Fuentes y <span className="text-[#fb7185]">Referentes</span></>}
+        subtitle="Libros, podcasts y las figuras clave del fenómeno OVNI/UAP"
+      />
+      <div className="px-4 pb-12 pt-10">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-10">
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-[0.2em] text-amber-400 uppercase border border-amber-400/30 rounded-full bg-amber-400/5">Biblioteca de Conocimiento</span>
-          <h1 className="text-4xl md:text-5xl font-display font-bold mb-4">Fuentes y <span className="text-amber-400">Referentes</span></h1>
-          <p className="text-gray-400">Libros, podcasts y las figuras clave del fenómeno OVNI/UAP</p>
-        </div>
 
         <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
           {tabsDef.map((t) => {
@@ -177,6 +181,7 @@ export default function Biblioteca() {
             </div>
           ) : <p className="text-center text-gray-500 py-12">Sin resultados.</p>
         )}
+      </div>
       </div>
     </div>
   );
