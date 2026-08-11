@@ -53,10 +53,20 @@ const MOTES = Array.from({ length: 22 }).map(() => ({
   delay: rand() * 8,
 }));
 
+// Grey anatomy: cranium widest just above the eye line, sharp taper to a small
+// chin, shoulders narrower than the skull.
 const ALIEN_HEAD =
-  'M100,2 C150,2 169,46 163,94 C158,135 131,173 100,181 C69,173 42,135 37,94 C31,46 50,2 100,2 Z';
+  'M100,0 C143,0 169,33 169,78 C169,110 157,134 139,154 C125,172 112,186 100,190 C88,186 75,172 61,154 C43,134 31,110 31,78 C31,33 57,0 100,0 Z';
+const ALIEN_NECK = 'M88,170 L112,170 L118,212 L82,212 Z';
 const ALIEN_TORSO =
-  'M86,168 C64,181 46,206 41,240 C35,278 47,318 45,358 L155,358 C153,318 165,278 159,240 C154,206 136,181 114,168 Z';
+  'M88,196 C68,206 54,224 49,252 C43,286 52,322 50,362 L150,362 C148,322 157,286 151,252 C146,224 132,206 112,196 Z';
+// One eye, drawn around its own origin: round at the outer tip (-x), tapering
+// to a point at the inner tip. Placed with a positive rotation so the outer
+// corner rides high — the upswept slant that reads as a grey rather than a
+// drooping, sad cartoon.
+const ALIEN_EYE =
+  'M-34,0 C-30,-11 -14,-17 4,-15 C20,-13 30,-7 34,1 C26,11 6,15 -12,12 C-26,10 -33,6 -34,0 Z';
+const EYE_TILT = 22;
 
 interface AlienProps {
   /** CSS class carrying the position/scale transform (see index.css) */
@@ -72,66 +82,72 @@ function Alien({ className, breathDelay = 0, blinkDelay = 0, distant = false }: 
     <g className={className}>
       <g className="hero-alien-breathe" style={{ animationDelay: `${breathDelay}s` }}>
         {/* Backlight halo bleeding around the silhouette */}
-        <ellipse cx="100" cy="150" rx="120" ry="185" fill="url(#alienHalo)" filter="url(#heroSoftBlur)" />
+        <ellipse cx="100" cy="160" rx="118" ry="196" fill="url(#alienHalo)" filter="url(#heroSoftBlur)" />
 
-        {/* Arms */}
-        <path
-          d="M52,212 C33,248 26,296 32,340"
-          fill="none"
-          stroke="url(#alienSkin)"
-          strokeWidth="17"
-          strokeLinecap="round"
-        />
-        <path
-          d="M148,212 C167,248 174,296 168,340"
-          fill="none"
-          stroke="url(#alienSkin)"
-          strokeWidth="17"
-          strokeLinecap="round"
-        />
+        {/* Arms — spindly, hanging past the hips */}
+        <path d="M56,222 C38,254 30,300 36,346" fill="none" stroke="url(#alienSkin)" strokeWidth="15" strokeLinecap="round" />
+        <path d="M144,222 C162,254 170,300 164,346" fill="none" stroke="url(#alienSkin)" strokeWidth="15" strokeLinecap="round" />
         {!distant && (
-          <g stroke="url(#alienSkin)" strokeWidth="4.5" strokeLinecap="round" fill="none">
-            <path d="M26,346 L21,368" />
-            <path d="M33,349 L33,373" />
-            <path d="M40,346 L45,367" />
-            <path d="M174,346 L179,368" />
-            <path d="M167,349 L167,373" />
-            <path d="M160,346 L155,367" />
+          <g stroke="url(#alienSkin)" strokeWidth="4" strokeLinecap="round" fill="none">
+            <path d="M30,352 L24,380" />
+            <path d="M36,354 L36,384" />
+            <path d="M42,352 L48,378" />
+            <path d="M170,352 L176,380" />
+            <path d="M164,354 L164,384" />
+            <path d="M158,352 L152,378" />
           </g>
         )}
 
-        {/* Torso + head */}
+        {/* Neck, torso, skull */}
+        <path d={ALIEN_NECK} fill="url(#alienSkin)" />
         <path d={ALIEN_TORSO} fill="url(#alienSkin)" />
         <path d={ALIEN_HEAD} fill="url(#alienSkin)" />
-        <path d={ALIEN_HEAD} fill="url(#alienSheen)" />
+        {/* Volume: highlight on the cranium, shadow pooling under the cheekbones */}
+        <ellipse cx="82" cy="46" rx="48" ry="38" fill="url(#alienSheen)" transform="rotate(-14 82 46)" />
+        <path d={ALIEN_HEAD} fill="url(#alienShade)" />
+        <ellipse cx="62" cy="128" rx="30" ry="26" fill="url(#alienHollow)" />
+        <ellipse cx="138" cy="128" rx="30" ry="26" fill="url(#alienHollow)" />
 
-        {/* Rim light along the contour, as if lit by the ship above */}
-        <path d={ALIEN_HEAD} fill="none" stroke="#67e8f9" strokeOpacity="0.75" strokeWidth="2.2" />
-        <path d={ALIEN_TORSO} fill="none" stroke="#22d3ee" strokeOpacity="0.4" strokeWidth="2" />
+        {/* Rim light: strongest on the side facing the ship, fading round the jaw */}
+        <path d={ALIEN_HEAD} fill="none" stroke="url(#alienRim)" strokeWidth="2" strokeOpacity="0.8" />
+        <path d={ALIEN_TORSO} fill="none" stroke="url(#alienRim)" strokeWidth="1.8" strokeOpacity="0.45" />
 
-        {/* Eye glow */}
+        {/* Cyan cast the beam throws back off the wet surface of the eyes */}
         <g className="hero-eye-glow" style={{ animationDelay: `${blinkDelay}s` }}>
-          <ellipse cx="70" cy="92" rx="30" ry="17" fill="#22d3ee" opacity="0.5" filter="url(#heroSoftBlur)" />
-          <ellipse cx="130" cy="92" rx="30" ry="17" fill="#22d3ee" opacity="0.5" filter="url(#heroSoftBlur)" />
+          <ellipse cx="64" cy="86" rx="34" ry="19" fill="#22d3ee" opacity="0.32" filter="url(#heroSoftBlur)" transform={`rotate(-${EYE_TILT} 64 86)`} />
+          <ellipse cx="136" cy="86" rx="34" ry="19" fill="#22d3ee" opacity="0.32" filter="url(#heroSoftBlur)" transform={`rotate(${EYE_TILT} 136 86)`} />
         </g>
 
-        {/* Eyes */}
+        {/* Eyes — mirrored from one path so both sides stay identical */}
         <g className="hero-blink" style={{ animationDelay: `${blinkDelay}s` }}>
-          <g transform="rotate(-20 70 92)">
-            <ellipse cx="70" cy="92" rx="28" ry="15" fill="#04060a" stroke="#22d3ee" strokeOpacity="0.9" strokeWidth="1.6" />
-            {!distant && <ellipse cx="60" cy="86" rx="7" ry="3.4" fill="#a5f3fc" opacity="0.85" />}
+          <g transform={`translate(64,86) rotate(${EYE_TILT})`}>
+            <path d={ALIEN_EYE} fill="url(#alienEye)" />
+            <path d={ALIEN_EYE} fill="none" stroke="#22d3ee" strokeOpacity="0.3" strokeWidth="1.1" />
+            {!distant && (
+              <>
+                <ellipse cx="-16" cy="-7" rx="13" ry="5.5" fill="url(#alienGloss)" transform="rotate(-16 -16 -7)" />
+                <ellipse cx="7" cy="-8" rx="2.6" ry="1.3" fill="#f0fdff" opacity="0.42" transform="rotate(-12 7 -8)" />
+              </>
+            )}
           </g>
-          <g transform="rotate(20 130 92)">
-            <ellipse cx="130" cy="92" rx="28" ry="15" fill="#04060a" stroke="#22d3ee" strokeOpacity="0.9" strokeWidth="1.6" />
-            {!distant && <ellipse cx="140" cy="86" rx="7" ry="3.4" fill="#a5f3fc" opacity="0.85" />}
+          <g transform={`translate(136,86) scale(-1,1) rotate(${EYE_TILT})`}>
+            <path d={ALIEN_EYE} fill="url(#alienEye)" />
+            <path d={ALIEN_EYE} fill="none" stroke="#22d3ee" strokeOpacity="0.3" strokeWidth="1.1" />
+            {!distant && (
+              <>
+                <ellipse cx="-16" cy="-7" rx="13" ry="5.5" fill="url(#alienGloss)" transform="rotate(-16 -16 -7)" />
+                <ellipse cx="7" cy="-8" rx="2.6" ry="1.3" fill="#f0fdff" opacity="0.42" transform="rotate(-12 7 -8)" />
+              </>
+            )}
           </g>
         </g>
 
         {!distant && (
           <>
-            <path d="M92,143 Q100,150 108,143" fill="none" stroke="#22d3ee" strokeOpacity="0.45" strokeWidth="2" strokeLinecap="round" />
-            <path d="M88,120 Q91,124 88,127" fill="none" stroke="#22d3ee" strokeOpacity="0.3" strokeWidth="1.6" strokeLinecap="round" />
-            <path d="M112,120 Q109,124 112,127" fill="none" stroke="#22d3ee" strokeOpacity="0.3" strokeWidth="1.6" strokeLinecap="round" />
+            {/* Nostril slits — no bridge — and a flat lipless mouth */}
+            <path d="M95,130 L94,137" stroke="#04060a" strokeOpacity="0.75" strokeWidth="2.4" strokeLinecap="round" />
+            <path d="M105,130 L106,137" stroke="#04060a" strokeOpacity="0.75" strokeWidth="2.4" strokeLinecap="round" />
+            <path d="M92,159 L108,159" stroke="#04060a" strokeOpacity="0.5" strokeWidth="1.8" strokeLinecap="round" />
           </>
         )}
       </g>
@@ -206,9 +222,33 @@ export default function Hero() {
             <stop offset="35%" stopColor="#1c2740" />
             <stop offset="100%" stopColor="#070b16" />
           </linearGradient>
-          <radialGradient id="alienSheen" cx="38%" cy="24%" r="58%">
-            <stop offset="0%" stopColor="#67e8f9" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#67e8f9" stopOpacity="0" />
+          <radialGradient id="alienSheen" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#8fd9ea" stopOpacity="0.32" />
+            <stop offset="100%" stopColor="#8fd9ea" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="alienShade" x1="0.15" y1="0" x2="0.85" y2="1">
+            <stop offset="0%" stopColor="#000000" stopOpacity="0" />
+            <stop offset="52%" stopColor="#000000" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="#000205" stopOpacity="0.72" />
+          </linearGradient>
+          <linearGradient id="alienRim" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#a5f3fc" stopOpacity="0.85" />
+            <stop offset="45%" stopColor="#22d3ee" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.06" />
+          </linearGradient>
+          <radialGradient id="alienEye" cx="34%" cy="30%" r="76%">
+            <stop offset="0%" stopColor="#12202e" />
+            <stop offset="55%" stopColor="#05090f" />
+            <stop offset="100%" stopColor="#010306" />
+          </radialGradient>
+          {/* Soft-edged so the specular reads as wet cornea, not a pasted-on oval */}
+          <radialGradient id="alienGloss" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#dff6ff" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#dff6ff" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="alienHollow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#01040a" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#01040a" stopOpacity="0" />
           </radialGradient>
           <radialGradient id="alienHalo" cx="50%" cy="40%" r="50%">
             <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.42" />
