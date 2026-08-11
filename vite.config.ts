@@ -13,7 +13,7 @@ const STATIC_ROUTES = [
  * resuelven rutas relativas. El dominio se toma de SITE_URL (o VITE_SITE_URL);
  * si no está definido, se usa el de producción por defecto.
  */
-const FALLBACK_SITE_URL = 'https://qwen-ufo.vercel.app';
+const FALLBACK_SITE_URL = 'https://fernicher-ufo.vercel.app';
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {

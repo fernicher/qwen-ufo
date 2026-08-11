@@ -22,10 +22,10 @@ contador queda oculto.
 
 ## Variables de entorno
 
-Todas son opcionales; están documentadas en `.env.example`. La única que conviene
-fijar antes de publicar es `SITE_URL`, el dominio público: de ahí salen las URLs
-absolutas de las etiquetas Open Graph, el canonical, el `sitemap.xml` y el
-`robots.txt`. Si no se define, el build usa `https://qwen-ufo.vercel.app`.
+Todas son opcionales; están documentadas en `.env.example`. El sitio vive en
+<https://fernicher-ufo.vercel.app>, que es el valor por defecto del build. Ese
+dominio alimenta las URLs absolutas de las etiquetas Open Graph, el canonical,
+el `sitemap.xml` y el `robots.txt`; para publicar en otro, define `SITE_URL`.
 
 ## De dónde salen las imágenes
 
