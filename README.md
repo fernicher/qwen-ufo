@@ -51,3 +51,23 @@ desactiva con `prefers-reduced-motion`.
 
 `public/og.jpg` es la vista previa al compartir el enlace: se genera capturando
 la portada a 1200×630.
+
+## Buzón de sugerencias
+
+El pie de página incluye una caja plegada que envía a `api/feedback`. Lo que
+llega **no se publica**: se guarda en el mismo Upstash del contador de visitas y
+sólo lo lee quien mantiene el archivo. Por eso no hay moderación pública que
+hacer ni riesgo de que aparezca spam a la vista.
+
+Defensas: un campo trampa invisible que sólo rellenan los bots, límite de cinco
+envíos por día y remitente, y topes de longitud. Si Upstash no está configurado,
+la función responde `configured:false` y la caja desaparece sola.
+
+Para leer lo recibido, define `FEEDBACK_TOKEN` y abre:
+
+```
+https://fernicher-ufo.vercel.app/api/feedback?token=EL_TOKEN
+```
+
+Sin esa variable la lectura devuelve 404 y los mensajes sólo se ven desde la
+consola de Upstash.
