@@ -20,6 +20,8 @@ export interface RouteMeta {
   description: string;
   /** Datos estructurados schema.org, ya listos para serializar. */
   jsonLd?: Record<string, unknown>;
+  /** Páginas sin contenido propio para un buscador: se excluyen del índice y del sitemap. */
+  noindex?: boolean;
 }
 
 const SITE_NAME = 'Project Aurora';
@@ -47,11 +49,17 @@ function breadcrumbs(siteUrl: string, trail: { name: string; path: string }[]) {
 export function routeMetas(siteUrl: string): RouteMeta[] {
   const paises = new Set(ufoCases.map((c) => c.country)).size;
 
+  /**
+   * Cada ruta apunta a una búsqueda distinta, con el término por delante y la
+   * marca fuera: un sitio nuevo no tiene búsquedas por su nombre. Los títulos se
+   * mantienen por debajo de 60 caracteres y las descripciones por debajo de 158,
+   * que es lo que llegan a mostrar los buscadores.
+   */
   const estaticas: RouteMeta[] = [
     {
       path: '/',
-      title: `${SITE_NAME} — Archivo Desclasificado UAP`,
-      description: `Archivo en español del fenómeno OVNI/UAP: ${ufoCases.length} expedientes documentados en ${paises} países, mapa global de avistamientos, cine, biblioteca y noticias.`,
+      title: `Archivo OVNI y UAP en español — ${ufoCases.length} casos documentados`,
+      description: `Expedientes de ${ufoCases.length} casos OVNI en ${paises} países, mapa global de avistamientos, películas y documentales, biblioteca y noticias del fenómeno UAP.`,
       jsonLd: {
         '@type': 'WebSite',
         name: SITE_NAME,
@@ -62,58 +70,60 @@ export function routeMetas(siteUrl: string): RouteMeta[] {
     },
     {
       path: '/expedientes',
-      title: `Expedientes desclasificados — ${ufoCases.length} casos OVNI documentados`,
-      description: `Investigaciones detalladas de ${ufoCases.length} casos del fenómeno OVNI/UAP en ${paises} países, con testigos, documentos, hipótesis y respuesta oficial de cada uno.`,
+      title: `Casos OVNI: ${ufoCases.length} expedientes desclasificados`,
+      description: `Investigaciones detalladas de ${ufoCases.length} casos OVNI en ${paises} países: testigos, documentos oficiales, hipótesis y la respuesta de cada gobierno.`,
     },
     {
       path: '/mapa',
-      title: 'Mapa global de avistamientos OVNI / UAP',
-      description: `Los ${ufoCases.length} casos del archivo situados en el mapa, filtrables por tipo de encuentro y por nivel de la escala de Hynek.`,
+      title: 'Mapa mundial de avistamientos OVNI y UAP',
+      description: `Los ${ufoCases.length} casos del archivo situados en el mapa y filtrables por tipo de encuentro y por la escala de Hynek. Explora los avistamientos país por país.`,
     },
     {
       path: '/catalogo',
-      title: `Cine OVNI / UAP — ${catalog.length} películas, series y documentales`,
-      description: `Selección curada de ${catalog.length} títulos sobre el fenómeno OVNI/UAP, del cine clásico de platillos a los documentales de investigación.`,
+      title: `Películas y documentales de OVNIs — ${catalog.length} títulos`,
+      description: `Selección curada de ${catalog.length} películas, series y documentales sobre OVNIs y UAP, del cine clásico de platillos volantes a las investigaciones actuales.`,
     },
     {
       path: '/noticias',
-      title: 'Radar de señales — Noticias OVNI / UAP en español',
-      description: 'Noticias y menciones del fenómeno OVNI/UAP agregadas en tiempo casi real desde prensa, Reddit y Bluesky, con las fuentes en español priorizadas.',
+      title: 'Noticias OVNI y UAP de hoy, en español',
+      description: 'Últimas noticias del fenómeno OVNI/UAP agregadas en tiempo casi real desde prensa, Reddit y Bluesky, con las fuentes en español priorizadas.',
     },
     {
       path: '/biblioteca',
-      title: 'Biblioteca OVNI — Libros, podcasts y divulgadores',
-      description: `${books.length} libros de referencia, podcasts, divulgadores y los archivos oficiales desclasificados de ocho países.`,
+      title: 'Libros sobre OVNIs, podcasts y archivos desclasificados',
+      description: `${books.length} libros de referencia, podcasts, divulgadores y los archivos OVNI desclasificados por ocho gobiernos, de España a Brasil.`,
     },
     {
       path: '/canales',
-      title: 'Canales de YouTube sobre OVNIs y UAP',
-      description: `${channels.length} canales recomendados sobre el fenómeno OVNI/UAP, en español e inglés.`,
+      title: 'Canales de YouTube sobre OVNIs en español e inglés',
+      description: `${channels.length} canales recomendados para seguir el fenómeno OVNI/UAP: divulgación, investigación y análisis de casos.`,
     },
     {
       path: '/investigadores',
-      title: 'Investigadores del fenómeno OVNI / UAP',
-      description: `Las ${investigators.length} figuras que documentaron, analizaron o divulgaron el fenómeno: de Hynek y Vallée a los referentes iberoamericanos.`,
+      title: 'Investigadores OVNI: Hynek, Vallée y referentes en español',
+      description: `Las ${investigators.length} figuras que documentaron, analizaron o divulgaron el fenómeno OVNI: biografías, obras y los casos que investigó cada una.`,
     },
     {
       path: '/timeline',
-      title: 'Línea de tiempo del fenómeno OVNI / UAP',
-      description: 'Casos, desclasificaciones e hitos culturales desde Roswell hasta los informes de AARO, ordenados cronológicamente.',
+      title: 'Historia del fenómeno OVNI: cronología desde Roswell',
+      description: 'Casos, desclasificaciones e hitos culturales desde Roswell en 1947 hasta los informes de AARO, ordenados año por año.',
     },
     {
       path: '/escala-hynek',
-      title: 'La escala de Hynek — Cómo se clasifican los encuentros',
-      description: 'Qué significan los encuentros cercanos del primer, segundo y tercer tipo, explicados con casos reales del archivo.',
+      title: 'Escala de Hynek: encuentros cercanos del 1º, 2º y 3º tipo',
+      description: 'Qué significa cada tipo de encuentro cercano según la clasificación de J. Allen Hynek, explicado con casos reales del archivo.',
     },
     {
       path: '/reportar',
-      title: 'Cómo reportar un avistamiento OVNI',
-      description: 'Qué descartar primero, qué anotar mientras ocurre, cómo grabar para que el material sirva y a qué organismo oficial acudir en cada país.',
+      title: 'Cómo reportar un avistamiento OVNI paso a paso',
+      description: 'Qué descartar primero, qué anotar mientras ocurre, cómo grabar para que el video sirva y a qué organismo oficial acudir en cada país.',
     },
     {
+      // Depende del navegador de cada visitante: para un buscador siempre está vacía
       path: '/favoritos',
       title: 'Mis favoritos',
       description: 'Los títulos del catálogo que guardaste en este navegador.',
+      noindex: true,
     },
   ];
 
@@ -149,7 +159,7 @@ export function routeMetas(siteUrl: string): RouteMeta[] {
 
   const fichas: RouteMeta[] = investigators.map((inv) => ({
     path: `/investigadores/${inv.id}`,
-    title: `${inv.name} — ${inv.specialty}`,
+    title: `${inv.name} — biografía, obras y casos investigados`,
     description: clamp(`${inv.bio} Ficha del investigador en el archivo de ${SITE_NAME}.`),
     jsonLd: {
       '@type': 'ProfilePage',
