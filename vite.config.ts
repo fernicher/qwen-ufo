@@ -66,6 +66,10 @@ export default defineConfig(({ mode }) => {
             html = setMeta(html, 'name="twitter:title"', meta.title);
             html = setMeta(html, 'name="twitter:description"', meta.description);
 
+            if (meta.noindex) {
+              html = html.replace('</head>', '  <meta name="robots" content="noindex, follow" />\n  </head>');
+            }
+
             if (meta.jsonLd) {
               const datos = JSON.stringify({ '@context': 'https://schema.org', ...meta.jsonLd })
                 .replace(/</g, '\\u003c');
@@ -78,7 +82,8 @@ export default defineConfig(({ mode }) => {
             writeFileSync(destino, html);
           }
 
-          const urls = metas.map((m) => m.path);
+          // Lo que no se indexa tampoco se ofrece al buscador
+          const urls = metas.filter((m) => !m.noindex).map((m) => m.path);
           const sitemap = [
             '<?xml version="1.0" encoding="UTF-8"?>',
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
