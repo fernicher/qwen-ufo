@@ -21,6 +21,7 @@ const Favoritos = lazy(() => import('./pages/Favoritos'));
 const InvestigadorDetail = lazy(() => import('./pages/InvestigadorDetail'));
 const EscalaHynek = lazy(() => import('./pages/EscalaHynek'));
 const Reportar = lazy(() => import('./pages/Reportar'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 /** Marcador mientras llega el trozo de la página, en el estilo del sitio. */
 function RouteFallback() {
@@ -52,6 +53,7 @@ function App() {
             <Route path="/reportar" element={<Reportar />} />
             <Route path="/timeline" element={<Timeline />} />
             <Route path="/favoritos" element={<Favoritos />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </Suspense>
