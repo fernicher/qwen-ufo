@@ -1,26 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Globe, BookOpen, Award, FileText } from 'lucide-react';
-import { investigators } from '../data/investigators';
+import { investigators, credStyles, credLabels } from '../data/investigators';
 import { expedientes } from '../data/expedientes';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import PageHero from '../components/PageHero';
 import { useWikiPoster } from '../hooks/useWikiPoster';
 import type { Investigator } from '../data/investigators';
-
-const credStyles: Record<string, string> = {
-  referente: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
-  activo: 'text-green-400 border-green-400/40 bg-green-400/10',
-  histórico: 'text-amber-400 border-amber-400/40 bg-amber-400/10',
-  controvertido: 'text-orange-400 border-orange-400/40 bg-orange-400/10',
-};
-
-const credLabels: Record<string, string> = {
-  referente: 'Referente Mundial',
-  activo: 'Investigador Activo',
-  histórico: 'Figura Histórica',
-  controvertido: 'Controvertido',
-};
 
 /** Retrato desde Wikipedia; si no hay artículo o foto, cae al monograma de siempre. */
 function InvestigatorAvatar({ inv }: { inv: Investigator }) {
@@ -107,7 +93,11 @@ export default function Investigadores() {
                 <div className="flex items-start gap-4 mb-4">
                   <InvestigatorAvatar inv={inv} />
                   <div>
-                    <h2 className="font-display font-bold text-lg text-white">{inv.name}</h2>
+                    <h2 className="font-display font-bold text-lg text-white">
+                      <Link to={`/investigadores/${inv.id}`} className="hover:text-aurora-cyan transition-colors">
+                        {inv.name}
+                      </Link>
+                    </h2>
                     <div className="flex items-center gap-2 text-xs text-gray-400"><Globe className="w-3 h-3" />{inv.country}</div>
                   </div>
                 </div>

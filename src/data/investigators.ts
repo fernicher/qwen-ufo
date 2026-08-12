@@ -20,3 +20,21 @@ export const investigators: Investigator[] = [
   { id: 'banchs', name: 'Roberto Banchs', country: 'Argentina', specialty: 'Análisis psicosocial del fenómeno OVNI', bio: 'Investigador argentino de enfoque académico y escepticismo reflexivo, autor de la Guía Biográfica de la Ufología Argentina.', works: ['Fenómenos aéreos inusuales: un enfoque biopsicosocial (1994)'], credibility: 'histórico' },
   { id: 'maussan', wiki: 'es:Jaime_Maussan', name: 'Jaime Maussan', country: 'México', specialty: 'Periodismo y divulgación ufológica', bio: 'El ufólogo más conocido de México, conductor del programa "Tercer Milenio". Divulgó el video del caso Campeche 2004, aunque trabajos posteriores suyos —como los supuestos cuerpos no humanos presentados al Congreso mexicano en 2023— fueron cuestionados por la comunidad científica.', works: ['Programa Tercer Milenio'], credibility: 'controvertido' },
 ];
+
+/** Estilos y etiquetas de credibilidad, compartidos por el listado y la ficha. */
+export const credStyles: Record<string, string> = {
+  referente: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
+  activo: 'text-green-400 border-green-400/40 bg-green-400/10',
+  histórico: 'text-amber-400 border-amber-400/40 bg-amber-400/10',
+  controvertido: 'text-orange-400 border-orange-400/40 bg-orange-400/10',
+};
+
+export const credLabels: Record<string, string> = {
+  referente: 'Referente Mundial',
+  activo: 'Investigador Activo',
+  histórico: 'Figura Histórica',
+  controvertido: 'Controvertido',
+};
+
+export const getInvestigator = (id: string): Investigator | undefined =>
+  investigators.find((i) => i.id === id);

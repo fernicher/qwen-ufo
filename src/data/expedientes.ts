@@ -1005,3 +1005,10 @@ export const expedientes: Record<string, Expediente> = {
 };
 
 export const getExpediente = (id: string): Expediente | undefined => expedientes[id];
+
+/** Casos del archivo en los que participó cada investigador. */
+export function casesByInvestigator(id: string): { id: string; title: string }[] {
+  return Object.values(expedientes)
+    .filter((exp) => exp.relatedInvestigators.includes(id))
+    .map((exp) => ({ id: exp.id, title: exp.title }));
+}

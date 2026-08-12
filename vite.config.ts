@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 const STATIC_ROUTES = [
   '/', '/expedientes', '/mapa', '/catalogo', '/noticias',
   '/biblioteca', '/canales', '/investigadores', '/timeline', '/favoritos',
+  '/escala-hynek', '/reportar',
 ];
 
 /**

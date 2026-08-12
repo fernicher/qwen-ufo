@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart, Radio, MonitorPlay } from 'lucide-react';
+import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart, Radio, MonitorPlay, Ruler, Send } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 
 interface NavItem {
@@ -24,6 +24,8 @@ const moreNavItems: NavItem[] = [
   { to: '/investigadores', label: 'Investigadores', icon: Users, color: '#60a5fa' },
   { to: '/timeline', label: 'Línea de tiempo', icon: Clock, color: '#38bdf8' },
   { to: '/favoritos', label: 'Favoritos', icon: Heart, color: '#f43f5e' },
+  { to: '/escala-hynek', label: 'Escala de Hynek', icon: Ruler, color: '#34d399' },
+  { to: '/reportar', label: 'Cómo reportar', icon: Send, color: '#34d399' },
 ];
 
 const allNavItems = [...primaryNavItems, ...moreNavItems];

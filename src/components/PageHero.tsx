@@ -14,7 +14,9 @@ export type HeroScene =
   | 'investigadores'
   | 'timeline'
   | 'noticias'
-  | 'favoritos';
+  | 'favoritos'
+  | 'hynek'
+  | 'reportar';
 
 // Estrellas deterministas para que la banda no parpadee entre renders
 function mulberry32(seed: number) {
@@ -244,6 +246,59 @@ function SceneFavoritos({ accent }: { accent: string }) {
   );
 }
 
+/** Escala de proximidad: de la nave lejana al encuentro cara a cara */
+function SceneHynek({ accent }: { accent: string }) {
+  const pasos = [
+    [560, 320, 5], [660, 314, 7], [760, 308, 9.5], [860, 302, 12], [960, 296, 15],
+  ] as const;
+  return (
+    <g>
+      <path d="M470,326 L1010,290" stroke={accent} strokeOpacity="0.3" strokeWidth="1.5" strokeDasharray="4 8" />
+      <g className="ph-drift">
+        <ellipse cx="390" cy="292" rx="88" ry="17" fill="#0e1729" stroke={accent} strokeOpacity="0.8" strokeWidth="2" />
+        <path d="M-34,-4 Q0,-34 34,-4 Z" transform="translate(390,292)" fill={accent} fillOpacity="0.4" />
+        <circle cx="352" cy="300" r="3.5" fill={accent} className="ph-blip" />
+        <circle cx="390" cy="303" r="3.5" fill={accent} className="ph-blip" style={{ animationDelay: '0.4s' }} />
+        <circle cx="428" cy="300" r="3.5" fill={accent} className="ph-blip" style={{ animationDelay: '0.8s' }} />
+      </g>
+      {pasos.map(([x, y, r], i) => (
+        <circle key={x} cx={x} cy={y} r={r} fill={accent} fillOpacity="0.5" className="ph-blip" style={{ animationDelay: `${i * 0.45}s` }} />
+      ))}
+      <g transform="translate(1090,400)">
+        <circle cy="-146" r="30" fill="#0e1729" stroke={accent} strokeOpacity="0.75" strokeWidth="2.2" />
+        <path d="M-46,0 C-46,-68 -26,-116 0,-116 C26,-116 46,-68 46,0 Z" fill="#0e1729" stroke={accent} strokeOpacity="0.6" strokeWidth="2.2" />
+      </g>
+    </g>
+  );
+}
+
+/** Un teléfono grabando una luz, y la ficha donde se anota */
+function SceneReportar({ accent }: { accent: string }) {
+  return (
+    <g>
+      <polygon points="676,268 700,262 560,180 528,206" fill={accent} fillOpacity="0.16" filter="url(#phBlur)" className="ph-flicker" />
+      <circle cx="544" cy="194" r="9" fill={accent} className="ph-blip" />
+      <circle cx="544" cy="194" r="26" fill={accent} opacity="0.2" filter="url(#phBlur)" />
+      <g transform="translate(720,330) rotate(-14)">
+        <rect x="-52" y="-96" width="104" height="192" rx="14" fill="#0e1729" stroke={accent} strokeOpacity="0.8" strokeWidth="2.2" />
+        <rect x="-42" y="-82" width="84" height="150" rx="6" fill={accent} fillOpacity="0.1" stroke={accent} strokeOpacity="0.3" />
+        <circle cy="-88" r="3" fill={accent} fillOpacity="0.7" />
+        <circle cx="-14" cy="-30" r="7" fill="none" stroke={accent} strokeOpacity="0.6" strokeWidth="2" />
+      </g>
+      <g transform="translate(980,300) rotate(6)">
+        <rect x="-70" y="-88" width="140" height="176" rx="10" fill="#0e1729" stroke={accent} strokeOpacity="0.55" strokeWidth="1.8" />
+        <rect x="-26" y="-100" width="52" height="20" rx="6" fill="#131d31" stroke={accent} strokeOpacity="0.5" />
+        {[-52, -20, 12, 44].map((y) => (
+          <g key={y}>
+            <path d={`M-48,${y} l7,8 l13,-16`} fill="none" stroke={accent} strokeOpacity="0.7" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+            <rect x="-22" y={y - 4} width="66" height="7" rx="3.5" fill={accent} opacity="0.28" />
+          </g>
+        ))}
+      </g>
+    </g>
+  );
+}
+
 const SCENES: Record<HeroScene, (p: { accent: string }) => ReactNode> = {
   catalogo: SceneCatalogo,
   expedientes: SceneExpedientes,
@@ -253,6 +308,8 @@ const SCENES: Record<HeroScene, (p: { accent: string }) => ReactNode> = {
   timeline: SceneTimeline,
   noticias: SceneNoticias,
   favoritos: SceneFavoritos,
+  hynek: SceneHynek,
+  reportar: SceneReportar,
 };
 
 interface PageHeroProps {
