@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart, Radio, MonitorPlay, Ruler, Send } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
+import FeedbackBox from './FeedbackBox';
 
 interface NavItem {
   to: string;
@@ -129,7 +130,8 @@ export default function Layout() {
         )}
       </nav>
       <main className="pt-16 relative z-10"><Outlet /></main>
-      <footer className="relative z-10 border-t border-white/5 mt-20 py-8 px-4 text-center text-sm text-gray-500">
+      <footer className="relative z-10 border-t border-white/5 mt-20 py-10 px-4 text-center text-sm text-gray-500">
+        <div className="mb-6"><FeedbackBox /></div>
         © 2026 <span className="text-aurora-cyan">Project Aurora</span> — Archivo Desclasificado
       </footer>
     </div>
