@@ -23,6 +23,19 @@ export interface RouteMeta {
   jsonLd?: Record<string, unknown>;
   /** Páginas sin contenido propio para un buscador: se excluyen del índice y del sitemap. */
   noindex?: boolean;
+  /**
+   * Texto de la imagen de vista previa al compartir el enlace. El build genera
+   * un JPEG por ruta con estos datos; sin esto todas las URLs comparten la
+   * miniatura de la portada y en WhatsApp no se distingue una de otra.
+   */
+  og?: {
+    /** Etiqueta pequeña de sección: "Expediente", "Catálogo"… */
+    kicker: string;
+    /** Titular grande. Si falta se usa el `title`, que lleva la marca añadida. */
+    titulo?: string;
+    /** Línea inferior con los datos del caso: fecha, lugar, país. */
+    pie?: string;
+  };
 }
 
 const SITE_NAME = 'Project Aurora';
@@ -155,6 +168,11 @@ export function routeMetas(siteUrl: string): RouteMeta[] {
     path: `/expedientes/${c.id}`,
     title: `${c.title} (${year(c.date)}) — Expediente OVNI en ${c.country}`,
     description: clamp(c.description),
+    og: {
+      kicker: 'Expediente',
+      titulo: c.title,
+      pie: `${year(c.date)} · ${c.location} · ${c.country}`,
+    },
     jsonLd: {
       '@type': 'Article',
       headline: c.title,
@@ -185,6 +203,7 @@ export function routeMetas(siteUrl: string): RouteMeta[] {
     path: `/investigadores/${inv.id}`,
     title: `${inv.name} — biografía, obras y casos investigados`,
     description: clamp(`${inv.bio} Ficha del investigador en el archivo de ${SITE_NAME}.`),
+    og: { kicker: 'Investigador', titulo: inv.name, pie: `${inv.specialty} · ${inv.country}` },
     jsonLd: {
       '@type': 'ProfilePage',
       inLanguage: 'es',
@@ -203,5 +222,27 @@ export function routeMetas(siteUrl: string): RouteMeta[] {
     },
   }));
 
-  return [...estaticas, ...casos, ...fichas];
+  /**
+   * Los `title` de arriba están escritos para el buscador: llevan el término por
+   * delante y datos que no hacen falta en una miniatura. En la imagen conviene
+   * un titular corto y una etiqueta de sección, así que se declaran aparte.
+   */
+  const PORTADAS: Record<string, { kicker: string; titulo: string; pie?: string }> = {
+    '/': { kicker: 'Archivo OVNI · UAP', titulo: 'La verdad está más cerca que nunca', pie: `${ufoCases.length} casos documentados de ${paises} países` },
+    '/expedientes': { kicker: 'Expedientes', titulo: 'Casos documentados, uno por uno', pie: `${ufoCases.length} expedientes` },
+    '/mapa': { kicker: 'Mapa', titulo: 'Dónde ocurrió cada avistamiento', pie: `${paises} países` },
+    '/catalogo': { kicker: 'Catálogo', titulo: 'Cine y series sobre el fenómeno', pie: `${catalog.length} títulos` },
+    '/noticias': { kicker: 'Radar de noticias', titulo: 'Lo que se publica hoy sobre OVNIs' },
+    '/biblioteca': { kicker: 'Biblioteca', titulo: 'Libros, podcasts y divulgadores', pie: `${books.length} libros` },
+    '/canales': { kicker: 'Canales', titulo: 'Dónde seguir el tema en video', pie: `${channels.length} canales` },
+    '/investigadores': { kicker: 'Investigadores', titulo: 'Quiénes estudiaron el fenómeno en serio', pie: `${investigators.length} fichas` },
+    '/timeline': { kicker: 'Línea de tiempo', titulo: 'La historia del fenómeno, en orden' },
+    '/escala-hynek': { kicker: 'Escala de Hynek', titulo: 'Cómo se clasifican los encuentros cercanos' },
+    '/reportar': { kicker: 'Guía práctica', titulo: 'Viste algo: qué hacer ahora' },
+    '/testimonios': { kicker: 'Relatos del público', titulo: 'Testimonios sin verificar' },
+  };
+
+  const conPortada = estaticas.map((m) => (PORTADAS[m.path] ? { ...m, og: PORTADAS[m.path] } : m));
+
+  return [...conPortada, ...casos, ...fichas];
 }
