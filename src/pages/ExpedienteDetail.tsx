@@ -1,13 +1,15 @@
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download, MonitorPlay, BookOpen } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Shield, Users, FileText, Sparkles, Clock, Landmark, Download, MonitorPlay, BookOpen, ExternalLink } from 'lucide-react';
 import { getExpediente } from '../data/expedientes';
 import { investigators } from '../data/investigators';
 import { ufoCases } from '../data/cases';
 import { books } from '../data/books';
+import { catalog, type CatalogItem } from '../data/catalog';
 import { getExtra } from '../data/expediente-extras';
 import { hynekMeta } from '../data/hynek';
 import { caseTypeMeta } from '../data/caseTypes';
 import CaseTypeIcon from '../components/CaseTypeIcon';
+import { catalogTypeMeta } from '../data/catalogTypes';
 import CaseReactions from '../components/CaseReactions';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
@@ -68,6 +70,8 @@ export default function ExpedienteDetail() {
 
   const extra = getExtra(exp.id);
   const relatedBooks = books.filter((b) => Array.isArray(b.relatedCases) && b.relatedCases.includes(exp.id));
+  // Cine y documentales del catálogo que tratan justamente este caso
+  const relatedTitles = catalog.filter((c) => c.caseId === exp.id);
 
   return (
     <div className="min-h-screen">
@@ -205,7 +209,24 @@ export default function ExpedienteDetail() {
 
             <section className="bg-aurora-charcoal/60 border border-white/5 rounded-xl p-6">
               <h2 className="text-xl font-display font-bold mb-3 flex items-center gap-2"><MonitorPlay className="w-5 h-5 text-red-500" /> Videos y documentales</h2>
-              <p className="text-sm text-gray-400 mb-4">Documentales, análisis y material de archivo sobre este caso en YouTube.</p>
+
+              {relatedTitles.length > 0 && (
+                <>
+                  <p className="text-sm text-gray-400 mb-4">
+                    {relatedTitles.length === 1 ? 'Este título del catálogo trata' : 'Estos títulos del catálogo tratan'} el caso.
+                  </p>
+                  <div className="space-y-3 mb-4">
+                    {relatedTitles.map((t) => (
+                      <CatalogRow key={t.id} item={t} />
+                    ))}
+                  </div>
+                  <Link to="/catalogo" className="inline-block mb-6 text-xs font-semibold text-aurora-cyan hover:text-aurora-cyanGlow">Ver todo el catálogo →</Link>
+                </>
+              )}
+
+              <p className="text-sm text-gray-400 mb-4">
+                {relatedTitles.length > 0 ? 'Más material' : 'Documentales, análisis y material de archivo'} sobre este caso en YouTube.
+              </p>
               <a href={extra.youtubeQuery} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold hover:bg-red-500/20">
                 <MonitorPlay className="w-4 h-4" /> Ver videos sobre este caso
               </a>
@@ -277,6 +298,56 @@ export default function ExpedienteDetail() {
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * Ficha compacta de una película o documental que trata este caso.
+ *
+ * El catálogo sigue siendo el listado completo; esto es una referencia cruzada,
+ * igual que la bibliografía relacionada: quien está leyendo el expediente no
+ * tiene por qué salir a buscar entre 51 títulos cuál habla de lo que acaba de
+ * leer. Por eso el bloque cierra con un enlace al catálogo entero.
+ */
+function CatalogRow({ item }: { item: CatalogItem }) {
+  const { poster } = useWikiPoster(item.wiki);
+  const meta = catalogTypeMeta[item.type];
+  const Icon = meta.icon;
+  const justWatch = `https://www.justwatch.com/ar/buscar?q=${encodeURIComponent(item.title)}`;
+
+  return (
+    <a
+      href={justWatch}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex items-center gap-4 rounded-lg border border-white/5 p-3 hover:border-white/20 transition-colors"
+    >
+      <div className="w-12 h-[72px] shrink-0 rounded overflow-hidden bg-white/5 flex items-center justify-center">
+        {poster ? (
+          <img src={poster} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
+        ) : (
+          <Icon className="w-5 h-5" style={{ color: meta.accent }} strokeWidth={1.5} />
+        )}
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2 mb-0.5">
+          <span
+            className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded"
+            style={{ color: meta.accent, background: `${meta.accent}1a` }}
+          >
+            {meta.label}
+          </span>
+          <span className="text-xs text-gray-500">{item.year}</span>
+        </div>
+        <p className="text-sm font-medium text-white group-hover:text-aurora-cyan truncate">{item.title}</p>
+        <p className="text-xs text-gray-500 truncate">{item.director}</p>
+      </div>
+
+      <span className="hidden sm:flex items-center gap-1 shrink-0 text-xs font-medium text-gray-500 group-hover:text-aurora-cyan">
+        Dónde ver <ExternalLink className="w-3 h-3" />
+      </span>
+    </a>
   );
 }
 

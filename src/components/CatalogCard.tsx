@@ -1,20 +1,16 @@
 import { Link } from 'react-router-dom';
-import { Heart, Film, Tv, Radio, ExternalLink, MapPin } from 'lucide-react';
-import type { CatalogItem, CatalogType } from '../data/catalog';
+import { Heart, ExternalLink, MapPin } from 'lucide-react';
+import type { CatalogItem } from '../data/catalog';
+import { catalogTypeMeta } from '../data/catalogTypes';
 import { useWikiPoster } from '../hooks/useWikiPoster';
 import { useAuroraStore } from '../store/useStore';
 
-const typeMeta: Record<CatalogType, { label: string; icon: typeof Film; accent: string; grad: string }> = {
-  pelicula: { label: 'Película', icon: Film, accent: '#22d3ee', grad: 'from-cyan-500/20 to-blue-600/10' },
-  serie: { label: 'Serie', icon: Tv, accent: '#c084fc', grad: 'from-purple-500/20 to-fuchsia-600/10' },
-  documental: { label: 'Documental', icon: Radio, accent: '#fbbf24', grad: 'from-amber-500/20 to-orange-600/10' },
-};
 
 export default function CatalogCard({ item }: { item: CatalogItem }) {
   const { poster, loading } = useWikiPoster(item.wiki);
   const { favorites, toggleFavorite } = useAuroraStore();
   const isFav = favorites.some((f: any) => f.id === item.id);
-  const meta = typeMeta[item.type];
+  const meta = catalogTypeMeta[item.type];
   const Icon = meta.icon;
   const justWatch = `https://www.justwatch.com/ar/buscar?q=${encodeURIComponent(item.title)}`;
 
