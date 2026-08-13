@@ -16,7 +16,8 @@ export type HeroScene =
   | 'noticias'
   | 'favoritos'
   | 'hynek'
-  | 'reportar';
+  | 'reportar'
+  | 'testimonios';
 
 // Estrellas deterministas para que la banda no parpadee entre renders
 function mulberry32(seed: number) {
@@ -299,6 +300,50 @@ function SceneReportar({ accent }: { accent: string }) {
   );
 }
 
+/** Gente mirando hacia arriba y hojas escritas a mano: relatos, no documentos */
+function SceneTestimonios({ accent }: { accent: string }) {
+  return (
+    <g>
+      <circle cx="700" cy="150" r="8" fill={accent} className="ph-blip" />
+      <circle cx="700" cy="150" r="30" fill={accent} opacity="0.18" filter="url(#phBlur)" />
+
+      {/* Hojas manuscritas, cada una con su inclinación */}
+      {[
+        { x: 470, y: 320, rot: -9 },
+        { x: 620, y: 338, rot: 5 },
+      ].map((h) => (
+        <g key={h.x} transform={`translate(${h.x},${h.y}) rotate(${h.rot})`}>
+          <rect x="-58" y="-74" width="116" height="148" rx="7" fill="#0e1729" stroke={accent} strokeOpacity="0.55" strokeWidth="1.8" />
+          {[-48, -30, -12, 6, 24, 42].map((y, i) => (
+            <rect key={y} x="-42" y={y} width={i % 3 === 2 ? 46 : 84} height="6" rx="3" fill={accent} opacity="0.26" />
+          ))}
+        </g>
+      ))}
+
+      {/* Siluetas de testigos mirando al cielo */}
+      {[
+        { x: 880, s: 1 },
+        { x: 946, s: 0.86 },
+        { x: 1002, s: 0.94 },
+      ].map((p) => (
+        <g key={p.x} transform={`translate(${p.x},400) scale(${p.s})`}>
+          <circle cy="-118" r="17" fill="#0e1729" stroke={accent} strokeOpacity="0.6" strokeWidth="1.8" />
+          <path d="M-24,0 C-24,-58 -12,-96 0,-96 C12,-96 24,-58 24,0 Z" fill="#0e1729" stroke={accent} strokeOpacity="0.5" strokeWidth="1.8" />
+        </g>
+      ))}
+
+      {/* Globos de diálogo: lo que se cuenta, sin comprobar */}
+      {[
+        { x: 806, y: 196, r: 13 },
+        { x: 836, y: 166, r: 9 },
+        { x: 860, y: 142, r: 5.5 },
+      ].map((b) => (
+        <circle key={b.x} cx={b.x} cy={b.y} r={b.r} fill="none" stroke={accent} strokeOpacity="0.5" strokeWidth="1.8" />
+      ))}
+    </g>
+  );
+}
+
 const SCENES: Record<HeroScene, (p: { accent: string }) => ReactNode> = {
   catalogo: SceneCatalogo,
   expedientes: SceneExpedientes,
@@ -310,6 +355,7 @@ const SCENES: Record<HeroScene, (p: { accent: string }) => ReactNode> = {
   favoritos: SceneFavoritos,
   hynek: SceneHynek,
   reportar: SceneReportar,
+  testimonios: SceneTestimonios,
 };
 
 interface PageHeroProps {

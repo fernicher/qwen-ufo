@@ -99,3 +99,29 @@ Para leer lo recibido, con el mismo `FEEDBACK_TOKEN`:
 ```
 https://fernicher-ufo.vercel.app/api/avistamiento?token=EL_TOKEN
 ```
+
+## De avistamiento recibido a testimonio publicado
+
+`/testimonios` es donde sale lo que se acepta. Se llena a mano desde
+`src/data/testimonios.ts`, y el paso manual es deliberado: nadie publica sin
+leer, decidir y escribir qué se pudo contrastar.
+
+```bash
+npm run avistamientos -- --token=EL_TOKEN
+```
+
+Baja lo pendiente y lo imprime ya con la forma que espera el archivo de datos.
+Se pega la entrada, se recorta el relato si hace falta, se agrega el `pais` y se
+escribe la `nota`. **Sin `nota` no se publica**: es lo que separa un archivo de
+un muro de mensajes, y muchas veces dirá simplemente que no se pudo verificar
+nada.
+
+La sección entera cuelga de un solo interruptor, `hayTestimonios`. Con el array
+vacío la ruta redirige a `/reportar`, el enlace no aparece en el menú y la URL
+no entra al sitemap ni recibe HTML propio: no hay forma de publicar una página
+vacía por descuido. Al pegar el primer testimonio se enciende todo solo.
+
+Los testimonios se ven distintos de los expedientes a propósito —sin fotos, con
+la marca de «sin verificar» encima del relato y la nota del archivo aparte—.
+Si alguno consigue respaldo documental deja de ser un testimonio y pasa a
+`cases.ts` como expediente.

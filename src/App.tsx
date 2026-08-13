@@ -21,6 +21,7 @@ const Favoritos = lazy(() => import('./pages/Favoritos'));
 const InvestigadorDetail = lazy(() => import('./pages/InvestigadorDetail'));
 const EscalaHynek = lazy(() => import('./pages/EscalaHynek'));
 const Reportar = lazy(() => import('./pages/Reportar'));
+const Testimonios = lazy(() => import('./pages/Testimonios'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 /** Marcador mientras llega el trozo de la página, en el estilo del sitio. */
@@ -51,6 +52,8 @@ function App() {
             <Route path="/investigadores/:id" element={<InvestigadorDetail />} />
             <Route path="/escala-hynek" element={<EscalaHynek />} />
             <Route path="/reportar" element={<Reportar />} />
+            {/* Sin testimonios publicados la página redirige sola a /reportar */}
+            <Route path="/testimonios" element={<Testimonios />} />
             <Route path="/timeline" element={<Timeline />} />
             <Route path="/favoritos" element={<Favoritos />} />
             <Route path="*" element={<NotFound />} />

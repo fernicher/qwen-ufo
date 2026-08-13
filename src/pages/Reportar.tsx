@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
 import { ExternalLink, Camera, ClipboardList, EyeOff, Building2, Radio } from 'lucide-react';
 import { declassifications } from '../data/declassifications';
+import { hayTestimonios } from '../data/testimonios';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import PageHero from '../components/PageHero';
 import SightingForm from '../components/SightingForm';
@@ -118,6 +120,15 @@ export default function Reportar() {
               <strong className="text-gray-300">testimonio sin verificar</strong>, separado de los expedientes
               documentados. Esa distinción es lo que sostiene el archivo: sin ella, un relato no comprobado
               contaminaría el valor de los casos que sí tienen respaldo.
+              {hayTestimonios && (
+                <>
+                  {' '}
+                  <Link to="/testimonios" className="text-[#34d399] hover:underline">
+                    Mira los que ya se publicaron
+                  </Link>
+                  .
+                </>
+              )}
             </p>
             <SightingForm />
           </section>
