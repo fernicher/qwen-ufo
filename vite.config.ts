@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { routeMetas } from './src/data/seo'
+import { generarPortadas } from './build/og.mjs'
 
 /**
  * Las etiquetas Open Graph necesitan URLs absolutas: WhatsApp, X y Telegram no
@@ -49,9 +50,10 @@ export default defineConfig(({ mode }) => {
          */
         name: 'aurora-paginas-estaticas',
         apply: 'build',
-        closeBundle() {
+        async closeBundle() {
           const plantilla = readFileSync(join(outDir, 'index.html'), 'utf8');
           const metas = routeMetas(siteUrl);
+          const portadas = await generarPortadas(metas, outDir);
 
           for (const meta of metas) {
             const url = `${siteUrl}${meta.path}`;
@@ -65,6 +67,15 @@ export default defineConfig(({ mode }) => {
             html = setMeta(html, 'property="og:description"', meta.description);
             html = setMeta(html, 'name="twitter:title"', meta.title);
             html = setMeta(html, 'name="twitter:description"', meta.description);
+
+            // Cada ruta apunta a su propia miniatura. Si no se le generó una
+            // (la portada), queda la ilustrada que ya trae el index.html
+            if (portadas[meta.path]) {
+              const portada = `${siteUrl}${portadas[meta.path]}`;
+              html = setMeta(html, 'property="og:image"', portada);
+              html = setMeta(html, 'name="twitter:image"', portada);
+              html = setMeta(html, 'property="og:image:alt"', `${meta.og?.kicker ?? 'Project Aurora'}: ${meta.og?.titulo ?? meta.title}`);
+            }
 
             if (meta.noindex) {
               html = html.replace('</head>', '  <meta name="robots" content="noindex, follow" />\n  </head>');

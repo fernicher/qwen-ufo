@@ -8,6 +8,7 @@ import { getExtra } from '../data/expediente-extras';
 import { hynekMeta } from '../data/hynek';
 import { caseTypeMeta } from '../data/caseTypes';
 import CaseTypeIcon from '../components/CaseTypeIcon';
+import CaseReactions from '../components/CaseReactions';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
 
@@ -199,6 +200,8 @@ export default function ExpedienteDetail() {
                 {exp.culturalImpact && <p className="text-sm text-gray-300 leading-relaxed"><span className="text-white font-semibold">Impacto cultural: </span>{exp.culturalImpact}</p>}
               </section>
             )}
+
+            <CaseReactions caso={exp.id} />
 
             <section className="bg-aurora-charcoal/60 border border-white/5 rounded-xl p-6">
               <h2 className="text-xl font-display font-bold mb-3 flex items-center gap-2"><MonitorPlay className="w-5 h-5 text-red-500" /> Videos y documentales</h2>

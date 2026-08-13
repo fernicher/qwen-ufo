@@ -49,8 +49,19 @@ La portada y las cabeceras de sección (`PageHero`) son SVG dibujado a mano y
 animado con CSS, sin dependencias ni imágenes externas. Toda animación se
 desactiva con `prefers-reduced-motion`.
 
-`public/og.jpg` es la vista previa al compartir el enlace: se genera capturando
-la portada a 1200×630.
+`public/og.jpg` es la vista previa de la portada al compartir el enlace: se
+genera capturando el encabezado a 1200×630.
+
+El resto de las páginas genera la suya en el build (`build/og.mjs`): satori
+maqueta el texto y lo pasa a trazos con Space Grotesk e Inter —las fuentes
+salen de `node_modules`, no hay binarios versionados— y resvg lo rasteriza a
+PNG en `dist/og/`. Cada ruta declara su titular en el campo `og` de
+`src/data/seo.ts`; sin él se usa el `title` recortado.
+
+Se hace en el build y no en tiempo de ejecución a propósito: una función que
+dibuje la imagen al vuelo sólo se puede probar una vez desplegada, mientras que
+esto se verifica en local, no agrega funciones al proyecto y sirve archivos
+estáticos. Son 63 imágenes, unos 33 KB cada una y unos 4 s de build.
 
 ## Buzón de sugerencias
 
@@ -99,6 +110,23 @@ Para leer lo recibido, con el mismo `FEEDBACK_TOKEN`:
 ```
 https://fernicher-ufo.vercel.app/api/avistamiento?token=EL_TOKEN
 ```
+
+## Opinión de los lectores
+
+Cada expediente lleva un termómetro de tres opciones (`api/reaccion`, hash
+`aurora:reacciones:<caso>` en el mismo Upstash). Los porcentajes aparecen recién
+después de votar, para no anclar la respuesta.
+
+Está deliberadamente separado de la clasificación de evidencia **A/B/C**, que se
+asigna por la documentación disponible. La pregunta es «¿qué te parece este
+caso?», no «¿es creíble?»: un caso no está mejor documentado porque le guste a
+más gente, y si se confunden las dos cosas el archivo pasa a ser una encuesta de
+popularidad.
+
+Defensas: el id del caso se valida contra un patrón antes de tocar Redis, hay un
+tope de 40 votos por día y remitente, y el voto se recuerda en el navegador. No
+es infalible —quien quiera votar dos veces puede— pero alcanza para un
+termómetro.
 
 ## De avistamiento recibido a testimonio publicado
 
