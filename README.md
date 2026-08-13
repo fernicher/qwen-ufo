@@ -71,3 +71,31 @@ https://fernicher-ufo.vercel.app/api/feedback?token=EL_TOKEN
 
 Sin esa variable la lectura devuelve 404 y los mensajes sólo se ven desde la
 consola de Upstash.
+
+## Envío de avistamientos
+
+`/reportar` incluye un formulario que manda a `api/avistamiento` y guarda en la
+lista `aurora:avistamientos` del mismo Upstash. **Nada se publica solo**: cada
+relato queda con `estado: 'pendiente'` a la espera de que alguien lo lea y lo
+contraste.
+
+Esa separación no es un detalle de implementación: un testimonio sin verificar
+no es un expediente. Si alguna vez se publican, tienen que salir claramente
+marcados como testimonios sin verificar y en un espacio propio, distinto de los
+expedientes documentados. Mezclarlos costaría la credibilidad del archivo
+entero, que es su mayor activo.
+
+No se admiten archivos subidos, sólo un enlace al video o la foto: alojar
+material ajeno traería almacenamiento, moderación y responsabilidad legal que el
+proyecto no puede sostener.
+
+Defensas: campo trampa invisible, tres envíos por día y remitente, topes de
+longitud por campo, validación de fecha (ni futura ni anterior a 1900), de hora
+y de enlace (`http://` o `https://`), y casilla de consentimiento obligatoria —
+sin ella el envío se rechaza, porque es lo que habilita a publicarlo después.
+
+Para leer lo recibido, con el mismo `FEEDBACK_TOKEN`:
+
+```
+https://fernicher-ufo.vercel.app/api/avistamiento?token=EL_TOKEN
+```
