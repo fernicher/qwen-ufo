@@ -3,6 +3,7 @@ import { catalog } from './catalog';
 import { investigators } from './investigators';
 import { books } from './books';
 import { channels } from './channels';
+import { testimonios } from './testimonios';
 
 /**
  * Metadatos por ruta. Se consumen en el build (vite.config.ts) para escribir un
@@ -118,6 +119,29 @@ export function routeMetas(siteUrl: string): RouteMeta[] {
       title: 'Cómo reportar un avistamiento OVNI paso a paso',
       description: 'Qué descartar primero, qué anotar mientras ocurre, cómo grabar para que el video sirva y a qué organismo oficial acudir en cada país.',
     },
+    // Mientras no haya relatos publicados no hay página: no entra al sitemap ni
+    // se le escribe HTML propio, para no ofrecer a los buscadores una URL vacía
+    ...(testimonios.length > 0
+      ? [
+          {
+            path: '/testimonios',
+            title: `Testimonios de avistamientos OVNI contados por testigos`,
+            description: clamp(
+              `${testimonios.length} relatos de avistamientos enviados por quienes los presenciaron, publicados sin verificar y con una nota sobre lo que se pudo contrastar en cada caso.`,
+            ),
+            jsonLd: {
+              '@type': 'CollectionPage',
+              inLanguage: 'es',
+              name: 'Testimonios de avistamientos',
+              description: 'Relatos de avistamientos enviados por el público, publicados sin verificar.',
+              breadcrumb: breadcrumbs(siteUrl, [
+                { name: 'Inicio', path: '/' },
+                { name: 'Testimonios', path: '/testimonios' },
+              ]),
+            },
+          },
+        ]
+      : []),
     {
       // Depende del navegador de cada visitante: para un buscador siempre está vacía
       path: '/favoritos',

@@ -1,7 +1,10 @@
-import { ExternalLink, Camera, ClipboardList, EyeOff, Building2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ExternalLink, Camera, ClipboardList, EyeOff, Building2, Radio } from 'lucide-react';
 import { declassifications } from '../data/declassifications';
+import { hayTestimonios } from '../data/testimonios';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import PageHero from '../components/PageHero';
+import SightingForm from '../components/SightingForm';
 
 /** Lo que explica la enorme mayoría de los reportes. Descartarlo primero es lo que da valor al resto. */
 const CONFUSIONES = [
@@ -104,9 +107,35 @@ export default function Reportar() {
             </ul>
           </section>
 
+          <section id="contar">
+            <h2 className="flex items-center gap-2 text-2xl font-display font-bold text-white mb-2">
+              <Radio className="w-6 h-6 text-[#34d399]" /> Cuéntanoslo
+            </h2>
+            <p className="text-gray-400 mb-3">
+              Si viste algo y ya descartaste lo evidente, escríbelo aquí. Los relatos que llegan se leen uno por uno y
+              se contrastan con registros de tráfico aéreo, efemérides y lanzamientos antes de decidir nada.
+            </p>
+            <p className="text-sm text-gray-500 mb-6 border-l-2 border-[#34d399]/40 pl-4">
+              Nada se publica automáticamente. Lo que llegue a publicarse aparecerá siempre marcado como{' '}
+              <strong className="text-gray-300">testimonio sin verificar</strong>, separado de los expedientes
+              documentados. Esa distinción es lo que sostiene el archivo: sin ella, un relato no comprobado
+              contaminaría el valor de los casos que sí tienen respaldo.
+              {hayTestimonios && (
+                <>
+                  {' '}
+                  <Link to="/testimonios" className="text-[#34d399] hover:underline">
+                    Mira los que ya se publicaron
+                  </Link>
+                  .
+                </>
+              )}
+            </p>
+            <SightingForm />
+          </section>
+
           <section>
             <h2 className="flex items-center gap-2 text-2xl font-display font-bold text-white mb-2">
-              <Building2 className="w-6 h-6 text-[#34d399]" /> Dónde reportarlo
+              <Building2 className="w-6 h-6 text-[#34d399]" /> Dónde reportarlo oficialmente
             </h2>
             <p className="text-gray-400 mb-6">
               Organismos oficiales que investigan el fenómeno, con su punto de entrada público. No todos admiten
@@ -137,8 +166,10 @@ export default function Reportar() {
           </section>
 
           <p className="text-xs text-gray-600 border-t border-white/5 pt-6">
-            Este archivo no recibe denuncias ni las traslada a ningún organismo. La guía es orientativa: los canales
-            oficiales y sus requisitos cambian, así que confirma siempre en el sitio del organismo antes de enviar nada.
+            Enviar tu relato a este archivo no equivale a una denuncia: no somos un organismo oficial ni trasladamos
+            nada a ninguno. Si quieres que quede registrado formalmente, hazlo además por los canales de arriba. La
+            guía es orientativa: los organismos y sus requisitos cambian, así que confirma siempre en su sitio antes
+            de enviar nada.
           </p>
         </div>
       </div>

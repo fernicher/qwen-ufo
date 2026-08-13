@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart, Radio, MonitorPlay, Ruler, Send } from 'lucide-react';
+import { Home, Film, Map, Compass, Book, Menu, X, ChevronDown, Users, Clock, Heart, Radio, MonitorPlay, Ruler, Send, Quote } from 'lucide-react';
 import GlobalSearch from './GlobalSearch';
 import FeedbackBox from './FeedbackBox';
+import { hayTestimonios } from '../data/testimonios';
 
 interface NavItem {
   to: string;
@@ -27,6 +28,10 @@ const moreNavItems: NavItem[] = [
   { to: '/favoritos', label: 'Favoritos', icon: Heart, color: '#f43f5e' },
   { to: '/escala-hynek', label: 'Escala de Hynek', icon: Ruler, color: '#34d399' },
   { to: '/reportar', label: 'Cómo reportar', icon: Send, color: '#34d399' },
+  // Sólo aparece cuando hay algún relato publicado, para no enlazar a una página vacía
+  ...(hayTestimonios
+    ? [{ to: '/testimonios', label: 'Testimonios', icon: Quote, color: '#c4b5fd' }]
+    : []),
 ];
 
 const allNavItems = [...primaryNavItems, ...moreNavItems];
