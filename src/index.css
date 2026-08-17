@@ -227,7 +227,6 @@ body { background: #0a0a0c; color: white; font-family: 'Inter', sans-serif; }
 
 /* ── Cabeceras de sección (PageHero) ────────────────────────── */
 .ph-sweep {
-  transform-box: fill-box;
   transform-origin: 0 0;
   animation: ph-sweep 4.5s linear infinite;
 }
