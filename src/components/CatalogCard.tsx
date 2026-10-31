@@ -9,7 +9,7 @@ import { useAuroraStore } from '../store/useStore';
 export default function CatalogCard({ item }: { item: CatalogItem }) {
   const { poster, loading } = useWikiPoster(item.wiki);
   const { favorites, toggleFavorite } = useAuroraStore();
-  const isFav = favorites.some((f: any) => f.id === item.id);
+  const isFav = favorites.some((f) => f.id === item.id);
   const meta = catalogTypeMeta[item.type];
   const Icon = meta.icon;
   const justWatch = `https://www.justwatch.com/ar/buscar?q=${encodeURIComponent(item.title)}`;

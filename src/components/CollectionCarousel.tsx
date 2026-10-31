@@ -2,7 +2,10 @@ import { useRef } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { catalog } from '../data/catalog';
+import type { collections } from '../data/collections';
 import { useWikiPoster } from '../hooks/useWikiPoster';
+
+type Collection = (typeof collections)[number];
 
 /** Los tres títulos que representan una colección, según su ruta de destino. */
 function titlesFor(route: string): typeof catalog {
@@ -33,7 +36,7 @@ function MosaicTile({ wiki }: { wiki: string }) {
   return <img src={poster} alt="" aria-hidden="true" loading="lazy" className="flex-1 min-w-0 h-full object-cover" />;
 }
 
-export default function CollectionCarousel({ collections, title, accent = '#22d3ee' }: { collections: any[]; title: string; accent?: string }) {
+export default function CollectionCarousel({ collections, title, accent = '#22d3ee' }: { collections: Collection[]; title: string; accent?: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const scroll = (dir: 'left' | 'right') => {
     if (!scrollRef.current) return;

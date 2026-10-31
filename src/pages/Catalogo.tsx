@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search, Film, Tv, Radio, LayoutGrid, X } from 'lucide-react';
 import { catalog } from '../data/catalog';
-import type { CatalogType } from '../data/catalog';
+import type { CatalogType, CatalogTheme } from '../data/catalog';
 import { collections } from '../data/collections';
 import CatalogCard from '../components/CatalogCard';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
@@ -45,7 +45,7 @@ export default function Catalogo() {
     const q = query.trim().toLowerCase();
     return catalog.filter((item) => {
       if (filter !== 'todos' && item.type !== filter) return false;
-      if (theme && !item.themes?.includes(theme as any)) return false;
+      if (theme && !item.themes?.includes(theme as CatalogTheme)) return false;
       if (!q) return true;
       return item.title.toLowerCase().includes(q) || item.director.toLowerCase().includes(q) || item.synopsis.toLowerCase().includes(q) || String(item.year).includes(q);
     });

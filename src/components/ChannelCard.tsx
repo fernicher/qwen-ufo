@@ -1,7 +1,8 @@
 import { MonitorPlay, Play, ExternalLink } from 'lucide-react';
 import { colorFor, monogram } from '../lib/visual';
+import type { Channel } from '../data/channels';
 
-export default function ChannelCard({ c, avatar }: { c: any; avatar?: string }) {
+export default function ChannelCard({ c, avatar }: { c: Channel; avatar?: string }) {
   const color = colorFor(c.id);
   return (
     <a href={c.query} target="_blank" rel="noopener noreferrer" className="group flex flex-col bg-aurora-charcoal/60 border border-white/5 rounded-2xl overflow-hidden hover:border-red-500/40 transition-all">

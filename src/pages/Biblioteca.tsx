@@ -10,6 +10,9 @@ import { useWikiPoster } from '../hooks/useWikiPoster';
 import { colorFor } from '../lib/visual';
 import BookCard from '../components/BookCard';
 import PageHero from '../components/PageHero';
+import type { Divulgador } from '../data/divulgadores';
+
+type Podcast = (typeof podcasts)[number];
 
 type Tab = 'libros' | 'podcasts' | 'divulgadores' | 'desclasificaciones';
 
@@ -27,7 +30,7 @@ const tagLabels: Record<string, string> = {
   científico: 'Científico', testigo: 'Testigo', controvertido: 'Controvertido',
 };
 
-function PodcastCard({ p }: { p: any }) {
+function PodcastCard({ p }: { p: Podcast }) {
   const color = colorFor(p.id);
   return (
     <div className="group bg-aurora-charcoal/60 border border-white/5 rounded-2xl p-6 hover:border-amber-400/30 transition-all">
@@ -48,7 +51,7 @@ function PodcastCard({ p }: { p: any }) {
       <div className="flex items-center gap-2 text-xs text-gray-400 mb-4"><span>{p.frequency}</span>{p.episodes && <span>• {p.episodes} episodios</span>}</div>
       {p.platforms && p.platforms.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
-          {p.platforms.map((pl: any) => (
+          {p.platforms.map((pl) => (
             <a key={pl.name} href={pl.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 hover:bg-amber-400/20">
               {pl.name} <ExternalLink className="w-3 h-3" />
             </a>
@@ -59,7 +62,7 @@ function PodcastCard({ p }: { p: any }) {
   );
 }
 
-function DivulgadorCard({ d }: { d: any }) {
+function DivulgadorCard({ d }: { d: Divulgador }) {
   const { poster } = useWikiPoster(d.wiki);
   const initials = d.name.replace(/"[^"]*"/g, '').split(' ').filter(Boolean).map((n: string) => n[0]).slice(0, 2).join('');
   return (

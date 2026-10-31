@@ -8,7 +8,7 @@ import PageHero from '../components/PageHero';
 export default function Favoritos() {
   useDocumentTitle('Favoritos');
   const { favorites } = useAuroraStore();
-  const favIds = new Set(favorites.map((f: any) => f.id));
+  const favIds = new Set(favorites.map((f) => f.id));
   const items = catalog.filter((c) => favIds.has(c.id));
 
   return (
