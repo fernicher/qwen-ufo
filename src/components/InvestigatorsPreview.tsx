@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Globe, BookOpen, Award, ArrowRight } from 'lucide-react';
 import { investigators } from '../data/investigators';
 
-const cred: any = {
+const cred: Record<string, { label: string; color: string }> = {
   referente: { label: 'Referente Mundial', color: 'text-cyan-400 border-cyan-400/40' },
   activo: { label: 'Investigador Activo', color: 'text-green-400 border-green-400/40' },
   histórico: { label: 'Figura Histórica', color: 'text-amber-400 border-amber-400/40' },

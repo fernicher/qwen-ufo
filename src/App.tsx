@@ -1,6 +1,7 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 import Home from './pages/Home';
 
 /**
@@ -34,9 +35,14 @@ function RouteFallback() {
   );
 }
 
-function App() {
+/**
+ * El boundary lleva la ruta como `key`: si una página falla, el aviso se
+ * reinicia al navegar a otra, en vez de quedarse pegado al layout.
+ */
+function Rutas() {
+  const { pathname } = useLocation();
   return (
-    <BrowserRouter>
+    <ErrorBoundary key={pathname}>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route element={<Layout />}>
@@ -60,6 +66,14 @@ function App() {
           </Route>
         </Routes>
       </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Rutas />
     </BrowserRouter>
   );
 }

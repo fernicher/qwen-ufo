@@ -11,6 +11,7 @@ import { caseTypeMeta } from '../data/caseTypes';
 import CaseTypeIcon from '../components/CaseTypeIcon';
 import { catalogTypeMeta } from '../data/catalogTypes';
 import CaseReactions from '../components/CaseReactions';
+import type { Expediente } from '../types/expediente';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useWikiPoster } from '../hooks/useWikiPoster';
 
@@ -351,7 +352,7 @@ function CatalogRow({ item }: { item: CatalogItem }) {
   );
 }
 
-function CaseHero({ exp, wiki, wikiPlace, placeLabel }: { exp: any; wiki?: string; wikiPlace?: string; placeLabel?: string }) {
+function CaseHero({ exp, wiki, wikiPlace, placeLabel }: { exp: Expediente; wiki?: string; wikiPlace?: string; placeLabel?: string }) {
   // Sin artículo propio del caso, se usa la foto del lugar y se dice que lo es
   const isPlace = !wiki && !!wikiPlace;
   const { poster } = useWikiPoster(wiki || wikiPlace || '');

@@ -54,24 +54,8 @@ export interface Testimonio {
   nota: string;
 }
 
+/** La forma de una entrada la define `Testimonio`, arriba: se publica a mano, con un envío real. */
 export const testimonios: Testimonio[] = [
-  // Ejemplo de la forma que tiene una entrada. Descomentar sólo con un envío real:
-  //
-  // {
-  //   id: 'capilla-del-monte-2024-03',
-  //   fecha: '2024-03-15',
-  //   hora: '22:40',
-  //   lugar: 'Capilla del Monte, Córdoba',
-  //   pais: 'Argentina',
-  //   duracion: 'unos 4 minutos',
-  //   relato: 'Tres luces naranjas en formación triangular sobre el cerro…',
-  //   movimiento: 'estáticas y luego ascenso vertical',
-  //   testigos: 'dos vecinos',
-  //   descartado: 'No había ruido ni luces de posición.',
-  //   autor: 'Marcelo R.',
-  //   publicado: '2026-08-13',
-  //   nota: 'No fue posible verificar. Esa noche no hubo pasos de Starlink visibles desde la zona.',
-  // },
 ];
 
 /** Los más recientes primero: es lo que alguien espera al abrir la página. */

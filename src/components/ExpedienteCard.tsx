@@ -4,6 +4,7 @@ import CaseTypeIcon from './CaseTypeIcon';
 import { getExtra } from '../data/expediente-extras';
 import { caseTypeMeta } from '../data/caseTypes';
 import { useWikiPoster } from '../hooks/useWikiPoster';
+import type { UFOCase } from '../data/cases';
 
 const credColors: Record<string, string> = {
   A: 'text-cyan-400 border-cyan-400/40 bg-cyan-400/10',
@@ -11,7 +12,7 @@ const credColors: Record<string, string> = {
   C: 'text-purple-400 border-purple-400/40 bg-purple-400/10',
 };
 
-export default function ExpedienteCard({ c }: { c: any }) {
+export default function ExpedienteCard({ c }: { c: UFOCase }) {
   const hex = caseTypeMeta[c.type as keyof typeof caseTypeMeta].color;
   const typeLabel = caseTypeMeta[c.type as keyof typeof caseTypeMeta].longLabel;
   const extra = getExtra(c.id);

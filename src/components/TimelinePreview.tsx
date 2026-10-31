@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { timelineEvents } from '../data/timeline';
 
-const colors: any = {
+const colors: Record<string, { dot: string; badge: string }> = {
   hito: { dot: 'bg-amber-400', badge: 'text-amber-400 border-amber-400/40' },
   caso: { dot: 'bg-cyan-400', badge: 'text-cyan-400 border-cyan-400/40' },
   desclasificacion: { dot: 'bg-green-400', badge: 'text-green-400 border-green-400/40' },

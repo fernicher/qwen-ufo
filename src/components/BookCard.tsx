@@ -1,8 +1,11 @@
 import { Star, ExternalLink, BookOpen } from 'lucide-react';
 import { useBookData } from '../hooks/useBookData';
+import type { books } from '../data/books';
+
+type Book = (typeof books)[number];
 
 interface BookCardProps {
-  book: any;
+  book: Book;
 }
 
 export default function BookCard({ book }: BookCardProps) {
